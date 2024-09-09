@@ -1,2 +1,2 @@
-# F1-MENTORING-MATCH-BE
+# F2-MENTORING-MATCH-BE
 다양한 분야의 멘토, 멘티가 매칭되어 커피챗을 통해 원하는 인사이트를 얻어갈 수 있는 서비스 - 백엔드 리포지토리 입니다.
