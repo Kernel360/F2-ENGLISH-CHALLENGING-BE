@@ -1,0 +1,22 @@
+spring:
+  config:
+    activate:
+      on-profile: log
+  jpa:
+    properties:
+      hibernate:
+        #       show_sql: true # System.out 방식 로그
+        format_sql: true
+        highlight_sql: true
+        use_sql_comments: true
+logging:
+  level:
+    org:
+      hibernate:
+        SQL: debug # logger 방식 로그
+        orm:
+          jdbc:
+            bind: trace
+
+    com:
+      mongodb: debug
