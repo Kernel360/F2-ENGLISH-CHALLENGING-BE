@@ -5,7 +5,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
 public class EnglishChallengePlatformApplication {
-
+	//test
 	public static void main(String[] args) {
 		SpringApplication.run(EnglishChallengePlatformApplication.class, args);
 	}
