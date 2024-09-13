@@ -20,7 +20,6 @@ public enum ApiErrorCategory {
 	RESOURCE_BAD_REQUEST(HttpStatus.BAD_REQUEST, "잘못된 요청 형식"),
 	;
 
-
 	private final HttpStatus errorStatusCode;
 	private final String errorCategoryDescription;
 

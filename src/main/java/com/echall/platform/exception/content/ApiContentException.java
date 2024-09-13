@@ -22,10 +22,13 @@ public class ApiContentException extends ApiException {
 	public void processEachSubCategoryCase() {
 		ApiErrorSubCategory subCategory = this.getErrorSubCategory();
 
-		switch ( (ApiContentErrorSubCategory)subCategory ) {
-			case CONTENT_NOT_FOUND -> {}
-			case CONTENT_ALREADY_EXISTS -> {}
-			default -> {}
+		switch ((ApiContentErrorSubCategory)subCategory) {
+			case CONTENT_NOT_FOUND -> {
+			}
+			case CONTENT_ALREADY_EXISTS -> {
+			}
+			default -> {
+			}
 		}
 	}
 }

@@ -16,7 +16,7 @@ import lombok.Getter;
 public class ApiErrorResponse extends ProblemDetail {
 
 	protected ApiErrorResponse(ApiException apiException) {
-		super( forStatus(apiException.getHttpStatus()) );
+		super(forStatus(apiException.getHttpStatus()));
 		super.setProperty("category", apiException.getMessage());
 		super.setProperty("subcategory", apiException.getErrorSubCategoryDescription());
 	}

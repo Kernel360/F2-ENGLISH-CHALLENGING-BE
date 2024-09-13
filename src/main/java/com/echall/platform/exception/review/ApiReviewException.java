@@ -21,11 +21,15 @@ public class ApiReviewException extends ApiException {
 	public void processEachSubCategoryCase() {
 		ApiErrorSubCategory subCategory = this.getErrorSubCategory();
 
-		switch( (ApiReviewErrorSubCategory)subCategory ) {
-			case REVIEW_NOT_FOUND -> {}
-			case REVIEW_ALREADY_EXISTS -> {}
-			case REVIEW_DEACTIVATE -> {}
-			default -> {}
+		switch ((ApiReviewErrorSubCategory)subCategory) {
+			case REVIEW_NOT_FOUND -> {
+			}
+			case REVIEW_ALREADY_EXISTS -> {
+			}
+			case REVIEW_DEACTIVATE -> {
+			}
+			default -> {
+			}
 		}
 	}
 }

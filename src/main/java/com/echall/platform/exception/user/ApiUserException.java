@@ -25,12 +25,17 @@ public class ApiUserException extends ApiException {
 	public void processEachSubCategoryCase() {
 		ApiErrorSubCategory subCategory = this.getErrorSubCategory();
 
-		switch ( (ApiUserErrorSubCategory)subCategory ) {
-			case USER_NOT_FOUND -> {}
-			case USER_ALREADY_EXISTS -> {}
-			case USER_ALREADY_LOGGED_IN -> {}
-			case USER_SCRAP_DUPLICATION -> {}
-			default -> {}
+		switch ((ApiUserErrorSubCategory)subCategory) {
+			case USER_NOT_FOUND -> {
+			}
+			case USER_ALREADY_EXISTS -> {
+			}
+			case USER_ALREADY_LOGGED_IN -> {
+			}
+			case USER_SCRAP_DUPLICATION -> {
+			}
+			default -> {
+			}
 		}
 	}
 }
