@@ -59,14 +59,13 @@ public class ContentPublicController {
 	public ResponseEntity<ContentPageResponse> get(
 		@Parameter(hidden = true) @PageableDefault(page = 0, size = 10, sort = "createdAt", direction = Sort.Direction.DESC) Pageable pageable)
 	{
-		Page<ContentEntity> pageContentList = contentService.get(pageable);
-		Page<ContentResponseDto> responsePage = pageContentList.map(ContentResponseDto::of);
+		Page<ContentResponseDto> pageContentList = contentService.get(pageable);
 		ContentPageResponse response = new ContentPageResponse();
-		response.setPageNumber(responsePage.getNumber());
-		response.setPageSize(responsePage.getSize());
-		response.setTotalPages(responsePage.getTotalPages());
-		response.setTotalElements(responsePage.getTotalElements());
-		response.setContent(responsePage.getContent());
+		response.setPageNumber(pageContentList.getNumber());
+		response.setPageSize(pageContentList.getSize());
+		response.setTotalPages(pageContentList.getTotalPages());
+		response.setTotalElements(pageContentList.getTotalElements());
+		response.setContent(pageContentList.getContent());
 
 		return ResponseEntity.ok().body(response);
 	}
