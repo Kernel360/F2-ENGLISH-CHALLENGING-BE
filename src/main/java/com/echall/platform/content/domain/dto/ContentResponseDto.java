@@ -6,6 +6,7 @@ import org.bson.types.ObjectId;
 
 import com.echall.platform.content.domain.entity.ContentEntity;
 import com.echall.platform.content.domain.enums.ContentStatus;
+import com.echall.platform.content.domain.enums.ContentType;
 
 public record ContentResponseDto(
 	ObjectId id,
@@ -13,6 +14,7 @@ public record ContentResponseDto(
 	String title,
 	String script,
 	String channelName,
+	ContentType contentType,
 	ContentStatus contentStatus,
 	LocalDateTime createdAt,
 	LocalDateTime updatedAt
@@ -25,6 +27,7 @@ public record ContentResponseDto(
 			content.getTitle(),
 			content.getScript(),
 			content.getChannelName(),
+			content.getContentType(),
 			content.getContentStatus(),
 			content.getCreatedAt(),
 			content.getUpdatedAt()

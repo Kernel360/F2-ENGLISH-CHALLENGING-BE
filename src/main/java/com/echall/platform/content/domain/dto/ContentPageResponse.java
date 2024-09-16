@@ -26,5 +26,4 @@ public class ContentPageResponse {
 	@Schema(description = "컨텐츠 목록")
 	private List<ContentResponseDto> content;
 
-	// 필요하다면 생성자나 빌더 추가
 }
