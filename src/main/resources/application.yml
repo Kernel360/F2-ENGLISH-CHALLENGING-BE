@@ -21,6 +21,17 @@ spring:
         format_sql: true
     show-sql: true
 
+  security:
+    oauth2:
+      client:
+        registration:
+          google:
+            client-id: ${MY_GOOGLE_CLIENT_ID}
+            client-secret: ${MY_GOOGLE_CLIENT_SECRET}
+            scope:
+              - email
+              - profile
+
 # Swagger
 springdoc:
   swagger-ui:
@@ -34,3 +45,8 @@ springdoc:
 
   paths-to-match:
     - /api/** # swagger-ui에 표시할 api의 엔드포인트 패턴
+
+
+jwt:
+  issuer: ${MY_JWT_ISSUER}
+  secret: ${MY_JWT_SECRET_KEY}

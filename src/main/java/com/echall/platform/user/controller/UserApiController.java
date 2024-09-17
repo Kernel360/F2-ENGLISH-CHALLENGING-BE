@@ -37,11 +37,11 @@ public class UserApiController {
 		@ApiResponse(responseCode = "404", description = "데이터베이스 연결에 실패하였습니다.", content = @Content(mediaType = "application/json")),
 	})
 	public ResponseEntity<UserResponseDto.UserUpdateResponse> setNewUserInfo(
-		@RequestBody UserRequestDto.UserUpdateRequest userUpdateRequest) {
-		String email = "test@email.com";    // OAuth2 에서 받은 이메일
+		@RequestBody UserRequestDto.UserUpdateRequest userUpdateRequest,
+		Authentication authentication) {
 
 		return ResponseEntity.status(HttpStatus.CREATED)
-			.body(userService.updateUserInfo(userUpdateRequest, email));
+			.body(userService.updateUserInfo(userUpdateRequest, authentication.getName()));
 	}
 
 	@GetMapping("/me")
@@ -53,8 +53,7 @@ public class UserApiController {
 	public ResponseEntity<UserResponseDto.UserMyPageResponse> getMyPage(Authentication authentication) {
 
 		return ResponseEntity.status(HttpStatus.OK)
-			.body(userService.getMyPage("test@email.com"));
-		// .body(userService.getMyPage(authentication.getName())); // use when add Spring Security
+			.body(userService.getMyPage(authentication.getName())); // use when add Spring Security
 	}
 
 	@PatchMapping("/me")
@@ -67,10 +66,9 @@ public class UserApiController {
 		@RequestBody UserRequestDto.UserUpdateRequest userUpdateRequest,
 		Authentication authentication
 	) {
-		String email = "test@email.com";
+
 		return ResponseEntity.status(HttpStatus.OK)
-			.body(userService.updateUserInfo(userUpdateRequest, email)); // TODO: userUpdateRequest 내부 값 null 이어도 되는지 확인
-		// .body(userService.updateUserInfo(userUpdateRequest, authentication.getName()))
+			.body(userService.updateUserInfo(userUpdateRequest, authentication.getName()));
 	}
 
 	@GetMapping("/me/challenge")

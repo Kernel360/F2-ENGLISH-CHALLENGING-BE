@@ -39,6 +39,10 @@ public class QUserEntity extends EntityPathBase<UserEntity> {
 
     public final StringPath phoneNumber = createString("phoneNumber");
 
+    public final StringPath provider = createString("provider");
+
+    public final StringPath providerId = createString("providerId");
+
     public final EnumPath<com.echall.platform.user.domain.enums.Role> role = createEnum("role", com.echall.platform.user.domain.enums.Role.class);
 
     public final NumberPath<Long> userId = createNumber("userId", Long.class);
