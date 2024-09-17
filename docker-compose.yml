@@ -10,12 +10,13 @@ services:
 
   mysql:
     image: mysql:8.0.39
+    platform: linux/amd64
     container_name: echall-mysql
     ports:
-      - "3306:3306"
+      - "3307:3306"
     environment:
-      - MYSQL_ROOT_USERNAME=${LOCAL_DB_USERNAME}
-      - MYSQL_ROOT_PASSWORD=${LOCAL_DB_PASSWORD}
+      - MYSQL_ROOT_USERNAME=${DB_ROOT_USERNAME}
+      - MYSQL_ROOT_PASSWORD=${DB_ROOT_PASSWORD}
       - MYSQL_DATABASE=${LOCAL_DB_NAME}
       - TZ=Asia/Seoul
     volumes:
@@ -40,8 +41,8 @@ services:
     ports:
       - "27017:27017"
     environment:
-      - MONGO_INITDB_ROOT_USERNAME=${LOCAL_DB_USERNAME}
-      - MONGO_INITDB_ROOT_PASSWORD=${LOCAL_DB_PASSWORD}
+      - MONGO_INITDB_ROOT_USERNAME=${DB_ROOT_USERNAME}
+      - MONGO_INITDB_ROOT_PASSWORD=${DB_ROOT_PASSWORD}
     command: [ "--bind_ip", "0.0.0.0" ]
     volumes:
       - ./mongodb:/data/db

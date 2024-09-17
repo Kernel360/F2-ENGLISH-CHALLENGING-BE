@@ -2,6 +2,9 @@ package com.echall.platform.user.service;
 
 import org.springframework.stereotype.Service;
 
+import com.echall.platform.exception.common.ApiErrorCategory;
+import com.echall.platform.exception.user.ApiUserErrorSubCategory;
+import com.echall.platform.exception.user.ApiUserException;
 import com.echall.platform.user.domain.dto.UserRequestDto;
 import com.echall.platform.user.domain.dto.UserResponseDto;
 import com.echall.platform.user.domain.entity.UserEntity;
@@ -45,8 +48,21 @@ public class UserService {
 		return UserResponseDto.UserChallengeResponse.toDto(user);
 	}
 
-	// Internal Methods
-	private UserEntity getUserByEmail(String email) {
+	public UserEntity getUserById(Long userId) {
+		UserEntity user = userRepository.findById(userId)
+			.orElseThrow(
+				() -> ApiUserException.builder()
+					.category(ApiErrorCategory.RESOURCE_BAD_REQUEST)
+					.subCategory(ApiUserErrorSubCategory.USER_NOT_FOUND)
+					.build()
+			);
+		AssertThat_UserAccountIsAppropriate(user);
+		return user;
+	}
+
+
+	// Internal Methods=================================================================================================
+	public UserEntity getUserByEmail(String email) {
 		return userRepository.findByEmail(email)
 			.orElseThrow(() -> new RuntimeException("User not found"));
 	}

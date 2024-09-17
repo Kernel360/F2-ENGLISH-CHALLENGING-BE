@@ -1,0 +1,52 @@
+spring:
+  application:
+    name: English challenge platform
+  config:
+    import:
+      - classpath:/yml/application-prod.yml
+      - classpath:/yml/application-dev.yml
+      - classpath:/yml/application-local.yml
+      - classpath:/yml/logging/application-log.yml
+  profiles:
+    group:
+      logging: log
+    active: local
+  jpa:
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        flushMode: MANUAL
+#        dialect: org.hibernate.dialect.MySQL8Dialect # MySQL 버전에 맞게 설정하세요
+        format_sql: true
+    show-sql: true
+
+  security:
+    oauth2:
+      client:
+        registration:
+          google:
+            client-id: ${MY_GOOGLE_CLIENT_ID}
+            client-secret: ${MY_GOOGLE_CLIENT_SECRET}
+            scope:
+              - email
+              - profile
+
+# Swagger
+springdoc:
+  swagger-ui:
+    path: /api-info  # swagger-ui 접근 경로에 대한 별칭, 해당 주소로 접속해도 http://localhost:8080/swagger-ui/index.html로 리다이렉션 됨.
+
+    groups-order: DESC # path, query, body, response 순으로 출력
+
+    tags-sorter: alpha # 태그를 알파벳 순으로 정렬
+
+    operations-sorter: method  # delete - get - patch - post - put 순으로 정렬, alpha를 사용하면 알파벳 순으로 정렬 가능
+
+  paths-to-match:
+    - /api/** # swagger-ui에 표시할 api의 엔드포인트 패턴
+
+
+jwt:
+  issuer: ${MY_JWT_ISSUER}
+  secret: ${MY_JWT_SECRET_KEY}

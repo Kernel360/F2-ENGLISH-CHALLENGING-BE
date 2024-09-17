@@ -40,4 +40,4 @@ out/
 !/data/**
 !/data/mysql-data/**
 
-set.env
+!/set.env
