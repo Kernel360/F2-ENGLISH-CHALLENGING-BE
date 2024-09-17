@@ -1,7 +1,5 @@
 package com.echall.platform.content.controller;
 
-
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -24,18 +22,15 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import lombok.RequiredArgsConstructor;
 
+@RequiredArgsConstructor
 @RestController
 @RequestMapping("/api/p1/contents")
 @Tag(name = "Content API", description = "컨텐츠 공통 API")
 public class ContentPublicController {
 
 	private final ContentService contentService;
-
-	@Autowired
-	public ContentPublicController(ContentService contentService) {
-		this.contentService = contentService;
-	}
 
 	/**
 	 * 컨텐츠 조회
@@ -56,8 +51,7 @@ public class ContentPublicController {
 		@Parameter(name = "sort", description = "정렬 기준 (예: createdAt,desc)", in = ParameterIn.QUERY, schema = @Schema(type = "string"))
 	})
 	public ResponseEntity<ContentPageResponse> get(
-		@Parameter(hidden = true) @PageableDefault(page = 0, size = 10, sort = "createdAt", direction = Sort.Direction.DESC) Pageable pageable)
-	{
+		@Parameter(hidden = true) @PageableDefault(page = 0, size = 10, sort = "createdAt", direction = Sort.Direction.DESC) Pageable pageable) {
 		Page<ContentResponseDto> pageContentList = contentService.get(pageable);
 		ContentPageResponse response = new ContentPageResponse();
 		response.setPageNumber(pageContentList.getNumber());

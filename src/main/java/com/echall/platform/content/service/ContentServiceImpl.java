@@ -17,16 +17,14 @@ import com.echall.platform.content.domain.entity.ContentEntity;
 import com.echall.platform.content.domain.enums.ContentStatus;
 import com.echall.platform.content.repository.ContentRepository;
 
+import lombok.RequiredArgsConstructor;
+
 //TODO : custom exception 클래스 작성후 적용 필요합니다
 @Service
+@RequiredArgsConstructor
 public class ContentServiceImpl implements ContentService{
 
 	private final ContentRepository contentRepository;
-
-	@Autowired
-	public ContentServiceImpl(ContentRepository contentRepository) {
-		this.contentRepository = contentRepository;
-	}
 
 	@Override
 	public Page<ContentResponseDto> get(Pageable pageable) {

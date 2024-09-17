@@ -11,6 +11,7 @@ import com.echall.platform.content.domain.dto.ContentResponseDto;
 import com.echall.platform.content.domain.dto.ContentUpdateRequestDto;
 import com.echall.platform.content.domain.entity.ContentEntity;
 
+
 public interface ContentService {
 	Page<ContentResponseDto> get(Pageable pageable);
 	ContentResponseDto createContent(ContentRequestDto contentRequestDto); //새로운 컨텐츠 생성
