@@ -25,7 +25,7 @@ public class CategoryEntity {
 
 	//TODO: 추후 부모 카테고리 Id mapping이 필요합니다(고도화 시기에 추가 예정)
 
-	@Builder
+	@Builder(toBuilder = true)
 	public CategoryEntity(String name) {
 		this.name = name;
 	}
