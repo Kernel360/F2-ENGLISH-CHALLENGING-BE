@@ -26,7 +26,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 
 @RestController
-@RequestMapping("/api/contents")
+@RequestMapping("/api/p1/contents")
 @Tag(name = "Content API", description = "컨텐츠 공통 API")
 public class ContentPublicController {
 
@@ -41,7 +41,7 @@ public class ContentPublicController {
 	 * 컨텐츠 조회
 	 * (pageable)
 	 */
-	@GetMapping("")
+	@GetMapping("/view")
 	@Operation(summary = "컨텐츠 조회", description = "페이지네이션을 적용하여 전체 컨텐츠 목록을 조회합니다.")
 	@ApiResponses(value = {
 		@ApiResponse(responseCode = "200", description = "요청에 성공하였습니다.", content = {
