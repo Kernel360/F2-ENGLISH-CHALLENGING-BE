@@ -2,45 +2,27 @@ package com.echall.platform.exception.common;
 
 import org.springframework.http.HttpStatus;
 
-import jakarta.annotation.Nullable;
-import lombok.ToString;
+import lombok.Getter;
 
-@ToString
-public abstract class ApiException extends RuntimeException {
-	private final ApiErrorCategory category;
-	private final ApiErrorSubCategory subCategory;
+/**
+ * 최상위 예외입니다
+ */
+@Getter
+public class ApiException extends RuntimeException {
 
-	public ApiException(
-		ApiErrorCategory category,
-		@Nullable ApiErrorSubCategory subCategory
-	) {
-		super(category.getErrorCategoryDescription());
-		this.category = category;
-		this.subCategory = subCategory;
+	private final ErrorCode errorCode;
+
+	public ApiException(String message, ErrorCode errorCode) {
+		super(message);
+		this.errorCode = errorCode;
 	}
 
-	/**
-	 * 에러 서브-카테고리를 처리하기 위한 함수입니다.
-	 */
-	public abstract void processEachSubCategoryCase();
-
-	public HttpStatus getHttpStatus() {
-		return this.category.getErrorStatusCode();
+	public HttpStatus getStatus() {
+		return this.errorCode.getStatus();
 	}
 
-	public String getErrorCategoryDescription() {
-		return this.category.getErrorCategoryDescription();
-	}
-
-	public String getErrorSubCategoryDescription() {
-		return this.subCategory.toString();
-	}
-
-	public ApiErrorSubCategory getErrorSubCategory() {
-		return this.subCategory;
-	}
-
-	public ApiErrorCategory getErrorCategory() {
-		return this.category;
+	@Override
+	public synchronized Throwable fillInStackTrace() {
+		return this;
 	}
 }
