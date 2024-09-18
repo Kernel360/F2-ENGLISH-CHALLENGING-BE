@@ -1,7 +1,5 @@
 version: "3.8"
 
-name: echall-dev
-
 networks:
   echall-network:
     driver: bridge

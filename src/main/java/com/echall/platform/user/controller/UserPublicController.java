@@ -24,9 +24,9 @@ public class UserPublicController {
 		return "login";
 	}
 
-	@GetMapping("/join")
+	@GetMapping("/signup")
 	public String join() {
-		return "join";
+		return "signup";
 	}
 
 	@GetMapping("/logout")
