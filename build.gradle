@@ -58,7 +58,7 @@ dependencies {
 	annotationProcessor 'org.projectlombok:lombok:1.18.28'
 
 	// Swagger
-	implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.2.0'
+	implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.6.0'
 //	implementation 'org.springdoc:springdoc-openapi-ui:1.6.15'
 //	implementation 'org.springdoc:springdoc-openapi-data-rest:1.6.15'
 

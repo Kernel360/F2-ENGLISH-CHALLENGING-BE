@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import com.echall.platform.oauth2.TokenProvider;
 import com.echall.platform.user.service.UserService;
 
+import jakarta.servlet.ServletException;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -30,14 +31,14 @@ public class UserPublicController {
 	}
 
 	@GetMapping("/logout")
-	public String logout(HttpServletRequest request, HttpServletResponse response) {
-		Cookie cookie = new Cookie("token", null);
+	public String logout(HttpServletRequest request, HttpServletResponse response) throws ServletException {
+		Cookie cookie = new Cookie("access_token", null);
 		cookie.setMaxAge(0);
 		cookie.setPath("/");
 		cookie.setHttpOnly(true);
 		response.addCookie(cookie);
-		new SecurityContextLogoutHandler().logout(request,response
-		, SecurityContextHolder.getContext().getAuthentication());
+		new SecurityContextLogoutHandler().logout(request, response
+			, SecurityContextHolder.getContext().getAuthentication());
 		return "redirect:/login";
 	}
 
