@@ -1,0 +1,1259 @@
+[
+        {
+            "start_time":
+  12.645,
+            "duration":
+  6.754000000000001,
+            "text": "So in
+  college, I was a government major, which means I had to write\\na lot of
+  papers."
+        },
+        {
+            "start_time":
+  19.423,
+            "duration":
+  4.445000000000004,
+            "text": "Now,
+  when a normal student writes a paper, they might spread the work out\\\na
+  little like this."
+        },
+        {
+            "start_time":
+  23.892,
+            "duration":
+  10.710999999999995,
+            "text": "So, you
+  know -- (Laughter) you get started maybe a little slowly, but you get enough
+  done in the first week that, with some heavier days later on, everything gets
+  done, things stay civil."
+        },
+        {
+            "start_time":
+  34.627,
+            "duration":
+  3.497,
+            "text":
+  "(Laughter) And I would want to do that like that."
+        },
+        {
+            "start_time":
+  38.148,
+            "duration":
+  1.1940000000000026,
+            "text": "That
+  would be the plan."
+        },
+        {
+            "start_time":
+  39.366,
+            "duration":
+  6.973000000000006,
+            "text": "I
+  would have it all ready to go, but then, actually, the paper\\nwould come
+  along, and then I would kind of do this."
+        },
+        {
+            "start_time":
+  46.363,
+            "duration":
+  4.536999999999999,
+            "text":
+  "(Laughter) And that would happen every single paper."
+        },
+        {
+            "start_time":
+  51.638,
+            "duration":
+  6.192999999999998,
+            "text": "But
+  then came my 90-page senior thesis, a paper you're supposed\\nto spend a year
+  on."
+        },
+        {
+            "start_time":
+  57.855,
+            "duration":
+  3.6189999999999998,
+            "text": "And I
+  knew for a paper like that,\\nmy normal work flow was not an
+  option."
+        },
+        {
+            "start_time":
+  61.498,
+            "duration":
+  1.4010000000000034,
+            "text": "It
+  was way too big a project."
+        },
+        {
+            "start_time":
+  62.923,
+            "duration":
+  4.381999999999991,
+            "text": "So I
+  planned things out, and I decided I kind of had\\nto go something like
+  this."
+        },
+        {
+            "start_time":
+  67.781,
+            "duration":
+  1.4519999999999982,
+            "text": "This
+  is how the year would go."
+        },
+        {
+            "start_time":
+  69.257,
+            "duration":
+  8.421999999999997,
+            "text": "So
+  I'd start off light, and I'd bump it up in the middle months, and then at the
+  end,\\nI would kick it up into high gear just like a little
+  staircase."
+        },
+        {
+            "start_time":
+  77.703,
+            "duration":
+  2.0619999999999976,
+            "text": "How
+  hard could it be\\nto walk up the stairs?"
+        },
+        {
+            "start_time":
+  80.233,
+            "duration":
+  1.3190000000000026,
+            "text": "No
+  big deal, right?"
+        },
+        {
+            "start_time":
+  83.09,
+            "duration":
+  1.8100000000000023,
+            "text": "But then,
+  the funniest thing happened."
+        },
+        {
+            "start_time":
+  84.924,
+            "duration":
+  1.311000000000007,
+            "text": "Those
+  first few months?"
+        },
+        {
+            "start_time":
+  86.791,
+            "duration":
+  2.7759999999999962,
+            "text": "They
+  came and went, and I couldn't quite do stuff."
+        },
+        {
+            "start_time":
+  89.591,
+            "duration":
+  1.8490000000000038,
+            "text": "So we
+  had an awesome new revised plan."
+        },
+        {
+            "start_time":
+  91.464,
+            "duration":
+  11.12899999999999,
+            "text":
+  "(Laughter) And then -- (Laughter) But then those middle
+  months\\nactually went by, and I didn't really write words, and so we were
+  here."
+        },
+        {
+            "start_time":
+  103.5,
+            "duration":
+  4.224999999999994,
+            "text": "And
+  then two months turned into one month, which turned into two
+  weeks."
+        },
+        {
+            "start_time":
+  107.749,
+            "duration":
+  24.207000000000022,
+            "text": "And
+  one day I woke up with three days until the deadline, still not having
+  written a word, and so I did the only thing I could: I wrote 90 pages over 72
+  hours, pulling not one but two all-nighters -- humans are not supposed to
+  pull\\ntwo all-nighters -- sprinted across campus, dove in slow motion, and
+  got it in just at the deadline."
+        },
+        {
+            "start_time":
+  131.98,
+            "duration":
+  2.024000000000001,
+            "text": "I
+  thought that was the end of everything."
+        },
+        {
+            "start_time":
+  134.028,
+            "duration":
+  3.0689999999999884,
+            "text": "But a
+  week later I get a call, and it's the school."
+        },
+        {
+            "start_time":
+  137.757,
+            "duration":
+  1.63900000000001,
+            "text": "And
+  they say, \"Is this Tim Urban?\""
+        },
+        {
+            "start_time":
+  139.42,
+            "duration":
+  1.4679999999999893,
+            "text": "And I
+  say, \"Yeah.\""
+        },
+        {
+            "start_time":
+  140.912,
+            "duration":
+  2.3400000000000034,
+            "text": "And
+  they say, \"We need\\nto talk about your thesis.\""
+        },
+        {
+            "start_time":
+  143.276,
+            "duration":
+  1.2549999999999955,
+            "text": "And I
+  say, \"OK.\""
+        },
+        {
+            "start_time":
+  145.468,
+            "duration":
+  3.657999999999987,
+            "text": "And
+  they say, \"It's the best one we've ever seen.\""
+        },
+        {
+            "start_time":
+  149.15,
+            "duration":
+  9.09699999999998,
+            "text":
+  "(Laughter) (Applause) That did not happen."
+        },
+        {
+            "start_time":
+  158.271,
+            "duration":
+  4.784999999999997,
+            "text":
+  "(Laughter) It was a very, very bad thesis."
+        },
+        {
+            "start_time":
+  163.08,
+            "duration":
+  8.326999999999998,
+            "text":
+  "(Laughter) I just wanted to enjoy that one moment\\nwhen all of you
+  thought, \"This guy is amazing!\""
+        },
+        {
+            "start_time":
+  171.431,
+            "duration":
+  3.0389999999999873,
+            "text":
+  "(Laughter) No, no, it was very, very bad."
+        },
+        {
+            "start_time":
+  175.343,
+            "duration":
+  3.407999999999987,
+            "text": "Anyway,
+  today I'm a writer-blogger guy."
+        },
+        {
+            "start_time":
+  178.775,
+            "duration":
+  1.742999999999995,
+            "text": "I
+  write the blog Wait But Why."
+        },
+        {
+            "start_time":
+  180.542,
+            "duration":
+  3.73599999999999,
+            "text": "And a
+  couple of years ago,\\nI decided to write about procrastination."
+        },
+        {
+            "start_time":
+  184.302,
+            "duration":
+  10.591000000000008,
+            "text": "My
+  behavior has always perplexed\\nthe non-procrastinators around me, and I
+  wanted to explain\\nto the non-procrastinators of the world what goes on in
+  the heads\\nof procrastinators, and why we are the way we are."
+        },
+        {
+            "start_time":
+  194.917,
+            "duration":
+  6.015999999999991,
+            "text": "Now,
+  I had a hypothesis that the brains of procrastinators\\nwere actually
+  different than the brains of other people."
+        },
+        {
+            "start_time":
+  201.698,
+            "duration":
+  8.784999999999997,
+            "text": "And
+  to test this, I found an MRI lab that actually let me scan both my brain and
+  the brain of a proven\\nnon-procrastinator, so I could compare them."
+        },
+        {
+            "start_time":
+  210.507,
+            "duration":
+  2.2009999999999934,
+            "text": "I
+  actually brought them here\\nto show you today."
+        },
+        {
+            "start_time":
+  212.732,
+            "duration":
+  3.537000000000006,
+            "text": "I
+  want you to take a look carefully\\nto see if you can notice a
+  difference."
+        },
+        {
+            "start_time":
+  216.293,
+            "duration":
+  4.600999999999999,
+            "text": "I
+  know that if you're not\\na trained brain expert, it's not that
+  obvious,\\nbut just take a look, OK?"
+        },
+        {
+            "start_time":
+  220.918,
+            "duration":
+  2.127999999999986,
+            "text": "So here's
+  the brain\\nof a non-procrastinator."
+        },
+        {
+            "start_time":
+  223.835,
+            "duration":
+  3.4490000000000123,
+            "text":
+  "(Laughter) Now ..."
+        },
+        {
+            "start_time":
+  228.325,
+            "duration":
+  1.313999999999993,
+            "text":
+  "here's my brain."
+        },
+        {
+            "start_time":
+  230.28,
+            "duration":
+  6.996999999999986,
+            "text":
+  "(Laughter) There is a difference."
+        },
+        {
+            "start_time":
+  237.904,
+            "duration":
+  7.073999999999984,
+            "text": "Both
+  brains have a Rational\\nDecision-Maker in them, but the procrastinator's
+  brain also has an Instant Gratification Monkey."
+        },
+        {
+            "start_time":
+  245.002,
+            "duration":
+  2.3019999999999925,
+            "text": "Now,
+  what does this mean\\nfor the procrastinator?"
+        },
+        {
+            "start_time":
+  247.328,
+            "duration":
+  2.4410000000000025,
+            "text": "Well,
+  it means everything's fine\\nuntil this happens."
+        },
+        {
+            "start_time":
+  249.793,
+            "duration":
+  2.622000000000014,
+            "text": "[This
+  is a perfect time\\nto get some work done.] [Nope!]"
+        },
+        {
+            "start_time":
+  252.439,
+            "duration":
+  15.57899999999998,
+            "text": "So
+  the Rational Decision-Maker\\nwill make the rational decision to do something
+  productive, but the Monkey doesn't like that plan, so he actually takes the
+  wheel, and he says, \"Actually, let's read\\nthe entire Wikipedia page
+  of the Nancy Kerrigan/\\nTonya Harding scandal, because I just
+  remembered\\nthat that happened."
+        },
+        {
+            "start_time":
+  268.042,
+            "duration":
+  8.437000000000012,
+            "text":
+  "(Laughter) Then -- (Laughter) Then we're going to go over to the
+  fridge, to see if there's anything new\\nin there since 10 minutes
+  ago."
+        },
+        {
+            "start_time":
+  276.503,
+            "duration":
+  10.555999999999983,
+            "text": "After
+  that, we're going to go\\non a YouTube spiral that starts with videos\\nof
+  Richard Feynman talking about magnets and ends much, much later\\nwith us
+  watching interviews with Justin Bieber's mom."
+        },
+        {
+            "start_time":
+  287.083,
+            "duration":
+  7.500999999999976,
+            "text":
+  "(Laughter) \"All of that's going to take a while, so we're not
+  going to really have room\\non the schedule for any work today."
+        },
+        {
+            "start_time":
+  294.608,
+            "duration":
+  1.163000000000011,
+            "text":
+  "Sorry!\""
+        },
+        {
+            "start_time":
+  295.795,
+            "duration":
+  5.899000000000001,
+            "text": "(Sigh)
+  Now, what is going on here?"
+        },
+        {
+            "start_time":
+  303.481,
+            "duration":
+  3.969000000000051,
+            "text": "The
+  Instant Gratification Monkey\\ndoes not seem like a guy you want behind the
+  wheel."
+        },
+        {
+            "start_time":
+  307.474,
+            "duration":
+  1.9449999999999932,
+            "text": "He
+  lives entirely in the present moment."
+        },
+        {
+            "start_time":
+  309.443,
+            "duration":
+  6.256000000000029,
+            "text": "He
+  has no memory of the past,\\nno knowledge of the future, and he only cares
+  about two things: easy and fun."
+        },
+        {
+            "start_time":
+  316.338,
+            "duration":
+  3.0919999999999845,
+            "text": "Now,
+  in the animal world, that works fine."
+        },
+        {
+            "start_time":
+  319.454,
+            "duration":
+  5.992000000000019,
+            "text": "If you're
+  a dog and you spend your whole life doing\\nnothing other than easy and fun
+  things, you're a huge success!"
+        },
+        {
+            "start_time":
+  325.47,
+            "duration":
+  6.592999999999961,
+            "text": "(Laughter)
+  And to the Monkey, humans are just another animal species."
+        },
+        {
+            "start_time": 332.087,
+            "duration":
+  6.816000000000031,
+            "text": "You
+  have to keep well-slept, well-fed\\nand propagating into the next generation,
+  which in tribal times\\nmight have worked OK."
+        },
+        {
+            "start_time":
+  338.927,
+            "duration":
+  2.8500000000000227,
+            "text": "But,
+  if you haven't noticed,\\nnow we're not in tribal times."
+        },
+        {
+            "start_time":
+  341.801,
+            "duration":
+  4.132999999999981,
+            "text": "We're
+  in an advanced civilization,\\nand the Monkey does not know what that
+  is."
+        },
+        {
+            "start_time":
+  345.958,
+            "duration":
+  7.720999999999947,
+            "text": "Which
+  is why we have\\nanother guy in our brain, the Rational Decision-Maker, who
+  gives us the ability to do things\\nno other animal can do."
+        },
+        {
+            "start_time":
+  353.703,
+            "duration":
+  1.9209999999999923,
+            "text": "We
+  can visualize the future."
+        },
+        {
+            "start_time":
+  355.648,
+            "duration":
+  1.7520000000000095,
+            "text": "We can
+  see the big picture."
+        },
+        {
+            "start_time":
+  357.424,
+            "duration":
+  1.3500000000000227,
+            "text": "We
+  can make long-term plans."
+        },
+        {
+            "start_time":
+  358.798,
+            "duration":
+  2.483000000000004,
+            "text": "And
+  he wants to take\\nall of that into account."
+        },
+        {
+            "start_time":
+  362.138,
+            "duration":
+  4.663000000000011,
+            "text": "And he
+  wants to just have us do whatever makes sense\\nto be doing right
+  now."
+        },
+        {
+            "start_time":
+  366.825,
+            "duration":
+  7.468999999999994,
+            "text": "Now,
+  sometimes it makes sense to be doing things that are easy and fun, like when
+  you're having dinner\\nor going to bed or enjoying well-earned leisure
+  time."
+        },
+        {
+            "start_time":
+  374.318,
+            "duration":
+  1.4499999999999886,
+            "text":
+  "That's why there's an overlap."
+        },
+        {
+            "start_time":
+  375.792,
+            "duration":
+  1.7440000000000282,
+            "text":
+  "Sometimes they agree."
+        },
+        {
+            "start_time":
+  377.56,
+            "duration":
+  8.012,
+            "text": "But
+  other times, it makes much more sense to be doing things that are
+  harder\\nand less pleasant, for the sake of the big picture."
+        },
+        {
+            "start_time":
+  385.596,
+            "duration":
+  1.88900000000001,
+            "text": "And that's
+  when we have a conflict."
+        },
+        {
+            "start_time":
+  388.017,
+            "duration":
+  11.942999999999984,
+            "text": "And
+  for the procrastinator, that conflict tends to end\\na certain way every
+  time, leaving him spending a lot of time\\nin this orange zone, an easy and
+  fun place that's entirely\\nout of the Makes Sense circle."
+        },
+        {
+            "start_time":
+  399.984,
+            "duration":
+  2.2789999999999964,
+            "text": "I call
+  it the Dark Playground."
+        },
+        {
+            "start_time":
+  402.287,
+            "duration":
+  7.992000000000019,
+            "text":
+  "(Laughter) Now, the Dark Playground is a place that all of you
+  procrastinators\\nout there know very well."
+        },
+        {
+            "start_time":
+  410.892,
+            "duration":
+  5.138000000000034,
+            "text": "It's
+  where leisure activities happen at times when leisure activities\\nare not
+  supposed to be happening."
+        },
+        {
+            "start_time":
+  416.418,
+            "duration":
+  9.777999999999963,
+            "text": "The
+  fun you have in the Dark Playground isn't actually fun,\\nbecause it's
+  completely unearned, and the air is filled with guilt,\\ndread, anxiety, self-hatred
+  -- all of those good procrastinator feelings."
+        },
+        {
+            "start_time":
+  426.703,
+            "duration":
+  10.398000000000025,
+            "text": "And
+  the question is, in this situation,\\nwith the Monkey behind the wheel, how does
+  the procrastinator ever get\\nhimself over here to this blue zone, a less
+  pleasant place, but where\\nreally important things happen?"
+        },
+        {
+            "start_time":
+  437.125,
+            "duration":
+  11.842000000000041,
+            "text": "Well,
+  turns out the procrastinator\\nhas a guardian angel, someone who's always
+  looking\\ndown on him and watching over him in his darkest moments -- someone
+  called the Panic Monster."
+        },
+        {
+            "start_time":
+  448.991,
+            "duration":
+  18.785000000000025,
+            "text":
+  "(Laughter) Now, the Panic Monster\\nis dormant most of the time, but he
+  suddenly wakes up\\nanytime a deadline gets too close or there's danger of
+  public embarrassment, a career disaster or some other\\nscary
+  consequence."
+        },
+        {
+            "start_time":
+  467.8,
+            "duration":
+  4.1720000000000255,
+            "text": "And
+  importantly, he's the only thing\\nthe Monkey is terrified of."
+        },
+        {
+            "start_time":
+  471.996,
+            "duration":
+  9.893000000000029,
+            "text": "Now,
+  he became very relevant\\nin my life pretty recently, because the people of
+  TED\\nreached out to me about six months ago and invited me to do a TED
+  Talk."
+        },
+        {
+            "start_time":
+  481.913,
+            "duration":
+  7.051999999999964,
+            "text":
+  "(Laughter) Now, of course, I said yes."
+        },
+        {
+            "start_time":
+  488.989,
+            "duration":
+  3.805000000000007,
+            "text": "It's
+  always been a dream of mine\\nto have done a TED Talk in the
+  past."
+        },
+        {
+            "start_time":
+  492.818,
+            "duration":
+  16.67900000000003,
+            "text": "(Laughter)
+  (Applause) But in the middle of all this excitement, the Rational
+  Decision-Maker seemed\\nto have something else on his mind."
+        },
+        {
+            "start_time":
+  509.521,
+            "duration":
+  2.547999999999945,
+            "text": "He
+  was saying, \"Are we clear\\non what we just accepted?"
+        },
+        {
+            "start_time":
+  512.093,
+            "duration":
+  3.2490000000000236,
+            "text": "Do we
+  get what's going to be now\\nhappening one day in the future?"
+        },
+        {
+            "start_time":
+  515.366,
+            "duration":
+  2.2670000000000528,
+            "text": "We
+  need to sit down\\nand work on this right now.\""
+        },
+        {
+            "start_time":
+  517.657,
+            "duration":
+  12.09599999999989,
+            "text": "And
+  the Monkey said, \"Totally agree,\\nbut let's just open Google Earth and
+  zoom in to the bottom of India,\\nlike 200 feet above the ground, and scroll
+  up for two and a half hours\\ntil we get to the top of the country, so we can
+  get a better feel for India.\""
+        },
+        {
+            "start_time":
+  529.777,
+            "duration":
+  6.856999999999971,
+            "text":
+  "(Laughter) So that's what we did that day."
+        },
+        {
+            "start_time":
+  536.658,
+            "duration":
+  10.961000000000013,
+            "text":
+  "(Laughter) As six months turned into four\\nand then two and then one,
+  the people of TED decided\\nto release the speakers."
+        },
+        {
+            "start_time":
+  547.643,
+            "duration":
+  3.991999999999962,
+            "text": "And I
+  opened up the website,\\nand there was my face staring right back at
+  me."
+        },
+        {
+            "start_time":
+  551.659,
+            "duration":
+  1.6000000000000227,
+            "text": "And
+  guess who woke up?"
+        },
+        {
+            "start_time":
+  553.283,
+            "duration":
+  9.366999999999962,
+            "text":
+  "(Laughter) So the Panic Monster\\nstarts losing his mind, and a few
+  seconds later,\\nthe whole system's in mayhem."
+        },
+        {
+            "start_time":
+  562.674,
+            "duration":
+  9.120000000000005,
+            "text":
+  "(Laughter) And the Monkey -- remember,\\nhe's terrified of the Panic
+  Monster -- boom, he's up the tree!"
+        },
+        {
+            "start_time":
+  571.818,
+            "duration":
+  5.513000000000034,
+            "text": "And
+  finally, finally, the Rational Decision-Maker\\ncan take the wheel and I can
+  start working on the talk."
+        },
+        {
+            "start_time":
+  577.355,
+            "duration":
+  17.93399999999997,
+            "text": "Now,
+  the Panic Monster explains all kinds of pretty insane\\nprocrastinator
+  behavior, like how someone like me\\ncould spend two weeks unable to start
+  the opening\\nsentence of a paper, and then miraculously find\\nthe
+  unbelievable work ethic to stay up all night\\nand write eight
+  pages."
+        },
+        {
+            "start_time":
+  596.385,
+            "duration":
+  5.025999999999954,
+            "text": "And
+  this entire situation,\\nwith the three characters -- this is the
+  procrastinator's system."
+        },
+        {
+            "start_time":
+  602.096,
+            "duration":
+  3.4249999999999545,
+            "text": "It's
+  not pretty, but in the end, it works."
+        },
+        {
+            "start_time":
+  605.545,
+            "duration":
+  4.062000000000012,
+            "text": "This
+  is what I decided to write about\\non the blog a couple of years
+  ago."
+        },
+        {
+            "start_time":
+  609.631,
+            "duration":
+  2.9710000000000036,
+            "text": "When
+  I did, I was amazed by the response."
+        },
+        {
+            "start_time":
+  612.626,
+            "duration":
+  6.716000000000122,
+            "text":
+  "Literally thousands of emails came in, from all different kinds of
+  people\\nfrom all over the world, doing all different kinds of things."
+        },
+        {
+            "start_time":
+  619.366,
+            "duration":
+  5.312000000000012,
+            "text": "These
+  are people who were nurses,\\nbankers, painters, engineers and lots and lots
+  of PhD students."
+        },
+        {
+            "start_time":
+  624.702,
+            "duration":
+  6.288999999999987,
+            "text":
+  "(Laughter) And they were all writing,\\nsaying the same thing: \"I
+  have this problem too.\""
+        },
+        {
+            "start_time":
+  631.015,
+            "duration":
+  5.948000000000093,
+            "text": "But
+  what struck me was the contrast\\nbetween the light tone of the post and the
+  heaviness of these emails."
+        },
+        {
+            "start_time":
+  636.987,
+            "duration":
+  7.923000000000002,
+            "text": "These
+  people were writing\\nwith intense frustration about what
+  procrastination\\nhad done to their lives, about what this Monkey had done to
+  them."
+        },
+        {
+            "start_time":
+  646.902,
+            "duration":
+  6.101999999999975,
+            "text": "And I
+  thought about this, and I said, well, if the procrastinator's system\\nworks,
+  then what's going on?"
+        },
+        {
+            "start_time":
+  653.028,
+            "duration":
+  2.48599999999999,
+            "text": "Why
+  are all of these people\\nin such a dark place?"
+        },
+        {
+            "start_time":
+  655.538,
+            "duration":
+  3.298000000000002,
+            "text": "Well,
+  it turns out that there's\\ntwo kinds of procrastination."
+        },
+        {
+            "start_time":
+  659.987,
+            "duration":
+  4.0090000000000146,
+            "text":
+  "Everything I've talked about today,\\nthe examples I've given, they all
+  have deadlines."
+        },
+        {
+            "start_time":
+  664.02,
+            "duration":
+  6.184000000000083,
+            "text": "And
+  when there's deadlines, the effects of procrastination\\nare contained to the
+  short term because the Panic Monster gets involved."
+        },
+        {
+            "start_time":
+  670.228,
+            "duration":
+  4.565000000000055,
+            "text": "But
+  there's a second kind\\nof procrastination that happens in situations\\nwhen
+  there is no deadline."
+        },
+        {
+            "start_time":
+  674.817,
+            "duration":
+  12.593999999999937,
+            "text": "So if
+  you wanted a career\\nwhere you're a self-starter -- something in the
+  arts,\\nsomething entrepreneurial -- there's no deadlines on those
+  things\\nat first, because nothing's happening, not until you've gone
+  out\\nand done the hard work to get momentum, get things going."
+        },
+        {
+            "start_time":
+  687.435,
+            "duration":
+  12.129000000000133,
+            "text":
+  "There's also all kinds of important things\\noutside of your career
+  that don't involve any deadlines, like seeing your family or exercising\\nand
+  taking care of your health, working on your relationship or getting out of a
+  relationship\\nthat isn't working."
+        },
+        {
+            "start_time":
+  699.588,
+            "duration":
+  11.53300000000013,
+            "text": "Now
+  if the procrastinator's only mechanism\\nof doing these hard things is the
+  Panic Monster, that's a problem, because in all of these\\nnon-deadline
+  situations, the Panic Monster doesn't show up."
+        },
+        {
+            "start_time":
+  711.145,
+            "duration":
+  5.937999999999988,
+            "text": "He
+  has nothing to wake up for, so the effects of procrastination,\\nthey're not
+  contained; they just extend outward forever."
+        },
+        {
+            "start_time":
+  717.953,
+            "duration":
+  8.769999999999982,
+            "text": "And
+  it's this long-term\\nkind of procrastination that's much less visible\\nand
+  much less talked about than the funnier, short-term\\ndeadline-based
+  kind."
+        },
+        {
+            "start_time":
+  726.747,
+            "duration":
+  3.102999999999952,
+            "text": "It's
+  usually suffered\\nquietly and privately."
+        },
+        {
+            "start_time":
+  730.816,
+            "duration":
+  4.913000000000011,
+            "text": "And
+  it can be the source of a huge amount of long-term\\nunhappiness, and
+  regrets."
+        },
+        {
+            "start_time":
+  736.576,
+            "duration":
+  5.397999999999911,
+            "text": "And I
+  thought, that's why\\nthose people are emailing, and that's why they're\\nin
+  such a bad place."
+        },
+        {
+            "start_time":
+  741.998,
+            "duration":
+  2.744000000000028,
+            "text": "It's
+  not that they're cramming\\nfor some project."
+        },
+        {
+            "start_time":
+  744.766,
+            "duration":
+  5.484000000000037,
+            "text": "It's
+  that long-term procrastination\\nhas made them feel like a spectator, at
+  times, in their own lives."
+        },
+        {
+            "start_time":
+  750.594,
+            "duration":
+  6.095000000000027,
+            "text": "The
+  frustration is not\\nthat they couldn't achieve their dreams; it's that they
+  weren't even\\nable to start chasing them."
+        },
+        {
+            "start_time":
+  756.713,
+            "duration":
+  8.869000000000028,
+            "text": "So I
+  read these emails\\nand I had a little bit of an epiphany -- that I don't
+  think\\nnon-procrastinators exist."
+        },
+        {
+            "start_time":
+  765.979,
+            "duration":
+  3.23599999999999,
+            "text":
+  "That's right -- I think all of you\\nare procrastinators."
+        },
+        {
+            "start_time":
+  769.898,
+            "duration":
+  12.592999999999961,
+            "text": "Now,
+  you might not all be a mess, like some of us, (Laughter) and some of you may
+  have\\na healthy relationship with deadlines, but remember: the Monkey's
+  sneakiest trick is when the deadlines aren't there."
+        },
+        {
+            "start_time":
+  783.249,
+            "duration":
+  2.032000000000039,
+            "text": "Now,
+  I want to show you one last thing."
+        },
+        {
+            "start_time":
+  785.305,
+            "duration":
+  2.3730000000000473,
+            "text": "I
+  call this a Life Calendar."
+        },
+        {
+            "start_time":
+  788.352,
+            "duration":
+  4.278999999999996,
+            "text": "That's
+  one box for every week\\nof a 90-year life."
+        },
+        {
+            "start_time":
+  793.345,
+            "duration":
+  4.586999999999989,
+            "text":
+  "That's not that many boxes, especially since we've already\\nused a
+  bunch of those."
+        },
+        {
+            "start_time":
+  798.607,
+            "duration":
+  5.131999999999948,
+            "text": "So I
+  think we need to all take a long,\\nhard look at that calendar."
+        },
+        {
+            "start_time":
+  804.977,
+            "duration":
+  6.402000000000044,
+            "text": "We
+  need to think about what\\nwe're really procrastinating on, because everyone
+  is procrastinating\\non something in life."
+        },
+        {
+            "start_time":
+  812.782,
+            "duration":
+  3.0299999999999727,
+            "text": "We
+  need to stay aware\\nof the Instant Gratification Monkey."
+        },
+        {
+            "start_time":
+  817.455,
+            "duration":
+  2.491999999999962,
+            "text": "That's
+  a job for all of us."
+        },
+        {
+            "start_time":
+  820.669,
+            "duration":
+  4.614000000000033,
+            "text": "And
+  because there's not\\nthat many boxes on there, it's a job that
+  should\\nprobably start today."
+        },
+        {
+            "start_time":
+  825.307,
+            "duration":
+  3.0,
+            "text": "Well,
+  maybe not today, but ..."
+        },
+        {
+            "start_time":
+  828.331,
+            "duration":
+  2.814999999999941,
+            "text": "(Laughter)
+  You know."
+        },
+        {
+            "start_time":
+  831.576,
+            "duration":
+  1.1499999999999773,
+            "text":
+  "Sometime soon."
+        },
+        {
+            "start_time":
+  833.393,
+            "duration":
+  1.2089999999999463,
+            "text": "Thank
+  you."
+        },
+        {
+            "start_time":
+  834.626,
+            "duration":
+  7.998000000000047,
+            "text":
+  "(Applause)"
+        }
+    ]
