@@ -41,3 +41,13 @@ out/
 !/data/mysql-data/**
 
 !/set.env
+/src/main/resources/application.yml
+/src/main/resources/yml/**
+/src/main/resources/yml/logging/**
+/data/mysql-data/*
+/gradle/wrapper/*
+/gradlew
+/gradlew.bat
+/set.env
+/mongodb/*
+docker-compose.yml

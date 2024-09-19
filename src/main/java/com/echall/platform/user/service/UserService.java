@@ -2,9 +2,7 @@ package com.echall.platform.user.service;
 
 import org.springframework.stereotype.Service;
 
-import com.echall.platform.exception.common.ApiErrorCategory;
-import com.echall.platform.exception.user.ApiUserErrorSubCategory;
-import com.echall.platform.exception.user.ApiUserException;
+import com.echall.platform.exception.user.UserNotFoundException;
 import com.echall.platform.user.domain.dto.UserRequestDto;
 import com.echall.platform.user.domain.dto.UserResponseDto;
 import com.echall.platform.user.domain.entity.UserEntity;
@@ -26,7 +24,7 @@ public class UserService {
 		AssertThat_UserAccountIsAppropriate(user);
 
 		// set additional info when user created
-		if(user.getUserStatus() == UserStatus.USER_STATUS_CREATED){
+		if (user.getUserStatus() == UserStatus.USER_STATUS_CREATED) {
 			user.setUserInitialInfo(userUpdateRequest);
 		}
 		// update user info
@@ -51,15 +49,11 @@ public class UserService {
 	public UserEntity getUserById(Long userId) {
 		UserEntity user = userRepository.findById(userId)
 			.orElseThrow(
-				() -> ApiUserException.builder()
-					.category(ApiErrorCategory.RESOURCE_BAD_REQUEST)
-					.subCategory(ApiUserErrorSubCategory.USER_NOT_FOUND)
-					.build()
+				() -> new UserNotFoundException(userId.toString())
 			);
 		AssertThat_UserAccountIsAppropriate(user);
 		return user;
 	}
-
 
 	// Internal Methods=================================================================================================
 	public UserEntity getUserByEmail(String email) {
