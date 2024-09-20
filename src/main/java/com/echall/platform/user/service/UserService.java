@@ -61,7 +61,7 @@ public class UserService {
 			.orElseThrow(() -> new RuntimeException("User not found"));
 	}
 
-	private void AssertThat_UserAccountIsAppropriate(UserEntity user) {
+	protected void AssertThat_UserAccountIsAppropriate(UserEntity user) {
 		if (user.getUserStatus().equals(UserStatus.USER_STATUS_DEACTIVATED)) {
 			throw new RuntimeException("User deactivated");
 		}
