@@ -14,7 +14,9 @@ public class NaverUserInfo implements OAuth2UserInfo {
 
 	@Override
 	public String getProviderId() {
-		return String.valueOf(this.naverAccount.get("id"));
+		LinkedHashMap<String, Object> accountInfo = (LinkedHashMap<String, Object>) naverAccount.get("response");
+
+		return String.valueOf(accountInfo.get("id"));
 	}
 
 	@Override
@@ -30,7 +32,8 @@ public class NaverUserInfo implements OAuth2UserInfo {
 
 	@Override
 	public String getUsername() {
-		return String.valueOf(naverAccount.get("username"));
+		LinkedHashMap<String, Object> accountInfo = (LinkedHashMap<String, Object>)naverAccount.get("response");
+		return String.valueOf(accountInfo.get("name"));
 	}
 
 }
