@@ -1,5 +1,7 @@
 package com.echall.platform.oauth2.service;
 
+import java.util.Map;
+
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.oauth2.client.userinfo.DefaultOAuth2UserService;
@@ -39,8 +41,29 @@ public class OAuth2UserCustomService extends DefaultOAuth2UserService {
 	}
 
 	private void saveOrUpdate(OAuth2User oAuth2User, String provider) {
-		OAuth2UserInfo oAuth2UserInfo = null;
+		OAuth2UserInfo oAuth2UserInfo = verifyProvider(oAuth2User, provider);
 
+		String username = oAuth2UserInfo.getUsername();
+		String email = oAuth2UserInfo.getEmail();
+
+		UserEntity user = userRepository.findByEmail(email)
+			.map(entity -> entity.updateUsername(username))
+			.orElse(UserEntity.builder()
+				.username(username)
+				.nickname(RandomNicknameGenerator.setRandomNickname())
+				.password(passwordEncoder.encode(JWT_SECRET_KEY))
+				.email(email)
+				.role(Role.ROLE_USER)
+				.userStatus(UserStatus.USER_STATUS_CREATED)
+				.provider(provider)
+				.providerId(oAuth2UserInfo.getProviderId())
+				.build());
+
+		userRepository.save(user);
+	}
+
+	private OAuth2UserInfo verifyProvider(OAuth2User oAuth2User, String provider) {
+		OAuth2UserInfo oAuth2UserInfo = null;
 		if (provider.equals("google")) {
 			oAuth2UserInfo = new GoogleUserInfo(oAuth2User.getAttributes());
 		}
@@ -51,26 +74,8 @@ public class OAuth2UserCustomService extends DefaultOAuth2UserService {
 			oAuth2UserInfo = new NaverUserInfo(oAuth2User.getAttributes());
 		}
 
-		// String provider = oAuth2UserInfo.getProvider(); //google
-		String providerId = oAuth2UserInfo.getProviderId(); //googleId
-		String username = oAuth2UserInfo.getUsername();
-		String email = oAuth2UserInfo.getEmail();
-		String password = passwordEncoder.encode(JWT_SECRET_KEY);
-		String nickname = RandomNicknameGenerator.setRandomNickname();
+		assert oAuth2UserInfo != null;
 
-		UserEntity user = userRepository.findByEmail(email)
-			.map(entity -> entity.updateUsername(username))
-			.orElse(UserEntity.builder()
-				.username(username)
-				.nickname(nickname)
-				.password(password)
-				.email(email)
-				.role(Role.ROLE_USER)
-				.userStatus(UserStatus.USER_STATUS_CREATED)
-				.provider(provider)
-				.providerId(providerId)
-				.build());
-
-		userRepository.save(user);
+		return oAuth2UserInfo;
 	}
 }

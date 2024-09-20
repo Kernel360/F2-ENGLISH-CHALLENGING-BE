@@ -3,31 +3,30 @@ package com.echall.platform.config;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+import io.swagger.v3.oas.models.Components;
+import io.swagger.v3.oas.models.OpenAPI;
 import io.swagger.v3.oas.models.info.Info;
+import io.swagger.v3.oas.models.security.SecurityRequirement;
+import io.swagger.v3.oas.models.security.SecurityScheme;
 
 @Configuration
 public class SwaggerConfig {
 	// JWT
-	/*@Bean
+	@Bean
 	public OpenAPI openAPI() {
-		String jwt = "JWT";
-		SecurityRequirement securityRequirement = new SecurityRequirement().addList(jwt);
-		Components components = new Components().addSecuritySchemes(jwt, new SecurityScheme()
-			.name(jwt)
-			.type(SecurityScheme.Type.HTTP)
-			.scheme("bearer")
+		return new OpenAPI().addSecurityItem(new SecurityRequirement().addList("JWT"))
+			.components(new Components().addSecuritySchemes("JWT", createAPIKeyScheme()))
+			.info(apiInfo());
+	}
+	private SecurityScheme createAPIKeyScheme() {
+		return new SecurityScheme().type(SecurityScheme.Type.HTTP)
 			.bearerFormat("JWT")
-		);
-		return new OpenAPI()
-			.components(new Components())
-			.info(apiInfo())
-			.addSecurityItem(securityRequirement)
-			.components(components);
-	}*/
+			.scheme("bearer");
+	}
 	private Info apiInfo() {
 		return new Info()
-			.title("API Test") // API의 제목
-			.description("Let's practice Swagger UI") // API에 대한 설명
-			.version("1.0.0"); // API의 버전
+			.title("API Test") // API Title
+			.description("Swagger UI for English Challenge Platform") // API Description
+			.version("1.0.0"); // API Version
 	}
 }
