@@ -3,7 +3,7 @@ run-name: Running
 on:
   push:
     branches:
-      - master
+      - deploy
 
 env:
   AWS_REGION: ap-northeast-2
