@@ -1,40 +1,40 @@
-name: Deploy to EC2
-
+name: CICD Test
+run-name: Running
 on:
   push:
     branches:
-      - deploy  # 병합할 브랜치 이름 (예: main)
+      - master
+
+env:
+  AWS_REGION: ap-northeast-2
+  AWS_S3_BUCKET: hellospringbucket
+  AWS_CODE_DEPLOY_APPLICATION: cicd-test-CD
+  AWS_CODE_DEPLOY_GROUP: cicd-test-CD-group
 
 jobs:
-  deploy:
-    runs-on: ubuntu-latest
-
+  build-with-gradle:
+    runs-on: ubuntu-20.04
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v2
-
-      - name: Set up JDK 17
-        uses: actions/setup-java@v2
-        with:
-          java-version: '17'
-
-      - name: Build with Gradle
-        run: ./gradlew build
-
-      - name: Copy JAR to EC2
-        env:
-          KEY_PATH: ${{ secrets.KEY_PATH }}
-          EC2_USER: ${{ secrets.EC2_USER }}
-          EC2_HOST: ${{ secrets.EC2_HOST }}
-        run: |
-          scp -o StrictHostKeyChecking=no -i "$KEY_PATH" build/libs/*.jar $EC2_USER@$EC2_HOST:/home/$EC2_USER/
-
-      - name: Restart application on EC2
-        env:
-          EC2_USER: ${{ secrets.EC2_USER }}
-          EC2_HOST: ${{ secrets.EC2_HOST }}
-        run: |
-          ssh -o StrictHostKeyChecking=no $EC2_USER@$EC2_HOST << 'EOF'
-          sudo systemctl stop myapp || true
-          sudo systemctl start myapp
-          EOF
+    - name: master 브랜치로 이동
+      uses: actions/checkout@v3
+      with:
+        ref: master
+    - name: JDK 17 설치
+      uses: actions/setup-java@v3
+      with:
+        java-version: '17'
+        distribution: 'corretto'
+    - name: gradlew에 실행 권한 부여
+      run: chmod +x ./gradlew
+    - name: 프로젝트 빌드
+      run: ./gradlew clean build -x test
+    - name: AWS credential 설정
+      uses: aws-actions/configure-aws-credentials@v1
+      with:
+        aws-region: ${{ env.AWS_REGION }}
+        aws-access-key-id: ${{ secrets.CICD_ACCESS_KEY }}
+        aws-secret-access-key: ${{ secrets.CICD_SECRET_KEY }}
+    - name: S3에 업로드
+      run: aws deploy push --application-name ${{ env.AWS_CODE_DEPLOY_APPLICATION }} --ignore-hidden-files --s3-location s3://$AWS_S3_BUCKET/cicdtest/$GITHUB_SHA.zip --source .
+    - name: EC2에 배포
+      run: aws deploy create-deployment --application-name ${{ env.AWS_CODE_DEPLOY_APPLICATION }} --deployment-config-name CodeDeployDefault.AllAtOnce --deployment-group-name ${{ env.AWS_CODE_DEPLOY_GROUP }} --s3-location bucket=$AWS_S3_BUCKET,key=cicdtest/$GITHUB_SHA.zip,bundleType=zip
