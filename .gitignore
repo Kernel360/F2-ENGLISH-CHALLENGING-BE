@@ -41,8 +41,7 @@ out/
 !/data/mysql-data/**
 
 !/set.env
-/src/main/resources/application.yml
-/src/main/resources/yml/**
+/src/main/resources/yml/application-prod.yml
 /src/main/resources/yml/logging/**
 /data/mysql-data/*
 /gradle/wrapper/*
