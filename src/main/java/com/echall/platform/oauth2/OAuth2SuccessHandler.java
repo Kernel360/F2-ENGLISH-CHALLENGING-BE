@@ -4,6 +4,7 @@ import static java.lang.Boolean.*;
 
 import java.io.IOException;
 import java.time.Duration;
+import java.util.LinkedHashMap;
 
 import org.springframework.security.core.Authentication;
 import org.springframework.security.oauth2.core.user.OAuth2User;
@@ -40,8 +41,9 @@ public class OAuth2SuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
 		HttpServletRequest request, HttpServletResponse response, Authentication authentication
 	) throws IOException {
 		OAuth2User oAuth2User = (OAuth2User)authentication.getPrincipal();
-		UserEntity user = userService.getUserByEmail(String.valueOf(oAuth2User.getAttributes().get("email")));
-
+		UserEntity user = userService.getUserByEmail(
+			String.valueOf(((LinkedHashMap<String, Object>)oAuth2User.getAttributes().get("response")).get("email"))
+		);
 		String refreshToken = tokenProvider.generateToken(user, REFRESH_TOKEN_EXPIRE);
 		saveRefreshToken(user.getUserId(), refreshToken);
 		addTokenToCookie(request, response, refreshToken, TRUE);
