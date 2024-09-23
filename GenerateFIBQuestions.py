@@ -11,7 +11,12 @@ def get_distractors(word, pos, num_distractors=3):
         for lemma in lemmas:
             name = lemma.name().replace('_', ' ')
             if name.lower() != word.lower():
-                distractors.add(name)
+                # Tokenize and tag the potential distractor to check its POS
+                name_tokens = p.nltk.word_tokenize(name)
+                name_pos_tags = p.nltk.pos_tag(name_tokens)
+                # Ensure it is not a proper noun (NNP or NNPS)
+                if not any(tag.startswith('NNP') for _, tag in name_pos_tags):
+                    distractors.add(name)
             if len(distractors) >= num_distractors:
                 break
     return list(distractors)

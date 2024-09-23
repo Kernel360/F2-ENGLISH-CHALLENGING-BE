@@ -16,22 +16,31 @@ def get_distractors(word, pos, num_distractors=3):
     distractors = set()
     synsets = p.wn.synsets(word, pos=pos)
     if synsets:
+        # Use hypernyms or hyponyms to find related but not synonymous words
+        related_words = set()
         for syn in synsets:
-            for lemma in syn.lemmas():
-                name = lemma.name().replace('_', ' ')
-                if name.lower() != word.lower() and name not in distractors:
-                    distractors.add(name)
-                if len(distractors) >= num_distractors:
-                    break
+            hypernyms = syn.hypernyms()
+            hyponyms = syn.hyponyms()
+            for hypernym in hypernyms:
+                related_words.update(hypernym.lemma_names())
+            for hyponym in hyponyms:
+                related_words.update(hyponym.lemma_names())
+
+        # Filter out the original word and ensure uniqueness
+        for related_word in related_words:
+            name = related_word.replace('_', ' ')
+            if not name.istitle() and name.lower() != word.lower():
+                distractors.add(name)
             if len(distractors) >= num_distractors:
                 break
+
     return list(distractors)
 
 # Function to select key words from a sentence, excluding common words
 def select_keywords(sentence):
     tokens = p.nltk.word_tokenize(sentence)
     pos_tags = p.nltk.pos_tag(tokens)
-    keywords = [word for word, pos in pos_tags if pos.startswith(('NN', 'VB', 'JJ')) and word.lower() not in STOPWORDS]
+    keywords = [word for word, pos in pos_tags if pos.startswith(('NN', 'VB', 'JJ')) and word.lower() not in STOPWORDS and not word.istitle()]
     return keywords
 
 # Function to translate with caching and error handling
@@ -52,10 +61,17 @@ def generate_mcq_with_korean_meaning(sentence, num_options=4, max_questions=5):
     mcqs = []
     keywords = select_keywords(sentence)
 
+    # Set to keep track of used keywords
+    used_keywords = set()
+
     # Ensure we attempt to generate up to max_questions even if some fail
     question_count = 0
 
     for keyword in keywords:
+        # Skip if the keyword has already been used
+        if keyword in used_keywords:
+            continue
+
         if question_count >= max_questions:
             break
 
@@ -69,9 +85,17 @@ def generate_mcq_with_korean_meaning(sentence, num_options=4, max_questions=5):
 
         # Translate keyword and distractors to Korean using caching and error handling
         correct_translation = translate_word(keyword)
-        options = [correct_translation] + [translate_word(d) for d in distractors]
 
-        # Ensure options are unique and fill up to num_options if needed
+        # Filter out distractors containing the correct answer or parts of it
+        filtered_distractors = [d for d in distractors if correct_translation not in d]
+        # Skip this keyword if there aren't enough valid distractors
+        if len(filtered_distractors) < num_options - 1:
+            print(f"Not enough valid distractors for '{keyword}'. Skipping...")
+            continue
+
+        options = [correct_translation] + [translate_word(d) for d in filtered_distractors[:num_options - 1]]
+
+    # Ensure options are unique and fill up to num_options if needed
         options = list(set(options))
 
         # If still not enough options, generate random words as additional distractors from existing keywords
@@ -83,14 +107,16 @@ def generate_mcq_with_korean_meaning(sentence, num_options=4, max_questions=5):
             # Break loop if unable to find unique distractors after several attempts (to avoid infinite loop)
             if len(options) >= num_options or len(potential_distractor) == 0:
                 break
-
         p.random.shuffle(options)
 
         mcqs.append({
-            'question': f"단어 '{keyword}'의 한국어 뜻을 고르세요.",
+            'question': f"단어 '{keyword}'의 한국어 뜻으로 가장 적절한 것을 고르시오.",
             'options': options,
             'answer': correct_translation
         })
+
+        # Add the keyword to the set of used keywords
+        used_keywords.add(keyword)
 
         question_count += 1
 
