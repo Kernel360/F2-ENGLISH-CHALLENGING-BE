@@ -11,9 +11,9 @@ import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.security.web.authentication.SimpleUrlAuthenticationSuccessHandler;
 import org.springframework.stereotype.Component;
 
-import com.echall.platform.oauth2.repository.RefreshTokenRepository;
 import com.echall.platform.oauth2.domain.entity.RefreshToken;
 import com.echall.platform.oauth2.repository.OAuth2AuthorizationRequestBasedOnCookieRepository;
+import com.echall.platform.oauth2.repository.RefreshTokenRepository;
 import com.echall.platform.user.domain.entity.UserEntity;
 import com.echall.platform.user.service.UserService;
 import com.echall.platform.util.CookieUtil;
@@ -41,11 +41,21 @@ public class OAuth2SuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
 		HttpServletRequest request, HttpServletResponse response, Authentication authentication
 	) throws IOException {
 		OAuth2User oAuth2User = (OAuth2User)authentication.getPrincipal();
-		UserEntity user = userService.getUserByEmail(
-			String.valueOf(((LinkedHashMap<String, Object>)oAuth2User.getAttributes().get("response")).get("email"))
-		);
+		String email = null;
+		if (oAuth2User.getAttribute("email") != null) {
+			email = oAuth2User.getAttribute("email");
+		}
+		if (oAuth2User.getAttribute("response") != null) {
+			email = ((LinkedHashMap<String, Object>)oAuth2User.getAttribute("response")).get("email").toString();
+		}
+		if (oAuth2User.getAttribute("kakao_account") != null) {
+			email = ((LinkedHashMap<String, Object>)oAuth2User.getAttribute("kakao_account")).get("email").toString();
+		}
+
+		assert email != null;
+		UserEntity user = userService.getUserByEmail(email);
 		String refreshToken = tokenProvider.generateToken(user, REFRESH_TOKEN_EXPIRE);
-		saveRefreshToken(user.getUserId(), refreshToken);
+		saveRefreshToken(user.getId(), refreshToken);
 		addTokenToCookie(request, response, refreshToken, TRUE);
 
 		String accessToken = tokenProvider.generateToken(user, ACCESS_TOKEN_EXPIRE);

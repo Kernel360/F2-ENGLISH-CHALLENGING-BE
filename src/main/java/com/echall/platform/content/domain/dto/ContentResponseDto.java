@@ -1,40 +1,48 @@
 package com.echall.platform.content.domain.dto;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 import org.bson.types.ObjectId;
 
-import com.echall.platform.content.domain.entity.ContentEntity;
-import com.echall.platform.content.domain.enums.ContentStatus;
 import com.echall.platform.content.domain.enums.ContentType;
 
-public record ContentResponseDto(
-	ObjectId id,
-	String url,
-	String title,
-	String script,
-	String channelName,
-	ContentType contentType,
-	ContentStatus contentStatus,
-	LocalDateTime createdAt,
-	LocalDateTime updatedAt
-) {
+public class ContentResponseDto {
 
-	public ContentResponseDto(ContentEntity content) {
-		this(
-			content.getId(),
-			content.getUrl(),
-			content.getTitle(),
-			content.getScript(),
-			content.getChannelName(),
-			content.getContentType(),
-			content.getContentStatus(),
-			content.getCreatedAt(),
-			content.getUpdatedAt()
-		);
+	public record ContentViewResponseDto(
+		ObjectId scriptId,
+		String title,
+		List<String> scripts,
+		ContentType contentType,
+		LocalDateTime createdAt,
+		LocalDateTime updatedAt
+	) {
+		public void setPreScripts(List<String> preScripts) {
+			preScripts.stream()
+				.map(String::trim)
+				.filter(s -> !s.isEmpty())
+				.forEach(s -> this.scripts.add(s.trim()));
+
+		}
 	}
 
-	public static ContentResponseDto of(ContentEntity content) {
-		return new ContentResponseDto(content);
+	public record ContentCreateResponseDto(
+		ObjectId scriptId,
+		Long contentId
+	) {
+
+	}
+
+	public record ContentUpdateResponseDto(
+		Long contentId
+	) {
+
+	}
+
+	public record ContentDetailResponseDto(
+		Long contentId,
+		List<String> scriptList
+	) {
+
 	}
 }

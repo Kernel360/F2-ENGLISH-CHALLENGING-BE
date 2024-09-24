@@ -11,7 +11,7 @@ public class UserResponseDto {
 	) {
 		public static UserUpdateResponse toDto(UserEntity user) {
 			return new UserUpdateResponse(
-				user.getUserId()
+				user.getId()
 			);
 		}
 
