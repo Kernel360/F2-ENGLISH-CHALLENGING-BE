@@ -63,7 +63,6 @@ public class ContentPublicController {
 			.body(pageContentList);
 	}
 
-
 	/**
 	 * 컨텐츠 상세조회
 	 */
@@ -78,14 +77,12 @@ public class ContentPublicController {
 	})
 	public ResponseEntity<ContentResponseDto.ContentDetailResponseDto> getDetailContents(
 		@PathVariable Long id
-	){
+	) {
 
 		ContentResponseDto.ContentDetailResponseDto scriptsOfContent = contentService.getScriptsOfContent(id);
 
 		return ResponseEntity.status(HttpStatus.OK)
 			.body(scriptsOfContent);
 	}
-
-
 
 }
