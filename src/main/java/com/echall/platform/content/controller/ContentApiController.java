@@ -46,7 +46,7 @@ public class ContentApiController {
 	public ResponseEntity<ContentResponseDto.ContentCreateResponseDto> createContent(
 		@RequestBody ContentRequestDto.ContentCreateRequestDto contentRequest
 	) {
-		ContentResponseDto.ContentCreateResponseDto createdContent = contentService.createNewContent(contentRequest);
+		ContentResponseDto.ContentCreateResponseDto createdContent = contentService.createContent(contentRequest);
 
 		return ResponseEntity.status(HttpStatus.CREATED)
 			.body(createdContent);

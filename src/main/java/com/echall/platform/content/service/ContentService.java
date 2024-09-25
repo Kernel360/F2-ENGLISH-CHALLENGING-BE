@@ -11,7 +11,7 @@ public interface ContentService {
 	Page<ContentResponseDto.ContentViewResponseDto> getAllContents(Pageable pageable, SearchCondition searchCondition);
 	ContentResponseDto.ContentDetailResponseDto getScriptsOfContent(Long id);
 
-	ContentResponseDto.ContentCreateResponseDto createNewContent(ContentRequestDto.ContentCreateRequestDto contentCreateRequestDto); //새로운 컨텐츠 생성
+	ContentResponseDto.ContentCreateResponseDto createContent(ContentRequestDto.ContentCreateRequestDto contentCreateRequestDto); //새로운 컨텐츠 생성
 
 	ContentResponseDto.ContentUpdateResponseDto updateContent(Long id, ContentRequestDto.ContentUpdateRequestDto contentUpdateRequest);
 

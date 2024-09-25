@@ -32,7 +32,7 @@ public class ContentServiceImpl implements ContentService {
 	}
 
 	@Override
-	public ContentResponseDto.ContentCreateResponseDto createNewContent(
+	public ContentResponseDto.ContentCreateResponseDto createContent(
 		ContentRequestDto.ContentCreateRequestDto contentCreateRequestDto
 	) {
 
