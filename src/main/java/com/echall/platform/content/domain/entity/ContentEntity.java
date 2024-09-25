@@ -74,26 +74,16 @@ public class ContentEntity extends BaseEntity {
 			= preScripts.stream().limit(5).toList();
 	}
 
-	public ContentResponseDto.ContentViewResponseDto toPreviewDto() {
-		return new ContentResponseDto.ContentViewResponseDto(
-			this.getMongoContentId(),
-			this.getTitle(),
-			new ArrayList<>(),
-			this.contentType,
-			this.getCreatedAt(),
-			this.getUpdatedAt()
-		);
-	}
 
 	public void update(ContentRequestDto.ContentUpdateRequestDto dto) {
 		this.url = dto.url();
 		this.title = dto.title();
 		this.channelName = dto.channelName();
-		this.contentStatus = dto.contentStatus();
+		this.contentStatus = dto.contentStatus() == null ? ContentStatus.ACTIVATED : dto.contentStatus();
 		this.preScripts = dto.script().stream().limit(5).toList();
 	}
 
 	public void updateStatus(ContentStatus contentStatus) {
-		this.contentStatus = contentStatus;
+		this.contentStatus = contentStatus == null ? ContentStatus.ACTIVATED : contentStatus;
 	}
 }
