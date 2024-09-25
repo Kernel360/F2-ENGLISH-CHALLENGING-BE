@@ -66,10 +66,10 @@ public class SecurityConfig {
 					/**
 					 * Need To Activate DEVELOPER on DEPLOY SETTING
 					 */
-					// // Can access only DEVELOPER
-					// .requestMatchers("/api/token").hasRole("DEVELOPER")
-					// .requestMatchers("/swagger-ui/**").hasRole("DEVELOPER")
-					// .requestMatchers("/api-info/**").hasRole("DEVELOPER")
+					 // Can access only DEVELOPER
+					.requestMatchers("/api/token").hasRole("DEVELOPER")
+					.requestMatchers("/swagger-ui/**").hasRole("DEVELOPER")
+					.requestMatchers("/api-info/**").hasRole("DEVELOPER")
 
 					.anyRequest().permitAll();
 			});
