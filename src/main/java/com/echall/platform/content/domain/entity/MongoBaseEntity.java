@@ -30,4 +30,8 @@ public class MongoBaseEntity {
 		this.createdAt = createdAt != null ? createdAt : LocalDateTime.now();
 		this.updatedAt = updatedAt != null ? updatedAt : LocalDateTime.now();
 	}
+
+	public String getStringId(){
+		return id.toString();
+	}
 }

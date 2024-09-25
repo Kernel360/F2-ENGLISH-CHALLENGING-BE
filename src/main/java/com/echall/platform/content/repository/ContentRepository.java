@@ -1,16 +1,12 @@
 package com.echall.platform.content.repository;
 
-import org.bson.types.ObjectId;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.mongodb.repository.MongoRepository;
-import org.springframework.stereotype.Repository;
+import java.util.List;
+
+import org.springframework.data.jpa.repository.JpaRepository;
 
 import com.echall.platform.content.domain.entity.ContentEntity;
 import com.echall.platform.content.domain.enums.ContentStatus;
+import com.echall.platform.content.repository.custom.ContentRepositoryCustom;
 
-@Repository
-public interface ContentRepository extends MongoRepository<ContentEntity, ObjectId> {
-	Page<ContentEntity> findAllByContentStatus(ContentStatus contentStatus, Pageable pageable);
-
+public interface ContentRepository extends JpaRepository<ContentEntity, Long>, ContentRepositoryCustom {
 }

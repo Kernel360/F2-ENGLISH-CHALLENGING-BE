@@ -1,22 +1,47 @@
 package com.echall.platform.content.domain.dto;
 
-import com.echall.platform.content.domain.entity.ContentEntity;
-import com.echall.platform.content.domain.enums.ContentType;
+import java.util.List;
 
-public record ContentRequestDto(
-	String url,
-	String title,
-	String script,
-	ContentType contentType,
-	String channelName
-) {
-	public ContentEntity toEntity() {
-		return ContentEntity.builder()
-			.url(this.url)
-			.title(this.title)
-			.script(this.script)
-			.contentType(this.contentType)
-			.channelName(this.channelName)
-			.build();
+import org.bson.types.ObjectId;
+
+import com.echall.platform.content.domain.entity.ContentDocument;
+import com.echall.platform.content.domain.entity.ContentEntity;
+import com.echall.platform.content.domain.enums.ContentStatus;
+import com.echall.platform.content.domain.enums.ContentType;
+public class ContentRequestDto {
+
+	public record ContentCreateRequestDto(
+		ContentType contentType,
+		String title,
+		String url,
+		String channelName,
+		List<String> scriptsList
+	) {
+		public ContentEntity toEntity(ObjectId contentScriptId){
+			return ContentEntity.builder()
+				.contentType(contentType)
+				.title(title)
+				.url(url)
+				.channelName(channelName)
+				.mongoContentId(contentScriptId.toString())
+				.preScripts(scriptsList)
+				.build();
+		}
+
+		public ContentDocument toDocument(){
+			return ContentDocument.builder()
+				.scriptList(this.scriptsList)
+				.build();
+		}
+	}
+
+	public record ContentUpdateRequestDto(
+		String url,
+		String title,
+		List<String> script,
+		String channelName,
+		ContentStatus contentStatus
+	) {
+
 	}
 }

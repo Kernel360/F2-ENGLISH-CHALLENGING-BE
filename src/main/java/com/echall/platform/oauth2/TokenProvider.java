@@ -32,7 +32,7 @@ public class TokenProvider {
 			.setIssuedAt(now)
 			.setExpiration(new Date(now.getTime() + expiredAt.toMillis()))
 			.setSubject(user.getEmail())
-			.claim("id", user.getUserId())
+			.claim("id", user.getId())
 			.claim("role", user.getRole().name())
 			.signWith(SignatureAlgorithm.HS256, jwtProperties.getSecret())
 			.compact();

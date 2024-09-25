@@ -1,107 +1,88 @@
 package com.echall.platform.content.service;
 
-import java.time.LocalDateTime;
-import java.util.List;
-import java.util.Optional;
-
 import org.bson.types.ObjectId;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import com.echall.platform.content.domain.dto.ContentRequestDto;
 import com.echall.platform.content.domain.dto.ContentResponseDto;
-import com.echall.platform.content.domain.dto.ContentUpdateRequestDto;
+import com.echall.platform.content.domain.entity.ContentDocument;
 import com.echall.platform.content.domain.entity.ContentEntity;
 import com.echall.platform.content.domain.enums.ContentStatus;
 import com.echall.platform.content.repository.ContentRepository;
+import com.echall.platform.content.repository.ContentScriptRepository;
+import com.echall.platform.content.repository.custom.SearchCondition;
 
 import lombok.RequiredArgsConstructor;
 
 //TODO : custom exception 클래스 작성후 적용 필요합니다
 @Service
 @RequiredArgsConstructor
-public class ContentServiceImpl implements ContentService{
+public class ContentServiceImpl implements ContentService {
 
 	private final ContentRepository contentRepository;
+	private final ContentScriptRepository contentScriptRepository;
 
 	@Override
-	public Page<ContentResponseDto> get(Pageable pageable) {
-		Page<ContentEntity> pageContentList = contentRepository.findAllByContentStatus(ContentStatus.ACTIVATED,
-			pageable);
-		return pageContentList.map(ContentResponseDto::of);
-	}
-
-
-	@Override
-	public ContentResponseDto createContent(ContentRequestDto contentRequestDto
+	public Page<ContentResponseDto.ContentViewResponseDto> getAllContents(
+		Pageable pageable, SearchCondition searchCondition
 	) {
-		ContentEntity newContent = contentRequestDto.toEntity();
-		ContentEntity savedContent = contentRepository.save(newContent);
-		return ContentResponseDto.of(savedContent);
+		return contentRepository.search(pageable, searchCondition);
 	}
 
 	@Override
-	public List<ContentEntity> getAllContent() {
-		return contentRepository.findAll();
+	public ContentResponseDto.ContentCreateResponseDto createContent(
+		ContentRequestDto.ContentCreateRequestDto contentCreateRequestDto
+	) {
+
+		ContentDocument contentDocument = contentCreateRequestDto.toDocument();
+		contentScriptRepository.save(contentDocument);
+
+		ContentEntity content = contentCreateRequestDto.toEntity(contentDocument.getId());
+		contentRepository.save(content);
+
+		return new ContentResponseDto.ContentCreateResponseDto(contentDocument.getId().toString(), content.getId());
 	}
 
 	@Override
-	public ContentEntity getContentById(ObjectId id) {
-		return contentRepository.findById(id).orElse(null);
+	public ContentResponseDto.ContentUpdateResponseDto updateContent(
+		Long id, ContentRequestDto.ContentUpdateRequestDto contentUpdateRequest
+	) {
+		ContentEntity content = contentRepository.findById(id)
+			.orElseThrow(() -> new IllegalArgumentException("Content not found"));
+		content.update(contentUpdateRequest);
+		contentRepository.save(content);
+
+		ContentDocument contentDocument = contentScriptRepository.findContentDocumentById(new ObjectId(content.getMongoContentId()));
+		contentDocument.updateScript(contentUpdateRequest.script());
+		contentScriptRepository.save(contentDocument);
+
+		return new ContentResponseDto.ContentUpdateResponseDto(content.getId());
 	}
 
 	@Override
-	public ContentResponseDto updateContent(String id, ContentUpdateRequestDto contentUpdateRequestDto) {
-		ObjectId objectId;
-		try {
-			objectId = new ObjectId(id);
-		} catch (IllegalArgumentException e) {
-			throw new IllegalArgumentException("유효하지 않은 ID 형식입니다.");
-		}
-		Optional<ContentEntity> optionalContent = contentRepository.findById(objectId);
+	public ContentResponseDto.ContentUpdateResponseDto deactivateContent(Long id) {
+		ContentEntity content = contentRepository.findById(id)
+			.orElseThrow(() -> new IllegalArgumentException("Content not found"));
+		content.updateStatus(ContentStatus.DEACTIVATED);
+		contentRepository.save(content);
 
-		if (optionalContent.isPresent()) {
-			ContentEntity existingContent = optionalContent.get();
-
-			return ContentResponseDto.of(contentRepository.save(
-				existingContent.toBuilder()
-					.url(contentUpdateRequestDto.url())
-					.title(contentUpdateRequestDto.title())
-					.script(contentUpdateRequestDto.script())
-					.channelName(contentUpdateRequestDto.channelName())
-					.contentStatus(contentUpdateRequestDto.contentStatus())
-					.updatedAt(LocalDateTime.now())
-					.build()
-			));
-		} else {
-			throw new IllegalArgumentException("해당 ID의 컨텐츠를 찾을 수 없습니다.");
-		}
+		return new ContentResponseDto.ContentUpdateResponseDto(content.getId());
 	}
 
 	@Override
-	public ContentResponseDto deactivateContent(String id) {
-		ObjectId objectId;
-		try {
-			objectId = new ObjectId(id);
-		} catch (IllegalArgumentException e) {
-			throw new IllegalArgumentException("유효하지 않은 ID 형식입니다.");
-		}
+	public ContentResponseDto.ContentDetailResponseDto getScriptsOfContent(Long id) {
+		ContentDocument contentDocument = contentRepository.findById(id)
+			.map(content -> contentScriptRepository.findContentDocumentById(new ObjectId(content.getMongoContentId())))
+			.orElseThrow(
+				() -> new IllegalArgumentException("Content not found")
+			);
 
-		Optional<ContentEntity> content = contentRepository.findById(objectId);
-
-		if (content.isPresent()) {
-			ContentEntity existingContent = content.get();
-
-			return ContentResponseDto.of(contentRepository.save(
-					existingContent.toBuilder()
-						.contentStatus(ContentStatus.DEACTIVATED)
-						.updatedAt(LocalDateTime.now())
-						.build()
-			));
-		} else {
-			throw new IllegalArgumentException("해당 ID의 컨텐츠를 찾을 수 없습니다.");
-		}
+		return new ContentResponseDto.ContentDetailResponseDto(
+			id,
+			contentDocument.getScriptList()
+		);
 	}
+
 }
