@@ -47,7 +47,6 @@ public class CategoryApiController {
 		return categoryService.createCategory(requestDto);
 	}
 
-
 	@PatchMapping("/modify/{id}")
 	@Operation(summary = "어드민 - 카테고리 수정", description = "어드민 회원이 카테고리를 수정합니다.")
 	@ApiResponses(value = {

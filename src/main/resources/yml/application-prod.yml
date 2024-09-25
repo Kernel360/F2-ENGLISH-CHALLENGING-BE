@@ -1,13 +1,27 @@
-#spring:
-#  config:
-#    activate:
-#      on-profile: prod
-#  datasource:
-#
-#    driver-class-name: com.mysql.cj.jdbc.Driver
-#    url: jdbc:mysql://127.0.0.1:3306/test?useSSL=false&useUnicode=true&serverTimezone=Asia/Seoul
-#    username: {데이터베이스 관리자 이름}
-#    password: {데이터베이스 비밀번호}
-#  jpa:
-#    hibernate:
-#      ddl-auto: none
+spring:
+  config:
+    import:
+      - optional:file:.env[.properties]
+    activate:
+      on-profile: prod
+  
+  datasource:
+    url: jdbc:mysql://english-platform.c58u6yego0wp.ap-southeast-2.rds.amazonaws.com:3306/echall_local_db
+    username: ${DB_ROOT_USERNAME}
+    password: ${DB_MYSQL_PASSWORD}
+    driver-class-name: com.mysql.cj.jdbc.Driver
+
+  data:
+
+    redis:
+      host: 127.0.0.1
+      port: 6379
+      password: ${DB_ROOT_PASSWORD}
+      username: default
+
+
+    mongodb:
+      uri: ${MONGO_URI}
+      database: admin
+      username: ${DB_ROOT_USERNAME}
+      password: ${DB_ROOT_PASSWORD}

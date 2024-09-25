@@ -7,11 +7,11 @@ import java.util.List;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import com.echall.platform.bookmark.domain.entity.BookmarkEntity;
 import com.echall.platform.user.domain.dto.UserRequestDto;
 import com.echall.platform.user.domain.enums.Gender;
 import com.echall.platform.user.domain.enums.Role;
 import com.echall.platform.user.domain.enums.UserStatus;
-import com.mongodb.connection.ProxySettings;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -20,6 +20,7 @@ import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -36,8 +37,8 @@ public class UserEntity extends BaseEntity implements UserDetails {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	@Column(name = "user_id", updatable = false, nullable = false)
-	private Long userId;
+	@Column(name = "id", updatable = false, nullable = false)
+	private Long id;
 
 	private String username;
 	private String nickname;
@@ -65,6 +66,26 @@ public class UserEntity extends BaseEntity implements UserDetails {
 
 	private String providerId;
 
+	@OneToMany
+	private List<BookmarkEntity> bookmarks;
+
+	// For Spring Security==============================================================================================
+	@Builder
+	public UserEntity(String username, String nickname, String password, String email, String phoneNumber,
+		LocalDate birth, Gender gender, Role role, UserStatus userStatus, String provider, String providerId) {
+		this.username = username;
+		this.nickname = nickname;
+		this.password = password;
+		this.email = email;
+		this.phoneNumber = phoneNumber;
+		this.birth = birth;
+		this.gender = gender;
+		this.role = role;
+		this.userStatus = userStatus;
+		this.provider = provider;
+		this.providerId = providerId;
+	}
+
 	public void setUserInitialInfo(UserRequestDto.UserUpdateRequest userUpdateRequest) {
 		this.username = userUpdateRequest.username();
 		this.nickname = userUpdateRequest.nickname();
@@ -82,23 +103,8 @@ public class UserEntity extends BaseEntity implements UserDetails {
 		this.birth = userUpdateRequest.birth() == null ? this.birth : userUpdateRequest.birth();
 	}
 
-
-
-	// For Spring Security==============================================================================================
-	@Builder
-	public UserEntity(String username, String nickname, String password, String email, String phoneNumber,
-		LocalDate birth, Gender gender, Role role, UserStatus userStatus, String provider, String providerId) {
-		this.username = username;
-		this.nickname = nickname;
-		this.password = password;
-		this.email = email;
-		this.phoneNumber = phoneNumber;
-		this.birth = birth;
-		this.gender = gender;
-		this.role = role;
-		this.userStatus = userStatus;
-		this.provider = provider;
-		this.providerId = providerId;
+	public void updateUserBookmark(BookmarkEntity bookmark) {
+		this.bookmarks.add(bookmark);
 	}
 
 	public UserEntity updateUsername(String username) {
@@ -132,4 +138,5 @@ public class UserEntity extends BaseEntity implements UserDetails {
 	public boolean isEnabled() {
 		return UserDetails.super.isEnabled();
 	}
+
 }
