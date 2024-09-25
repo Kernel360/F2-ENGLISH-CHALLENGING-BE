@@ -5,10 +5,6 @@ import org.springframework.security.web.authentication.logout.SecurityContextLog
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 
-import com.echall.platform.oauth2.TokenProvider;
-import com.echall.platform.user.service.UserService;
-
-import jakarta.servlet.ServletException;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -17,8 +13,6 @@ import lombok.RequiredArgsConstructor;
 @Controller
 @RequiredArgsConstructor
 public class UserPublicController {
-	private final UserService userService;
-	private final TokenProvider tokenProvider;
 
 	@GetMapping("/login")
 	public String login() {
@@ -31,7 +25,7 @@ public class UserPublicController {
 	}
 
 	@GetMapping("/logout")
-	public String logout(HttpServletRequest request, HttpServletResponse response) throws ServletException {
+	public String logout(HttpServletRequest request, HttpServletResponse response) {
 		Cookie cookie = new Cookie("access_token", null);
 		cookie.setMaxAge(0);
 		cookie.setPath("/");

@@ -67,9 +67,4 @@ public class CategoryPublicController {
 		return ResponseEntity.status(HttpStatus.OK).body(category);
 	}
 
-
-
-
-
-
 }

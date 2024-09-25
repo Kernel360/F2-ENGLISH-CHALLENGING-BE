@@ -53,10 +53,24 @@ public class SecurityConfig {
 				UsernamePasswordAuthenticationFilter.class)
 			.authorizeHttpRequests(authorize -> {
 				authorize
-					.requestMatchers("/api/token").permitAll()
-					.requestMatchers("/api/u1/**").permitAll()
-					.requestMatchers("/api/a1/**").permitAll()
-					.requestMatchers("/api/contents/**").permitAll()
+					// Can access from USER
+					.requestMatchers("/api/b1/**").hasAnyRole("USER", "DEVELOPER")
+					.requestMatchers("/api/u1/**").hasAnyRole("USER", "DEVELOPER")
+					.requestMatchers("/api/p1/**").hasAnyRole("USER", "DEVELOPER")
+					.requestMatchers("/api/t1/**").hasAnyRole("USER", "DEVELOPER")
+
+					// Can access from ADMIN
+					.requestMatchers("/api/a1/**").hasAnyRole("ADMIN", "DEVELOPER")
+					.requestMatchers("/api/contents/**").hasAnyRole("ADMIN", "DEVELOPER")
+
+					/**
+					 * Need To Activate DEVELOPER on DEPLOY SETTING
+					 */
+					// // Can access only DEVELOPER
+					// .requestMatchers("/api/token").hasRole("DEVELOPER")
+					// .requestMatchers("/swagger-ui/**").hasRole("DEVELOPER")
+					// .requestMatchers("/api-info/**").hasRole("DEVELOPER")
+
 					.anyRequest().permitAll();
 			});
 

@@ -52,7 +52,7 @@ public class TokenProvider {
 
 		String role = claims.get("role", String.class);
 		Set<SimpleGrantedAuthority> authorities
-			= Collections.singleton(new SimpleGrantedAuthority(role == null ? "ROLE_NONE" : role));
+			= Collections.singleton(new SimpleGrantedAuthority(role == null ? "ROLE_USER_UNCERTIFIED" : role));
 		User user = new User(
 			claims.getSubject(), "", authorities
 		);

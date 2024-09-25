@@ -27,7 +27,8 @@ public class TokenAuthenticationFilter extends OncePerRequestFilter {
 	protected void doFilterInternal(
 		HttpServletRequest request,
 		HttpServletResponse response,
-		FilterChain filterChain) throws ServletException, IOException {
+		FilterChain filterChain
+	) throws ServletException, IOException {
 
 		Cookie[] cookies = request.getCookies();
 		if (cookies == null) {
@@ -39,7 +40,7 @@ public class TokenAuthenticationFilter extends OncePerRequestFilter {
 			.findFirst()
 			.ifPresent(cookie -> {
 				try {
-					String token = cookie.getValue();
+				String token = cookie.getValue();
 					if(tokenProvider.validateToken(token)){
 						Authentication authentication = tokenProvider.getAuthentication(token);
 						SecurityContextHolder.getContext().setAuthentication(authentication);
