@@ -1,6 +1,7 @@
 package com.echall.platform.content.domain.entity;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import org.bson.types.ObjectId;
 
@@ -9,8 +10,10 @@ import com.echall.platform.content.domain.dto.ContentResponseDto;
 import com.echall.platform.content.domain.enums.ContentStatus;
 import com.echall.platform.content.domain.enums.ContentType;
 import com.echall.platform.user.domain.entity.BaseEntity;
+import com.echall.platform.util.StringListConverter;
 
 import jakarta.persistence.Column;
+import jakarta.persistence.Convert;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
@@ -45,23 +48,30 @@ public class ContentEntity extends BaseEntity {
 	@NotNull
 	private String channelName;
 
+	@Convert(converter = StringListConverter.class)
+	private List<String> preScripts;
+
 	@Enumerated(EnumType.STRING)
 	private ContentType contentType;
 
 	@Enumerated(EnumType.STRING)
 	private ContentStatus contentStatus = ContentStatus.ACTIVATED;
 
-	private ObjectId mongoContentId;
+	private String mongoContentId;
 
 	@Builder
 	public ContentEntity(
-		String url, String title, String channelName, ContentType contentType, ObjectId mongoContentId
+		String url, String title, String channelName,
+		ContentType contentType, String mongoContentId,
+		List<String> preScripts
 	) {
 		this.url = url;
 		this.title = title;
 		this.channelName = channelName;
 		this.contentType = contentType;
 		this.mongoContentId = mongoContentId;
+		this.preScripts
+			= preScripts.stream().limit(5).toList();
 	}
 
 	public ContentResponseDto.ContentViewResponseDto toPreviewDto() {
@@ -74,11 +84,13 @@ public class ContentEntity extends BaseEntity {
 			this.getUpdatedAt()
 		);
 	}
-	public void update(ContentRequestDto.ContentUpdateRequestDto dto){
+
+	public void update(ContentRequestDto.ContentUpdateRequestDto dto) {
 		this.url = dto.url();
 		this.title = dto.title();
 		this.channelName = dto.channelName();
 		this.contentStatus = dto.contentStatus();
+		this.preScripts = dto.script().stream().limit(5).toList();
 	}
 
 	public void updateStatus(ContentStatus contentStatus) {

@@ -10,7 +10,7 @@ import com.echall.platform.content.domain.enums.ContentType;
 public class ContentResponseDto {
 
 	public record ContentViewResponseDto(
-		ObjectId scriptId,
+		String scriptId,
 		String title,
 		List<String> scripts,
 		ContentType contentType,
@@ -27,7 +27,7 @@ public class ContentResponseDto {
 	}
 
 	public record ContentCreateResponseDto(
-		ObjectId scriptId,
+		String scriptId,
 		Long contentId
 	) {
 

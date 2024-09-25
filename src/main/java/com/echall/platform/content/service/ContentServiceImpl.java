@@ -1,5 +1,6 @@
 package com.echall.platform.content.service;
 
+import org.bson.types.ObjectId;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -41,7 +42,7 @@ public class ContentServiceImpl implements ContentService {
 		ContentEntity content = contentCreateRequestDto.toEntity(contentDocument.getId());
 		contentRepository.save(content);
 
-		return new ContentResponseDto.ContentCreateResponseDto(contentDocument.getId(), content.getId());
+		return new ContentResponseDto.ContentCreateResponseDto(contentDocument.getId().toString(), content.getId());
 	}
 
 	@Override
@@ -53,7 +54,7 @@ public class ContentServiceImpl implements ContentService {
 		content.update(contentUpdateRequest);
 		contentRepository.save(content);
 
-		ContentDocument contentDocument = contentScriptRepository.findContentDocumentById(content.getMongoContentId());
+		ContentDocument contentDocument = contentScriptRepository.findContentDocumentById(new ObjectId(content.getMongoContentId()));
 		contentDocument.updateScript(contentUpdateRequest.script());
 		contentScriptRepository.save(contentDocument);
 
@@ -73,7 +74,7 @@ public class ContentServiceImpl implements ContentService {
 	@Override
 	public ContentResponseDto.ContentDetailResponseDto getScriptsOfContent(Long id) {
 		ContentDocument contentDocument = contentRepository.findById(id)
-			.map(content -> contentScriptRepository.findContentDocumentById(content.getMongoContentId()))
+			.map(content -> contentScriptRepository.findContentDocumentById(new ObjectId(content.getMongoContentId())))
 			.orElseThrow(
 				() -> new IllegalArgumentException("Content not found")
 			);

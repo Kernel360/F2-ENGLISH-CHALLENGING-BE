@@ -23,7 +23,8 @@ public class ContentRequestDto {
 				.title(title)
 				.url(url)
 				.channelName(channelName)
-				.mongoContentId(contentScriptId)
+				.mongoContentId(contentScriptId.toString())
+				.preScripts(scriptsList)
 				.build();
 		}
 

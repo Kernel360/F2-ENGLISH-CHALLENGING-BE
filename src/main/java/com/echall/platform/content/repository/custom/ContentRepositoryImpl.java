@@ -31,18 +31,18 @@ public class ContentRepositoryImpl extends QuerydslRepositorySupport implements 
 	public Page<ContentResponseDto.ContentViewResponseDto> search(Pageable pageable, SearchCondition searchCondition) {
 
 		// Step 1: Fetch relevant MongoDB data
-		List<ObjectId> mongoIds = contentScriptRepository.findByScriptList(searchCondition.getScript())
+		List<String> mongoIds = contentScriptRepository.findByScriptList(searchCondition.getScript())
 			.stream()
-			.map(ContentDocument::getId)
+			.map(ContentDocument::getStringId)
 			.toList();
 
 		// Step 2: Fetch JPA data using Querydsl
 		JPQLQuery<ContentEntity> jpaQuery = from(contentEntity)
 			.select(contentEntity);
-		if (searchCondition.getTitle() != null) {
+		if (searchCondition.getTitle() != null && !searchCondition.getTitle().isBlank()) {
 			jpaQuery.where(contentEntity.title.containsIgnoreCase(searchCondition.getTitle()));
 		}
-		if (searchCondition.getScript() != null) {
+		if (searchCondition.getScript() != null && !searchCondition.getScript().isEmpty()) {
 			jpaQuery.where(contentEntity.mongoContentId.in(mongoIds));
 		}
 
@@ -54,11 +54,13 @@ public class ContentRepositoryImpl extends QuerydslRepositorySupport implements 
 		// Step 3: Fetch MongoDB data separately for DTO creation
 		List<ContentResponseDto.ContentViewResponseDto> responseDtos = contentEntities.stream()
 			.map(entity -> {
-				// Fetch MongoDB document
-				List<String> scriptSentences
-					= contentScriptRepository.findContentDocumentById(entity.getMongoContentId()).getScriptList();
-				if (searchCondition.getScript() == null && searchCondition.getTitle() == null) {
-					scriptSentences = scriptSentences.stream().limit(5).toList();
+				// Fetch Mysql Entity
+				List<String> scriptSentences = entity.getPreScripts();
+				if (!searchCondition.getScript().isEmpty() || !searchCondition.getTitle().isBlank()) {
+					// Fetch MongoDB document
+					scriptSentences
+						= contentScriptRepository.findContentDocumentById(new ObjectId(entity.getMongoContentId()))
+						.getScriptList();
 				}
 
 				// Create DTO with both JPA and MongoDB data
