@@ -17,8 +17,6 @@ import lombok.RequiredArgsConstructor;
 @Controller
 @RequiredArgsConstructor
 public class UserPublicController {
-	private final UserService userService;
-	private final TokenProvider tokenProvider;
 
 	@GetMapping("/login")
 	public String login() {

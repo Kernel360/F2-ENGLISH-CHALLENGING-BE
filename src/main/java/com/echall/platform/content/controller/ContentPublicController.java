@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.echall.platform.content.domain.dto.ContentPageResponse;
 import com.echall.platform.content.domain.dto.ContentResponseDto;
-import com.echall.platform.content.repository.custom.SearchCondition;
+import com.echall.platform.content.domain.enums.SearchCondition;
 import com.echall.platform.content.service.ContentService;
 
 import io.swagger.v3.oas.annotations.Operation;

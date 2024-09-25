@@ -5,7 +5,7 @@ import org.springframework.data.domain.Pageable;
 
 import com.echall.platform.content.domain.dto.ContentRequestDto;
 import com.echall.platform.content.domain.dto.ContentResponseDto;
-import com.echall.platform.content.repository.custom.SearchCondition;
+import com.echall.platform.content.domain.enums.SearchCondition;
 
 public interface ContentService {
 	Page<ContentResponseDto.ContentViewResponseDto> getAllContents(Pageable pageable, SearchCondition searchCondition);

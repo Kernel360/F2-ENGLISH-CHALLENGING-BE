@@ -1,4 +1,4 @@
-package com.echall.platform.content.repository.custom;
+package com.echall.platform.content.domain.enums;
 
 import java.util.List;
 

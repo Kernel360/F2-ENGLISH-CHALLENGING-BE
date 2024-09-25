@@ -15,6 +15,7 @@ import org.springframework.data.jpa.repository.support.QuerydslRepositorySupport
 import com.echall.platform.content.domain.dto.ContentResponseDto;
 import com.echall.platform.content.domain.entity.ContentDocument;
 import com.echall.platform.content.domain.entity.ContentEntity;
+import com.echall.platform.content.domain.enums.SearchCondition;
 import com.echall.platform.content.repository.ContentScriptRepository;
 import com.querydsl.jpa.JPQLQuery;
 

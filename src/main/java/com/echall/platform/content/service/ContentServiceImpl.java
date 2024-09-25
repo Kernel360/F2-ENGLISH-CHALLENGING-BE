@@ -10,9 +10,9 @@ import com.echall.platform.content.domain.dto.ContentResponseDto;
 import com.echall.platform.content.domain.entity.ContentDocument;
 import com.echall.platform.content.domain.entity.ContentEntity;
 import com.echall.platform.content.domain.enums.ContentStatus;
+import com.echall.platform.content.domain.enums.SearchCondition;
 import com.echall.platform.content.repository.ContentRepository;
 import com.echall.platform.content.repository.ContentScriptRepository;
-import com.echall.platform.content.repository.custom.SearchCondition;
 
 import lombok.RequiredArgsConstructor;
 
@@ -54,7 +54,8 @@ public class ContentServiceImpl implements ContentService {
 		content.update(contentUpdateRequest);
 		contentRepository.save(content);
 
-		ContentDocument contentDocument = contentScriptRepository.findContentDocumentById(new ObjectId(content.getMongoContentId()));
+		ContentDocument contentDocument = contentScriptRepository.findContentDocumentById(
+			new ObjectId(content.getMongoContentId()));
 		contentDocument.updateScript(contentUpdateRequest.script());
 		contentScriptRepository.save(contentDocument);
 
