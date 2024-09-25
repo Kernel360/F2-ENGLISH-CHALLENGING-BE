@@ -24,7 +24,7 @@ import lombok.RequiredArgsConstructor;
 @RestController
 @RequestMapping("/api/u1/user")
 @RequiredArgsConstructor
-@Tag(name = "User API", description = "가입된 유저 공통 API")
+@Tag(name = "User Private API", description = "가입된 유저 공통 API")
 public class UserApiController {
 
 	private final UserService userService;
@@ -38,7 +38,8 @@ public class UserApiController {
 	})
 	public ResponseEntity<UserResponseDto.UserUpdateResponse> setNewUserInfo(
 		@RequestBody UserRequestDto.UserUpdateRequest userUpdateRequest,
-		Authentication authentication) {
+		Authentication authentication
+	) {
 
 		return ResponseEntity.status(HttpStatus.CREATED)
 			.body(userService.updateUserInfo(userUpdateRequest, authentication.getName()));
@@ -53,7 +54,7 @@ public class UserApiController {
 	public ResponseEntity<UserResponseDto.UserMyPageResponse> getMyPage(Authentication authentication) {
 
 		return ResponseEntity.status(HttpStatus.OK)
-			.body(userService.getMyPage(authentication.getName())); // use when add Spring Security
+			.body(userService.getMyPage(authentication.getName()));
 	}
 
 	@PatchMapping("/me")
