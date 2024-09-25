@@ -66,10 +66,10 @@ public class SecurityConfig {
 					/**
 					 * Need To Activate DEVELOPER on DEPLOY SETTING
 					 */
-					// // Can access only DEVELOPER
-					// .requestMatchers("/api/token").hasRole("DEVELOPER")
-					// .requestMatchers("/swagger-ui/**").hasRole("DEVELOPER")
-					// .requestMatchers("/api-info/**").hasRole("DEVELOPER")
+					// Can access only DEVELOPER
+					.requestMatchers("/api/token").hasRole("DEVELOPER")
+					.requestMatchers("/swagger-ui/**").hasRole("DEVELOPER")
+					.requestMatchers("/api-info/**").hasRole("DEVELOPER")
 
 					.anyRequest().permitAll();
 			});
@@ -132,6 +132,7 @@ public class SecurityConfig {
 		corsConfiguration.addAllowedOrigin("http://localhost:8080"); // JUST FOR LOCAL DEV
 		corsConfiguration.addAllowedOrigin("http://localhost:8081"); // JUST FOR LOCAL DEV
 		corsConfiguration.addAllowedOrigin("http://localhost:3000"); // JUST FOR LOCAL DEV
+		corsConfiguration.addAllowedHeader("http://13.211.204.222:8080"); // JUST FOR PROD
 		corsConfiguration.setAllowCredentials(true);
 
 		UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
