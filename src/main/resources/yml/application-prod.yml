@@ -6,7 +6,7 @@ spring:
       on-profile: prod
   
   datasource:
-    url: jdbc:mysql://english-platform.c58u6yego0wp.ap-southeast-2.rds.amazonaws.com:3306/echall_local_db
+    url: ${MY_DATA_SOURCE}
     username: ${DB_ROOT_USERNAME}
     password: ${DB_MYSQL_PASSWORD}
     driver-class-name: com.mysql.cj.jdbc.Driver
