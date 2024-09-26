@@ -132,7 +132,7 @@ public class SecurityConfig {
 		corsConfiguration.addAllowedOrigin("http://localhost:8080"); // JUST FOR LOCAL DEV
 		corsConfiguration.addAllowedOrigin("http://localhost:8081"); // JUST FOR LOCAL DEV
 		corsConfiguration.addAllowedOrigin("http://localhost:3000"); // JUST FOR LOCAL DEV
-		corsConfiguration.addAllowedHeader("http://13.211.204.222:8080"); // JUST FOR PROD
+		corsConfiguration.addAllowedHeader("http://13.238.253.88:8080"); // JUST FOR PROD
 		corsConfiguration.setAllowCredentials(true);
 
 		UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
