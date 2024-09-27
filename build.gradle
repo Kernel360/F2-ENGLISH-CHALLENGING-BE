@@ -89,6 +89,11 @@ dependencies {
 	implementation 'com.google.http-client:google-http-client-gson:1.39.2'
 	// Google Credentials
 	implementation 'com.google.auth:google-auth-library-oauth2-http:1.19.0'
+
+	// Jsoup
+	implementation 'org.jsoup:jsoup:1.17.2'
+
+
 }
 
 tasks.named('test') {

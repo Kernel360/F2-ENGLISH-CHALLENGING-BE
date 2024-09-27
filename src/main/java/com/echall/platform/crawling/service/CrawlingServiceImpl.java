@@ -1,9 +1,14 @@
 package com.echall.platform.crawling.service;
 
+import java.io.IOException;
 import java.time.Duration;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
+import org.jsoup.select.Elements;
 import org.openqa.selenium.By;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebDriver;
@@ -31,6 +36,19 @@ import io.github.bonigarcia.wdm.WebDriverManager;
 public class CrawlingServiceImpl implements CrawlingService {
 	@Value("${YOUTUBE_API_KEY}")
 	private String YOUTUBE_API_KEY;
+
+	private static List<String> splitIntoSentences(String text) {
+		List<String> sentences = new ArrayList<>();
+
+		// 정규 표현식을 사용하여 문장 단위로 나누기
+		String[] splitSentences = text.split("(?<=[.!?])\\s+");
+
+		for (String sentence : splitSentences) {
+			sentences.add(sentence.trim());
+		}
+
+		return sentences;
+	}
 
 	@Override
 	public CrawlingResponseDto.YoutubeResponseDto getYoutubeInfo(String youtubeUrl, String credentials)
@@ -63,12 +81,26 @@ public class CrawlingServiceImpl implements CrawlingService {
 		);
 	}
 
+	@Override
+	public CrawlingResponseDto.CNNResponseDto getCNNInfo(String cnnUrl, String credentials) {
+		CrawlingResponseDto.CNNResponseDto cnnResponseDto = null;
+		try {
+			cnnResponseDto = fetchArticle(cnnUrl);
+
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+
+		return cnnResponseDto;
+	}
+
 	// Internal Methods ------------------------------------------------------------------------------------------------
 	@Override
 	public JsonNode getSnippetNode(String body) throws JsonProcessingException {
 		ObjectMapper objectMapper = new ObjectMapper();
 		return objectMapper.readTree(body).path("items").get(0).path("snippet");
 	}
+
 	@Override
 	public List<String> getYoutubeScript(String youtubeInfo) {
 		WebDriverManager.chromedriver().setup();
@@ -169,5 +201,42 @@ public class CrawlingServiceImpl implements CrawlingService {
 		}
 
 		return "Unknown Category";
+	}
+
+	public CrawlingResponseDto.CNNResponseDto fetchArticle(String url) throws IOException {
+		Document doc = Jsoup.connect(url).get();
+
+		// 제목 추출
+		String title = doc.select("h1.headline__text").text();
+
+		// 카테고리 추출
+		Element categoryElement = doc.selectFirst("meta[name=meta-section]");
+		String category = categoryElement != null ? categoryElement.attr("content") : "Unknown Category";
+
+		// 이미지 URL 추출
+		Elements images = doc.select("img.image__dam-img[src]");
+		List<String> imageUrls = new ArrayList<>();
+		for (Element img : images) {
+			imageUrls.add(img.attr("src"));
+		}
+		String imgUrl = imageUrls.toString();
+
+		// 본문 추출
+		Elements paragraphs = doc.select("div.article__content p");
+		StringBuilder fullText = new StringBuilder();
+		for (Element paragraph : paragraphs) {
+			fullText.append(paragraph.text()).append(" ");
+		}
+
+		// 본문을 문장 단위로 나누기
+		List<String> sentences = splitIntoSentences(fullText.toString());
+
+		return new CrawlingResponseDto.CNNResponseDto(
+			url,
+			title,
+			imgUrl,
+			category,
+			sentences
+		);
 	}
 }

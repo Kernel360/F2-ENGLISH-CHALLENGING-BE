@@ -8,4 +8,9 @@ public class CrawlingRequestDto {
 
 	}
 
+	public record CNNRequestDto(
+		String cnnUrl
+	) {
+
+	}
 }

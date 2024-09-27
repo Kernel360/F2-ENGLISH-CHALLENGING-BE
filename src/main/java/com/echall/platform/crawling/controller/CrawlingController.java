@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.echall.platform.crawling.domain.dto.CrawlingRequestDto;
 import com.echall.platform.crawling.domain.dto.CrawlingResponseDto;
-import com.echall.platform.crawling.service.CrawlingService;
+import com.echall.platform.crawling.service.CrawlingServiceImpl;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -23,7 +23,7 @@ import lombok.RequiredArgsConstructor;
 @RequestMapping("/api/cr1/crawling")
 @Tag(name = "Crawling - private API", description = "크롤링 관리자 전용 API")
 public class CrawlingController {
-	private final CrawlingService crawlingService;
+	private final CrawlingServiceImpl crawlingService;
 
 	@GetMapping("/youtube")
 	@Operation(summary = "유튜브 크롤링", description = "유튜브 크롤링을 통해 필요한 정보를 가져옵니다.")
@@ -42,6 +42,21 @@ public class CrawlingController {
 			.body(
 				crawlingService.getYoutubeInfo(youtubeRequestDto.youtubeUrl(), (String)authentication.getCredentials())
 			);
+	}
+
+	@GetMapping("/article")
+	@Operation(summary = "CNN 기사 크롤링", description = "CNN 기사 크롤링을 통해 필요한 정보를 가져옵니다.")
+	@ApiResponses(value = {
+		@ApiResponse(responseCode = "200", description = "요청에 성공하였습니다.", content = @Content),
+		@ApiResponse(responseCode = "204", description = "컨텐츠가 없습니다.", content = @Content),
+		@ApiResponse(responseCode = "500", description = "서버 에러가 발생하였습니다.", content = @Content)
+	})
+	public ResponseEntity<CrawlingResponseDto.CNNResponseDto> crawlingArticle(
+		Authentication authentication, CrawlingRequestDto.CNNRequestDto cnnRequestDto
+	) {
+
+		return ResponseEntity.status(HttpStatus.OK)
+			.body(crawlingService.getCNNInfo(cnnRequestDto.cnnUrl(), (String)authentication.getCredentials()));
 	}
 
 }
