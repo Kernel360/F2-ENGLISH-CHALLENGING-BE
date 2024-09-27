@@ -12,13 +12,13 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
 public class CookieUtil {
-
+	// TODO: https 연결하고 검토 필요
 	public static void addCookie(HttpServletResponse response, String name, String value, int maxAge) {
 		Cookie cookie = new Cookie(name, value);
 		cookie.setMaxAge(maxAge);
 		cookie.setPath("/");
-		cookie.setHttpOnly(true);
-		cookie.setSecure(true);
+		// cookie.setHttpOnly(true);
+		// cookie.setSecure(true);
 		// cookie.setDomain("localhost");
 
 		response.addCookie(cookie);
@@ -32,8 +32,8 @@ public class CookieUtil {
 					cookie.setValue("");
 					cookie.setMaxAge(0);
 					cookie.setPath("/");
-					cookie.setHttpOnly(true);
-					cookie.setSecure(true);
+					// cookie.setHttpOnly(true);
+					// cookie.setSecure(true);
 
 					response.addCookie(cookie);
 				}
