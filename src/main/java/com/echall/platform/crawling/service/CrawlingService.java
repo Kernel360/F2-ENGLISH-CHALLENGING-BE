@@ -27,4 +27,7 @@ public interface CrawlingService {
 	CrawlingResponseDto.CNNResponseDto getCNNInfo(String cnnUrl, String credentials) throws Exception;
 
 	CrawlingResponseDto.CNNResponseDto fetchArticle(String url) throws IOException;
+
+	List<String> splitIntoSentences(String text);
+
 }

@@ -37,19 +37,6 @@ public class CrawlingServiceImpl implements CrawlingService {
 	@Value("${YOUTUBE_API_KEY}")
 	private String YOUTUBE_API_KEY;
 
-	private static List<String> splitIntoSentences(String text) {
-		List<String> sentences = new ArrayList<>();
-
-		// 정규 표현식을 사용하여 문장 단위로 나누기
-		String[] splitSentences = text.split("(?<=[.!?])\\s+");
-
-		for (String sentence : splitSentences) {
-			sentences.add(sentence.trim());
-		}
-
-		return sentences;
-	}
-
 	@Override
 	public CrawlingResponseDto.YoutubeResponseDto getYoutubeInfo(String youtubeUrl, String credentials)
 		throws Exception {
@@ -69,13 +56,19 @@ public class CrawlingServiceImpl implements CrawlingService {
 		ResponseEntity<String> response
 			= restTemplate.exchange(requestUrl, HttpMethod.GET, new HttpEntity<>(headers), String.class);
 
-		JsonNode snippetNode = getSnippetNode(response.getBody());
+		JsonNode snippetNode = getSnippetNode(response.getBody()).path("snippet");
+		JsonNode contentDetailsNode = getSnippetNode(response.getBody()).path("contentDetails");
+
+		Duration duration = Duration.parse(contentDetailsNode.path("duration").asText());
+		if(duration.compareTo(Duration.ofMinutes(10)) > 0){
+			throw new IllegalArgumentException("Duration exceeds 10 minutes");
+		}
 
 		return new CrawlingResponseDto.YoutubeResponseDto(
 			youtubeUrl,
 			snippetNode.path("channelTitle").asText(),
 			snippetNode.path("title").asText(),
-			snippetNode.path("thumbnails").asText(),
+			snippetNode.path("thumbnails").toString(),
 			getCategoryName(snippetNode.path("categoryId").asText()),
 			getYoutubeScript(youtubeUrl)
 		);
@@ -95,10 +88,11 @@ public class CrawlingServiceImpl implements CrawlingService {
 	}
 
 	// Internal Methods ------------------------------------------------------------------------------------------------
+
 	@Override
 	public JsonNode getSnippetNode(String body) throws JsonProcessingException {
 		ObjectMapper objectMapper = new ObjectMapper();
-		return objectMapper.readTree(body).path("items").get(0).path("snippet");
+		return objectMapper.readTree(body).path("items").get(0);
 	}
 
 	@Override
@@ -109,7 +103,7 @@ public class CrawlingServiceImpl implements CrawlingService {
 		options.addArguments("--remote-allow-origins=*");
 		options.addArguments(
 			"user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/123.0.0.0 Safari/537.36");
-
+		options.addArguments("--lang=en-US");
 		WebDriver driver = new ChromeDriver(options);
 		List<String> transcriptLines;
 
@@ -132,7 +126,7 @@ public class CrawlingServiceImpl implements CrawlingService {
 		WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
 		JavascriptExecutor js = (JavascriptExecutor)driver;
 		wait.until(webDriver -> js.executeScript("return document.readyState").equals("complete"));
-
+		Thread.sleep(5000);
 /*			// TODO: 혹시 필요하면 주석 풀어서 사용해야 함
 			try {
 				WebElement closeAdButton = wait.until(
@@ -142,7 +136,7 @@ public class CrawlingServiceImpl implements CrawlingService {
 				System.out.println("광고가 없습니다.");
 			}*/
 
-		// Zoom out & Scroll down
+		// Zoom out
 		js.executeScript("document.body.style.zoom='30%'");
 		Thread.sleep(2000);
 
@@ -158,7 +152,8 @@ public class CrawlingServiceImpl implements CrawlingService {
 
 		// Locate and click the "스크립트 표시" button
 		WebElement transcriptButton = wait.until(
-			ExpectedConditions.elementToBeClickable(By.xpath("//yt-button-shape//button[@aria-label='스크립트 표시']")));
+			ExpectedConditions.elementToBeClickable(
+				By.xpath("//yt-button-shape//button[@aria-label='Show transcript']")));
 		transcriptButton.click();
 		Thread.sleep(5000);
 
@@ -203,6 +198,7 @@ public class CrawlingServiceImpl implements CrawlingService {
 		return "Unknown Category";
 	}
 
+	@Override
 	public CrawlingResponseDto.CNNResponseDto fetchArticle(String url) throws IOException {
 		Document doc = Jsoup.connect(url).get();
 
@@ -238,5 +234,19 @@ public class CrawlingServiceImpl implements CrawlingService {
 			category,
 			sentences
 		);
+	}
+
+	@Override
+	public List<String> splitIntoSentences(String text) {
+		List<String> sentences = new ArrayList<>();
+
+		// 정규 표현식을 사용하여 문장 단위로 나누기
+		String[] splitSentences = text.split("(?<=[.!?])\\s+");
+
+		for (String sentence : splitSentences) {
+			sentences.add(sentence.trim());
+		}
+
+		return sentences;
 	}
 }
