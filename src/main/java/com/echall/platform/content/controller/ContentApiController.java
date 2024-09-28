@@ -25,7 +25,7 @@ import lombok.RequiredArgsConstructor;
  */
 @RequiredArgsConstructor
 @RestController
-@RequestMapping("/api/a1/contents") //TODO: URL 수정 필요
+@RequestMapping("/api/c1/contents") //TODO: URL 수정 필요
 @Tag(name = "Content - private API", description = "컨텐츠 회원전용 API")
 public class ContentApiController {
 	private final ContentService contentService;
@@ -78,7 +78,7 @@ public class ContentApiController {
 	/**
 	 * 컨텐츠 삭제 (비활성화)
 	 */
-	@PatchMapping("/delete/{id}")
+	@PatchMapping("/deactivate/{id}")
 	@Operation(summary = "어드민 - 컨텐츠 비활성화", description = "어드민 회원이 컨텐츠를 비활성화합니다.")
 	@ApiResponses(value = {
 		@ApiResponse(responseCode = "200", description = "컨텐츠가 성공적으로 비활성화되었습니다.", content = @Content(mediaType = "application/json")),
