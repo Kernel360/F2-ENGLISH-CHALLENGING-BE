@@ -11,7 +11,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 
 public interface CrawlingService {
 	// YouTube
-	CrawlingResponseDto.YoutubeResponseDto getYoutubeInfo(String youtubeUrl, String credentials) throws Exception;
+	CrawlingResponseDto.CrawlingContentResponseDto getYoutubeInfo(String youtubeUrl, String credentials) throws Exception;
 
 	JsonNode getSnippetNode(String body) throws JsonProcessingException;
 
@@ -24,9 +24,9 @@ public interface CrawlingService {
 	String getCategoryName(String categoryId) throws Exception;
 
 	// CNN
-	CrawlingResponseDto.CNNResponseDto getCNNInfo(String cnnUrl, String credentials) throws Exception;
+	CrawlingResponseDto.CrawlingContentResponseDto getCNNInfo(String cnnUrl, String credentials) throws Exception;
 
-	CrawlingResponseDto.CNNResponseDto fetchArticle(String url) throws IOException;
+	CrawlingResponseDto.CrawlingContentResponseDto fetchArticle(String url) throws IOException;
 
 	List<String> splitIntoSentences(String text);
 

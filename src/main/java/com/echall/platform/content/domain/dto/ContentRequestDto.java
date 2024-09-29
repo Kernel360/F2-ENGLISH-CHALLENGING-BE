@@ -12,34 +12,14 @@ public class ContentRequestDto {
 
 	public record ContentCreateRequestDto(
 		ContentType contentType,
-		String title,
-		String url,
-		String channelName,
-		List<String> scriptsList
+		String url
 	) {
-		public ContentEntity toEntity(ObjectId contentScriptId){
-			return ContentEntity.builder()
-				.contentType(contentType)
-				.title(title)
-				.url(url)
-				.channelName(channelName)
-				.mongoContentId(contentScriptId.toString())
-				.preScripts(scriptsList)
-				.build();
-		}
-
-		public ContentDocument toDocument(){
-			return ContentDocument.builder()
-				.scriptList(this.scriptsList)
-				.build();
-		}
 	}
 
 	public record ContentUpdateRequestDto(
 		String url,
 		String title,
 		List<String> script,
-		String channelName,
 		ContentStatus contentStatus
 	) {
 

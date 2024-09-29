@@ -56,12 +56,15 @@ public class ContentRepositoryImpl extends QuerydslRepositorySupport implements 
 		List<ContentResponseDto.ContentViewResponseDto> responseDtos = contentEntities.stream()
 			.map(entity -> {
 				// Fetch Mysql Entity
-				List<String> scriptSentences = entity.getPreScripts();
+				String scriptSentences = entity.getPreScripts();
 				if (!searchCondition.getScript().isEmpty() || !searchCondition.getTitle().isBlank()) {
 					// Fetch MongoDB document
 					scriptSentences
 						= contentScriptRepository.findContentDocumentById(new ObjectId(entity.getMongoContentId()))
-						.getScriptList();
+						.getScriptList().stream().limit(5).toString();
+					if (scriptSentences.length() > 255) {
+						scriptSentences = scriptSentences.substring(0, 255);
+					}
 				}
 
 				// Create DTO with both JPA and MongoDB data

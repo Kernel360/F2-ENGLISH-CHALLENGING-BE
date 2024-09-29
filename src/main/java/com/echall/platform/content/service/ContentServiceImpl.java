@@ -3,6 +3,7 @@ package com.echall.platform.content.service;
 import org.bson.types.ObjectId;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 
 import com.echall.platform.content.domain.dto.ContentRequestDto;
@@ -10,9 +11,12 @@ import com.echall.platform.content.domain.dto.ContentResponseDto;
 import com.echall.platform.content.domain.entity.ContentDocument;
 import com.echall.platform.content.domain.entity.ContentEntity;
 import com.echall.platform.content.domain.enums.ContentStatus;
+import com.echall.platform.content.domain.enums.ContentType;
 import com.echall.platform.content.domain.enums.SearchCondition;
 import com.echall.platform.content.repository.ContentRepository;
 import com.echall.platform.content.repository.ContentScriptRepository;
+import com.echall.platform.crawling.domain.dto.CrawlingResponseDto;
+import com.echall.platform.crawling.service.CrawlingServiceImpl;
 
 import lombok.RequiredArgsConstructor;
 
@@ -23,6 +27,7 @@ public class ContentServiceImpl implements ContentService {
 
 	private final ContentRepository contentRepository;
 	private final ContentScriptRepository contentScriptRepository;
+	private final CrawlingServiceImpl crawlingService;
 
 	@Override
 	public Page<ContentResponseDto.ContentViewResponseDto> getAllContents(
@@ -33,13 +38,28 @@ public class ContentServiceImpl implements ContentService {
 
 	@Override
 	public ContentResponseDto.ContentCreateResponseDto createContent(
+		Authentication authentication,
 		ContentRequestDto.ContentCreateRequestDto contentCreateRequestDto
-	) {
+	) throws Exception {
+		CrawlingResponseDto.CrawlingContentResponseDto crawlingContentResponseDto = null;
 
-		ContentDocument contentDocument = contentCreateRequestDto.toDocument();
+		if (contentCreateRequestDto.contentType().equals(ContentType.YOUTUBE)) {
+			crawlingContentResponseDto = crawlingService.getYoutubeInfo(
+				contentCreateRequestDto.url(), String.valueOf(authentication.getCredentials())
+			);
+		}
+		if (contentCreateRequestDto.contentType().equals(ContentType.CNN)) {
+			crawlingContentResponseDto = crawlingService.getCNNInfo(
+				contentCreateRequestDto.url(), String.valueOf(authentication.getCredentials())
+			);
+		}
+
+		ContentDocument contentDocument = crawlingContentResponseDto.toDocument();
 		contentScriptRepository.save(contentDocument);
 
-		ContentEntity content = contentCreateRequestDto.toEntity(contentDocument.getId());
+		ContentEntity content = crawlingContentResponseDto.toEntity(
+			contentDocument.getId(), contentCreateRequestDto.contentType()
+		);
 		contentRepository.save(content);
 
 		return new ContentResponseDto.ContentCreateResponseDto(contentDocument.getId().toString(), content.getId());

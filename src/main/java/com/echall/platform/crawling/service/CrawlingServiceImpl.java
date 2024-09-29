@@ -38,7 +38,7 @@ public class CrawlingServiceImpl implements CrawlingService {
 	private String YOUTUBE_API_KEY;
 
 	@Override
-	public CrawlingResponseDto.YoutubeResponseDto getYoutubeInfo(String youtubeUrl, String credentials)
+	public CrawlingResponseDto.CrawlingContentResponseDto getYoutubeInfo(String youtubeUrl, String credentials)
 		throws Exception {
 		// Extract the video ID from the URL
 		String videoId = extractVideoId(youtubeUrl);
@@ -64,9 +64,8 @@ public class CrawlingServiceImpl implements CrawlingService {
 			throw new IllegalArgumentException("Duration exceeds 10 minutes");
 		}
 
-		return new CrawlingResponseDto.YoutubeResponseDto(
+		return new CrawlingResponseDto.CrawlingContentResponseDto(
 			youtubeUrl,
-			snippetNode.path("channelTitle").asText(),
 			snippetNode.path("title").asText(),
 			snippetNode.path("thumbnails").toString(),
 			getCategoryName(snippetNode.path("categoryId").asText()),
@@ -75,8 +74,8 @@ public class CrawlingServiceImpl implements CrawlingService {
 	}
 
 	@Override
-	public CrawlingResponseDto.CNNResponseDto getCNNInfo(String cnnUrl, String credentials) {
-		CrawlingResponseDto.CNNResponseDto cnnResponseDto = null;
+	public CrawlingResponseDto.CrawlingContentResponseDto getCNNInfo(String cnnUrl, String credentials) {
+		CrawlingResponseDto.CrawlingContentResponseDto cnnResponseDto = null;
 		try {
 			cnnResponseDto = fetchArticle(cnnUrl);
 
@@ -199,7 +198,7 @@ public class CrawlingServiceImpl implements CrawlingService {
 	}
 
 	@Override
-	public CrawlingResponseDto.CNNResponseDto fetchArticle(String url) throws IOException {
+	public CrawlingResponseDto.CrawlingContentResponseDto fetchArticle(String url) throws IOException {
 		Document doc = Jsoup.connect(url).get();
 
 		// 제목 추출
@@ -227,7 +226,7 @@ public class CrawlingServiceImpl implements CrawlingService {
 		// 본문을 문장 단위로 나누기
 		List<String> sentences = splitIntoSentences(fullText.toString());
 
-		return new CrawlingResponseDto.CNNResponseDto(
+		return new CrawlingResponseDto.CrawlingContentResponseDto(
 			url,
 			title,
 			imgUrl,
