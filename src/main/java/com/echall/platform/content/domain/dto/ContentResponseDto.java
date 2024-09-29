@@ -3,6 +3,7 @@ package com.echall.platform.content.domain.dto;
 import java.time.LocalDateTime;
 import java.util.List;
 
+import com.echall.platform.content.domain.entity.Script;
 import com.echall.platform.content.domain.enums.ContentType;
 
 public class ContentResponseDto {
@@ -10,7 +11,8 @@ public class ContentResponseDto {
 	public record ContentViewResponseDto(
 		String scriptId,
 		String title,
-		String scripts,
+		String enScripts,
+		String koScripts,
 		ContentType contentType,
 		LocalDateTime createdAt,
 		LocalDateTime updatedAt
@@ -33,7 +35,11 @@ public class ContentResponseDto {
 
 	public record ContentDetailResponseDto(
 		Long contentId,
-		List<String> scriptList
+		ContentType contentType,
+		String category,
+		String title,
+		String thumbnailUrl,
+		List<Script> scriptList
 	) {
 
 	}

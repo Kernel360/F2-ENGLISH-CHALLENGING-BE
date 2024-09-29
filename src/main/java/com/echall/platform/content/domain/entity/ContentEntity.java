@@ -40,6 +40,10 @@ public class ContentEntity extends BaseEntity {
 	@NotNull
 	private String title;
 
+	private String category;
+
+	private String thumbnailUrl;
+
 	@Size(max = 255)
 	private String preScripts;
 
@@ -53,22 +57,36 @@ public class ContentEntity extends BaseEntity {
 
 	@Builder
 	public ContentEntity(
-		String url, String title,
+		String url, String title, String category, String thumbnailUrl,
 		ContentType contentType, String mongoContentId,
-		List<String> preScripts
+		List<Script> preScripts
 	) {
+
 		this.url = url;
 		this.title = title;
+		this.category = category;
+		this.thumbnailUrl = thumbnailUrl;
 		this.contentType = contentType;
 		this.mongoContentId = mongoContentId;
-		this.preScripts = truncate(preScripts.subList(0, 5).toString(), 255);
+		this.preScripts = truncate(
+			preScripts.subList(0, 5)
+				.stream()
+				.map(Script::getEnScript)
+				.toList().toString()
+			, 255
+		);
 	}
 
 	public void update(ContentRequestDto.ContentUpdateRequestDto dto) {
 		this.url = dto.url();
 		this.title = dto.title();
 		this.contentStatus = dto.contentStatus() == null ? ContentStatus.ACTIVATED : dto.contentStatus();
-		this.preScripts = truncate(dto.script().subList(0, 5).toString(), 255);
+		this.preScripts = truncate(
+			dto.script().subList(0, 5)
+				.stream()
+				.map(Script::getEnScript)
+				.toList().toString()
+			, 255);
 	}
 
 	public void updateStatus(ContentStatus contentStatus) {

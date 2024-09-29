@@ -6,6 +6,7 @@ import org.bson.types.ObjectId;
 
 import com.echall.platform.content.domain.entity.ContentDocument;
 import com.echall.platform.content.domain.entity.ContentEntity;
+import com.echall.platform.content.domain.entity.Script;
 import com.echall.platform.content.domain.enums.ContentType;
 
 public class CrawlingResponseDto {
@@ -15,7 +16,7 @@ public class CrawlingResponseDto {
 		String title,
 		String imgUrl,
 		String category,
-		List<String> script
+		List<Script> script
 
 	) {
 		public ContentDocument toDocument(){
@@ -26,8 +27,10 @@ public class CrawlingResponseDto {
 		public ContentEntity toEntity(ObjectId contentScriptId, ContentType contentType){
 			return ContentEntity.builder()
 				.contentType(contentType)
-				.title(title)
 				.url(url)
+				.title(title)
+				.category(category)
+				.thumbnailUrl(imgUrl)
 				.mongoContentId(contentScriptId.toString())
 				.preScripts(script)
 				.build();

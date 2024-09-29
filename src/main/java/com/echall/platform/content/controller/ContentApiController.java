@@ -49,9 +49,8 @@ public class ContentApiController {
 		@RequestBody ContentRequestDto.ContentCreateRequestDto contentRequest
 	) throws Exception {
 
-		ContentResponseDto.ContentCreateResponseDto createdContent = contentService.createContent(
-			authentication, contentRequest
-		);
+		ContentResponseDto.ContentCreateResponseDto createdContent
+			= contentService.createContent(authentication, contentRequest);
 
 		return ResponseEntity.status(HttpStatus.CREATED)
 			.body(createdContent);

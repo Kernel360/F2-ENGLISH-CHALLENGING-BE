@@ -43,12 +43,12 @@ public class ContentServiceImpl implements ContentService {
 	) throws Exception {
 		CrawlingResponseDto.CrawlingContentResponseDto crawlingContentResponseDto = null;
 
-		if (contentCreateRequestDto.contentType().equals(ContentType.YOUTUBE)) {
+		if (contentCreateRequestDto.contentType().equals(ContentType.LISTENING)) {
 			crawlingContentResponseDto = crawlingService.getYoutubeInfo(
 				contentCreateRequestDto.url(), String.valueOf(authentication.getCredentials())
 			);
 		}
-		if (contentCreateRequestDto.contentType().equals(ContentType.CNN)) {
+		if (contentCreateRequestDto.contentType().equals(ContentType.LEADING)) {
 			crawlingContentResponseDto = crawlingService.getCNNInfo(
 				contentCreateRequestDto.url(), String.valueOf(authentication.getCredentials())
 			);
@@ -94,15 +94,21 @@ public class ContentServiceImpl implements ContentService {
 
 	@Override
 	public ContentResponseDto.ContentDetailResponseDto getScriptsOfContent(Long id) {
-		ContentDocument contentDocument = contentRepository.findById(id)
-			.map(content -> contentScriptRepository.findContentDocumentById(new ObjectId(content.getMongoContentId())))
-			.orElseThrow(
-				() -> new IllegalArgumentException("Content not found")
-			);
+		ContentEntity content = contentRepository.findById(id)
+			.orElseThrow(() -> new IllegalArgumentException("Content not found"));
+		ContentDocument contentDocument = contentScriptRepository.findById(
+			new ObjectId(content.getMongoContentId())
+		).orElseThrow(
+			() -> new IllegalArgumentException("Content not found")
+		);
 
 		return new ContentResponseDto.ContentDetailResponseDto(
 			id,
-			contentDocument.getScriptList()
+			content.getContentType(),
+			content.getCategory(),
+			content.getTitle(),
+			content.getThumbnailUrl(),
+			contentDocument.getScripts()
 		);
 	}
 
