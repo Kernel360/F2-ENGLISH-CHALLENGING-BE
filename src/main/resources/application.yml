@@ -10,7 +10,7 @@ spring:
   profiles:
     group:
       logging: log
-    active: prod
+    active: prod, local
   jpa:
     hibernate:
       ddl-auto: update
@@ -30,6 +30,8 @@ spring:
             scope:
               - email
               - profile
+              - https://www.googleapis.com/auth/youtube.force-ssl
+              - https://www.googleapis.com/auth/youtube.readonly
           kakao:
             client-id: ${MY_KAKAO_CLIENT_ID}
             client-secret: ${MY_KAKAO_CLIENT_SECRET}
@@ -43,6 +45,9 @@ spring:
             redirect-uri: ${MY_NAVER_REDIRECT_URI}
             authorization-grant-type: authorization_code
         provider:
+          google:
+            authorization-uri: https://accounts.google.com/o/oauth2/auth
+            token-uri: https://oauth2.googleapis.com/token
           kakao:
             authorization-uri: https://kauth.kakao.com/oauth/authorize
             token-uri: https://kauth.kakao.com/oauth/token
@@ -67,9 +72,10 @@ springdoc:
     operations-sorter: method  # delete - get - patch - post - put 순으로 정렬, alpha를 사용하면 알파벳 순으로 정렬 가능
 
   paths-to-match:
-    - /api/** # swagger-ui에 표시할 api의 엔드포인트 패턴
+    - /** # swagger-ui에 표시할 api의 엔드포인트 패턴
 
 
+# JWT
 jwt:
   issuer: ${MY_JWT_ISSUER}
   secret: ${MY_JWT_SECRET_KEY}

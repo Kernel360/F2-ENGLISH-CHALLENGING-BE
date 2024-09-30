@@ -2,6 +2,7 @@ package com.echall.platform.content.controller;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -25,7 +26,7 @@ import lombok.RequiredArgsConstructor;
  */
 @RequiredArgsConstructor
 @RestController
-@RequestMapping("/api/a1/contents") //TODO: URL 수정 필요
+@RequestMapping("/api/c1/contents") //TODO: URL 수정 필요
 @Tag(name = "Content - private API", description = "컨텐츠 회원전용 API")
 public class ContentApiController {
 	private final ContentService contentService;
@@ -44,9 +45,12 @@ public class ContentApiController {
 		@ApiResponse(responseCode = "500", description = "서버 에러가 발생하였습니다.", content = @Content(mediaType = "application/json"))
 	})
 	public ResponseEntity<ContentResponseDto.ContentCreateResponseDto> createContent(
+		Authentication authentication,
 		@RequestBody ContentRequestDto.ContentCreateRequestDto contentRequest
-	) {
-		ContentResponseDto.ContentCreateResponseDto createdContent = contentService.createContent(contentRequest);
+	) throws Exception {
+
+		ContentResponseDto.ContentCreateResponseDto createdContent
+			= contentService.createContent(authentication, contentRequest);
 
 		return ResponseEntity.status(HttpStatus.CREATED)
 			.body(createdContent);
@@ -78,7 +82,7 @@ public class ContentApiController {
 	/**
 	 * 컨텐츠 삭제 (비활성화)
 	 */
-	@PatchMapping("/delete/{id}")
+	@PatchMapping("/deactivate/{id}")
 	@Operation(summary = "어드민 - 컨텐츠 비활성화", description = "어드민 회원이 컨텐츠를 비활성화합니다.")
 	@ApiResponses(value = {
 		@ApiResponse(responseCode = "200", description = "컨텐츠가 성공적으로 비활성화되었습니다.", content = @Content(mediaType = "application/json")),

@@ -61,7 +61,7 @@ public class SecurityConfig {
 
 					// Can access from ADMIN
 					.requestMatchers("/api/a1/**").hasAnyRole("ADMIN", "DEVELOPER")
-					.requestMatchers("/api/contents/**").hasAnyRole("ADMIN", "DEVELOPER")
+					.requestMatchers("/api/c1/**").hasAnyRole("ADMIN", "DEVELOPER")
 
 					/**
 					 * Need To Activate DEVELOPER on DEPLOY SETTING
