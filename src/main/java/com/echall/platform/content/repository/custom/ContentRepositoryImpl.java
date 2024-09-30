@@ -15,6 +15,7 @@ import org.springframework.data.jpa.repository.support.QuerydslRepositorySupport
 import com.echall.platform.content.domain.dto.ContentResponseDto;
 import com.echall.platform.content.domain.entity.ContentDocument;
 import com.echall.platform.content.domain.entity.ContentEntity;
+import com.echall.platform.content.domain.entity.Script;
 import com.echall.platform.content.domain.enums.SearchCondition;
 import com.echall.platform.content.repository.ContentScriptRepository;
 import com.querydsl.jpa.JPQLQuery;
@@ -32,7 +33,7 @@ public class ContentRepositoryImpl extends QuerydslRepositorySupport implements 
 	public Page<ContentResponseDto.ContentViewResponseDto> search(Pageable pageable, SearchCondition searchCondition) {
 
 		// Step 1: Fetch relevant MongoDB data
-		List<String> mongoIds = contentScriptRepository.findByScriptList(searchCondition.getScript())
+		List<String> mongoIds = contentScriptRepository.findByScripts(searchCondition.getScript())
 			.stream()
 			.map(ContentDocument::getStringId)
 			.toList();
@@ -56,12 +57,18 @@ public class ContentRepositoryImpl extends QuerydslRepositorySupport implements 
 		List<ContentResponseDto.ContentViewResponseDto> responseDtos = contentEntities.stream()
 			.map(entity -> {
 				// Fetch Mysql Entity
-				List<String> scriptSentences = entity.getPreScripts();
+				String scriptSentences = entity.getPreScripts();
 				if (!searchCondition.getScript().isEmpty() || !searchCondition.getTitle().isBlank()) {
 					// Fetch MongoDB document
 					scriptSentences
 						= contentScriptRepository.findContentDocumentById(new ObjectId(entity.getMongoContentId()))
-						.getScriptList();
+						.getScripts().subList(0, 5)
+						.stream()
+						.map(Script::getEnScript)
+						.toList().toString();
+					if (scriptSentences.length() > 255) {
+						scriptSentences = scriptSentences.substring(0, 255);
+					}
 				}
 
 				// Create DTO with both JPA and MongoDB data
@@ -69,6 +76,7 @@ public class ContentRepositoryImpl extends QuerydslRepositorySupport implements 
 					entity.getMongoContentId(),
 					entity.getTitle(),
 					scriptSentences,
+					scriptSentences,	// TODO: 번역 필요
 					entity.getContentType(),
 					entity.getCreatedAt(),
 					entity.getUpdatedAt()

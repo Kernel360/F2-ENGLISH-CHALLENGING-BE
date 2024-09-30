@@ -61,7 +61,6 @@ public class SecurityConfig {
 
 					// Can access from ADMIN
 					.requestMatchers("/api/a1/**").hasAnyRole("ADMIN", "DEVELOPER")
-					.requestMatchers("/api/cr1/**").hasAnyRole("ADMIN", "DEVELOPER")
 					.requestMatchers("/api/c1/**").hasAnyRole("ADMIN", "DEVELOPER")
 
 					/**

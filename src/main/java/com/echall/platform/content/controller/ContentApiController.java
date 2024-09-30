@@ -2,6 +2,7 @@ package com.echall.platform.content.controller;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -44,9 +45,12 @@ public class ContentApiController {
 		@ApiResponse(responseCode = "500", description = "서버 에러가 발생하였습니다.", content = @Content(mediaType = "application/json"))
 	})
 	public ResponseEntity<ContentResponseDto.ContentCreateResponseDto> createContent(
+		Authentication authentication,
 		@RequestBody ContentRequestDto.ContentCreateRequestDto contentRequest
-	) {
-		ContentResponseDto.ContentCreateResponseDto createdContent = contentService.createContent(contentRequest);
+	) throws Exception {
+
+		ContentResponseDto.ContentCreateResponseDto createdContent
+			= contentService.createContent(authentication, contentRequest);
 
 		return ResponseEntity.status(HttpStatus.CREATED)
 			.body(createdContent);

@@ -25,6 +25,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
+import com.echall.platform.content.domain.entity.Script;
 import com.echall.platform.crawling.domain.dto.CrawlingResponseDto;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
@@ -38,7 +39,7 @@ public class CrawlingServiceImpl implements CrawlingService {
 	private String YOUTUBE_API_KEY;
 
 	@Override
-	public CrawlingResponseDto.YoutubeResponseDto getYoutubeInfo(String youtubeUrl, String credentials)
+	public CrawlingResponseDto.CrawlingContentResponseDto getYoutubeInfo(String youtubeUrl, String credentials)
 		throws Exception {
 		// Extract the video ID from the URL
 		String videoId = extractVideoId(youtubeUrl);
@@ -60,26 +61,24 @@ public class CrawlingServiceImpl implements CrawlingService {
 		JsonNode contentDetailsNode = getSnippetNode(response.getBody()).path("contentDetails");
 
 		Duration duration = Duration.parse(contentDetailsNode.path("duration").asText());
-		if(duration.compareTo(Duration.ofMinutes(10)) > 0){
+		if (duration.compareTo(Duration.ofMinutes(10)) > 0) {
 			throw new IllegalArgumentException("Duration exceeds 10 minutes");
 		}
 
-		return new CrawlingResponseDto.YoutubeResponseDto(
+		return new CrawlingResponseDto.CrawlingContentResponseDto(
 			youtubeUrl,
-			snippetNode.path("channelTitle").asText(),
 			snippetNode.path("title").asText(),
-			snippetNode.path("thumbnails").toString(),
+			snippetNode.path("thumbnails").get("standard").get("url").toString(),
 			getCategoryName(snippetNode.path("categoryId").asText()),
-			getYoutubeScript(youtubeUrl)
+			getYoutubeScript(youtubeUrl, Double.parseDouble(String.valueOf(duration.getSeconds())))
 		);
 	}
 
 	@Override
-	public CrawlingResponseDto.CNNResponseDto getCNNInfo(String cnnUrl, String credentials) {
-		CrawlingResponseDto.CNNResponseDto cnnResponseDto = null;
+	public CrawlingResponseDto.CrawlingContentResponseDto getCNNInfo(String cnnUrl, String credentials) {
+		CrawlingResponseDto.CrawlingContentResponseDto cnnResponseDto = null;
 		try {
 			cnnResponseDto = fetchArticle(cnnUrl);
-
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -96,7 +95,7 @@ public class CrawlingServiceImpl implements CrawlingService {
 	}
 
 	@Override
-	public List<String> getYoutubeScript(String youtubeInfo) {
+	public List<Script> getYoutubeScript(String youtubeInfo, double seconds) {
 		WebDriverManager.chromedriver().setup();
 
 		ChromeOptions options = new ChromeOptions();
@@ -105,10 +104,10 @@ public class CrawlingServiceImpl implements CrawlingService {
 			"user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/123.0.0.0 Safari/537.36");
 		options.addArguments("--lang=en-US");
 		WebDriver driver = new ChromeDriver(options);
-		List<String> transcriptLines;
+		List<Script> transcriptLines;
 
 		try {
-			transcriptLines = runSelenium(driver, youtubeInfo);
+			transcriptLines = runSelenium(driver, youtubeInfo, seconds);
 		} catch (Exception e) {
 			throw new RuntimeException(e);
 		} finally {
@@ -119,14 +118,16 @@ public class CrawlingServiceImpl implements CrawlingService {
 	}
 
 	@Override
-	public List<String> runSelenium(WebDriver driver, String youtubeInfo) throws Exception {
-		List<String> scripts = new ArrayList<>();
+	public List<Script> runSelenium(WebDriver driver, String youtubeInfo, double seconds) throws Exception {
+		List<Script> scripts = new ArrayList<>();
+
 		driver.get(youtubeInfo);
 		driver.manage().window().maximize();
 		WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
 		JavascriptExecutor js = (JavascriptExecutor)driver;
 		wait.until(webDriver -> js.executeScript("return document.readyState").equals("complete"));
 		Thread.sleep(5000);
+
 /*			// TODO: 혹시 필요하면 주석 풀어서 사용해야 함
 			try {
 				WebElement closeAdButton = wait.until(
@@ -158,15 +159,40 @@ public class CrawlingServiceImpl implements CrawlingService {
 		Thread.sleep(5000);
 
 		// Use XPath to find all elements containing the transcript text
-		List<WebElement> segmentTextElements = driver.findElements(
-			By.xpath("//yt-formatted-string[@class='segment-text style-scope ytd-transcript-segment-renderer']"));
+		List<WebElement> segmentElements = driver.findElements(
+			By.xpath("//ytd-transcript-segment-renderer"));
+		for (int i = 0; i < segmentElements.size(); ++i) {
+			String time = segmentElements.get(i)
+				.findElement(By.xpath(".//div[contains(@class, 'timestamp')]"))
+				.getText();
+			double startTime = getSecondsFromString(time);
+			double endtime = seconds;
 
-		for (WebElement element : segmentTextElements) {
-			String text = element.getText();
-			if (text != null && !text.isEmpty()) {
-				scripts.add(text);
+			if (i + 1 < segmentElements.size()) {
+				endtime = getSecondsFromString(
+					segmentElements.get(i + 1)
+						.findElement(By.xpath(".//div[contains(@class, 'timestamp')]"))
+						.getText()
+				);
 			}
+
+			String text = segmentElements.get(i)
+				.findElement(By.xpath(".//yt-formatted-string[contains(@class, 'segment-text')]"))
+				.getText();
+
+			if (text != null && !text.isEmpty()) {
+				scripts.add(
+					Script.builder()
+						.startTimeInSecond(startTime)
+						.durationInSecond(endtime - startTime)
+						.enScript(text)
+						.koScript(text) // TODO: 번역기 사용 필요
+						.build()
+				);
+			}
+
 		}
+
 		return scripts;
 	}
 
@@ -199,7 +225,7 @@ public class CrawlingServiceImpl implements CrawlingService {
 	}
 
 	@Override
-	public CrawlingResponseDto.CNNResponseDto fetchArticle(String url) throws IOException {
+	public CrawlingResponseDto.CrawlingContentResponseDto fetchArticle(String url) throws IOException {
 		Document doc = Jsoup.connect(url).get();
 
 		// 제목 추출
@@ -211,12 +237,13 @@ public class CrawlingServiceImpl implements CrawlingService {
 
 		// 이미지 URL 추출
 		Elements images = doc.select("img.image__dam-img[src]");
-		List<String> imageUrls = new ArrayList<>();
+		/*List<String> imageUrls = new ArrayList<>();
 		for (Element img : images) {
 			imageUrls.add(img.attr("src"));
 		}
-		String imgUrl = imageUrls.toString();
+		String imgUrl = imageUrls.toString();*/
 
+		String imgUrl = images.get(0).attr("src").toString();
 		// 본문 추출
 		Elements paragraphs = doc.select("div.article__content p");
 		StringBuilder fullText = new StringBuilder();
@@ -227,12 +254,21 @@ public class CrawlingServiceImpl implements CrawlingService {
 		// 본문을 문장 단위로 나누기
 		List<String> sentences = splitIntoSentences(fullText.toString());
 
-		return new CrawlingResponseDto.CNNResponseDto(
+		return new CrawlingResponseDto.CrawlingContentResponseDto(
 			url,
 			title,
 			imgUrl,
 			category,
-			sentences
+			sentences.stream()
+				.map(
+					sentence -> Script.builder()
+						.startTimeInSecond(0)
+						.durationInSecond(0)
+						.enScript(sentence)
+						.koScript(sentence) // TODO: 번역기 추가 해야 함
+						.build()
+				).toList()
+
 		);
 	}
 
@@ -248,5 +284,10 @@ public class CrawlingServiceImpl implements CrawlingService {
 		}
 
 		return sentences;
+	}
+
+	@Override
+	public double getSecondsFromString(String time) {
+		return Double.parseDouble(time.split(":")[0]) * 60 + Double.parseDouble(time.split(":")[1]);
 	}
 }
