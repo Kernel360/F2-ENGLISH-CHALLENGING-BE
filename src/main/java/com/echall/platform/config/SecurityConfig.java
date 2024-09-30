@@ -131,6 +131,7 @@ public class SecurityConfig {
 		corsConfiguration.setAllowedHeaders(Collections.singletonList("*"));
 		corsConfiguration.setAllowedMethods(Collections.singletonList("*"));
 		corsConfiguration.setAllowedOriginPatterns(Collections.singletonList("http://localhost:3000"));
+		corsConfiguration.setAllowedOriginPatterns(Collections.singletonList("http://http://13.238.253.88:8080"));
 		corsConfiguration.setAllowCredentials(true);
 
 		UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
