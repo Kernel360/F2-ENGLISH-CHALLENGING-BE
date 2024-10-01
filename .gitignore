@@ -43,10 +43,11 @@ out/
 !/.env
 /src/main/resources/yml/application-prod.yml
 /src/main/resources/yml/logging/**
-/data/mysql-data/*
+/data/*
 /gradle/wrapper/*
 /gradlew
 /gradlew.bat
 /.env
 /mongodb/*
 docker-compose.yml
+/biengual/*
