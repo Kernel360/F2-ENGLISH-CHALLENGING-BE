@@ -1,6 +1,7 @@
 package com.echall.platform.content.controller;
 
-import org.springframework.http.HttpStatus;
+import static com.echall.platform.message.response.ContentResponseCode.*;
+
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.PatchMapping;
@@ -13,6 +14,8 @@ import org.springframework.web.bind.annotation.RestController;
 import com.echall.platform.content.domain.dto.ContentRequestDto;
 import com.echall.platform.content.domain.dto.ContentResponseDto;
 import com.echall.platform.content.service.ContentService;
+import com.echall.platform.message.ApiCustomResponse;
+import com.echall.platform.message.ResponseEntityFactory;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -26,7 +29,7 @@ import lombok.RequiredArgsConstructor;
  */
 @RequiredArgsConstructor
 @RestController
-@RequestMapping("/api/c1/contents") //TODO: URL 수정 필요
+@RequestMapping("/api/c1/contents")
 @Tag(name = "Content - private API", description = "컨텐츠 회원전용 API")
 public class ContentApiController {
 	private final ContentService contentService;
@@ -44,16 +47,14 @@ public class ContentApiController {
 		@ApiResponse(responseCode = "403", description = "접근 권한이 없습니다.", content = @Content(mediaType = "application/json")),
 		@ApiResponse(responseCode = "500", description = "서버 에러가 발생하였습니다.", content = @Content(mediaType = "application/json"))
 	})
-	public ResponseEntity<ContentResponseDto.ContentCreateResponseDto> createContent(
+	public ResponseEntity<ApiCustomResponse<ContentResponseDto.ContentCreateResponseDto>> createContent(
 		Authentication authentication,
 		@RequestBody ContentRequestDto.ContentCreateRequestDto contentRequest
 	) throws Exception {
 
 		ContentResponseDto.ContentCreateResponseDto createdContent
 			= contentService.createContent(authentication, contentRequest);
-
-		return ResponseEntity.status(HttpStatus.CREATED)
-			.body(createdContent);
+		return ResponseEntityFactory.toResponseEntity(CONTENT_CREATE_SUCCESS, createdContent);
 	}
 
 	/**
@@ -69,18 +70,18 @@ public class ContentApiController {
 		@ApiResponse(responseCode = "404", description = "컨텐츠를 찾을 수 없습니다.", content = @Content(mediaType = "application/json")),
 		@ApiResponse(responseCode = "500", description = "서버 에러가 발생하였습니다.", content = @Content(mediaType = "application/json"))
 	})
-	public ResponseEntity<ContentResponseDto.ContentUpdateResponseDto> modifyContent(
+	public ResponseEntity<ApiCustomResponse<ContentResponseDto.ContentUpdateResponseDto>> modifyContent(
 		@PathVariable Long id,
 		@RequestBody ContentRequestDto.ContentUpdateRequestDto contentUpdateRequest
 	) {
 		ContentResponseDto.ContentUpdateResponseDto updatedContent
 			= contentService.updateContent(id, contentUpdateRequest);
 
-		return ResponseEntity.status(HttpStatus.OK).body(updatedContent);
+		return ResponseEntityFactory.toResponseEntity(CONTENT_MODIFY_SUCCESS, updatedContent);
 	}
 
 	/**
-	 * 컨텐츠 삭제 (비활성화)
+	 * 컨텐츠 비활성화
 	 */
 	@PatchMapping("/deactivate/{id}")
 	@Operation(summary = "어드민 - 컨텐츠 비활성화", description = "어드민 회원이 컨텐츠를 비활성화합니다.")
@@ -89,9 +90,10 @@ public class ContentApiController {
 		@ApiResponse(responseCode = "404", description = "컨텐츠를 찾을 수 없습니다.", content = @Content(mediaType = "application/json")),
 		@ApiResponse(responseCode = "500", description = "서버 에러가 발생하였습니다.", content = @Content(mediaType = "application/json"))
 	})
-	public ResponseEntity<ContentResponseDto.ContentUpdateResponseDto> deactivateContent(@PathVariable Long id) {
+	public ResponseEntity<ApiCustomResponse<ContentResponseDto.ContentUpdateResponseDto>> deactivateContent(
+		@PathVariable Long id) {
 		ContentResponseDto.ContentUpdateResponseDto contentDeleteResponseDto = contentService.deactivateContent(id);
-		return ResponseEntity.status(HttpStatus.OK)
-			.body(contentDeleteResponseDto);
+
+		return ResponseEntityFactory.toResponseEntity(CONTENT_DEACTIVATE_SUCCESS, contentDeleteResponseDto);
 	}
 }

@@ -1,5 +1,7 @@
 package com.echall.platform.user.controller;
 
+import static com.echall.platform.message.response.UserResponseCode.*;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
@@ -12,6 +14,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.echall.platform.message.ApiCustomResponse;
+import com.echall.platform.message.ResponseEntityFactory;
 import com.echall.platform.user.domain.dto.UserRequestDto;
 import com.echall.platform.user.domain.dto.UserResponseDto;
 import com.echall.platform.user.service.UserService;
@@ -39,13 +43,13 @@ public class UserApiController {
 		@ApiResponse(responseCode = "202", description = "이미 가입된 계정입니다.", content = @Content(mediaType = "application/json")),
 		@ApiResponse(responseCode = "404", description = "데이터베이스 연결에 실패하였습니다.", content = @Content(mediaType = "application/json")),
 	})
-	public ResponseEntity<UserResponseDto.UserUpdateResponse> setNewUserInfo(
+	public ResponseEntity<ApiCustomResponse<UserResponseDto.UserUpdateResponse>> setNewUserInfo(
 		@RequestBody UserRequestDto.UserUpdateRequest userUpdateRequest,
 		Authentication authentication
 	) {
 
-		return ResponseEntity.status(HttpStatus.CREATED)
-			.body(userService.updateUserInfo(userUpdateRequest, authentication.getName()));
+		return ResponseEntityFactory
+			.toResponseEntity(USER_INPUT_INFO, userService.updateUserInfo(userUpdateRequest, authentication.getName()));
 	}
 
 	@GetMapping("/me")
@@ -54,10 +58,11 @@ public class UserApiController {
 		@ApiResponse(responseCode = "200", description = "요청에 성공하였습니다.", content = @Content(mediaType = "application/json")),
 		@ApiResponse(responseCode = "404", description = "데이터베이스 연결에 실패하였습니다.", content = @Content(mediaType = "application/json"))
 	})
-	public ResponseEntity<UserResponseDto.UserMyPageResponse> getMyPage(Authentication authentication) {
+	public ResponseEntity<ApiCustomResponse<UserResponseDto.UserMyPageResponse>> getMyPage(
+		Authentication authentication) {
 
-		return ResponseEntity.status(HttpStatus.OK)
-			.body(userService.getMyPage(authentication.getName()));
+		return ResponseEntityFactory
+			.toResponseEntity(USER_GET_INFO, userService.getMyPage(authentication.getName()));
 	}
 
 	@PatchMapping("/me")
@@ -66,13 +71,15 @@ public class UserApiController {
 		@ApiResponse(responseCode = "200", description = "요청에 성공하였습니다.", content = @Content(mediaType = "application/json")),
 		@ApiResponse(responseCode = "404", description = "데이터베이스 연결에 실패하였습니다.", content = @Content(mediaType = "application/json"))
 	})
-	public ResponseEntity<UserResponseDto.UserUpdateResponse> updateExistedUserInfo(
+	public ResponseEntity<ApiCustomResponse<UserResponseDto.UserUpdateResponse>> updateExistedUserInfo(
 		@RequestBody UserRequestDto.UserUpdateRequest userUpdateRequest,
 		Authentication authentication
 	) {
 
-		return ResponseEntity.status(HttpStatus.OK)
-			.body(userService.updateUserInfo(userUpdateRequest, authentication.getName()));
+		return ResponseEntityFactory
+			.toResponseEntity(
+				USER_UPDATE_INFO, userService.updateUserInfo(userUpdateRequest, authentication.getName())
+			);
 	}
 
 	@GetMapping("/me/challenge")
@@ -81,11 +88,11 @@ public class UserApiController {
 		@ApiResponse(responseCode = "200", description = "요청에 성공하였습니다.", content = @Content(mediaType = "application/json")),
 		@ApiResponse(responseCode = "404", description = "데이터베이스 연결에 실패하였습니다.", content = @Content(mediaType = "application/json"))
 	})
-	public ResponseEntity<UserResponseDto.UserChallengeResponse> userChallenge(
+	public ResponseEntity<ApiCustomResponse<UserResponseDto.UserChallengeResponse>> userChallenge(
 		Authentication authentication
 	) {
-		return ResponseEntity.status(HttpStatus.OK)
-			.body(userService.getMyChallenge(authentication.getName()));
+		return ResponseEntityFactory
+			.toResponseEntity(USER_GET_CHALLENGE, userService.getMyChallenge(authentication.getName()));
 	}
 
 }

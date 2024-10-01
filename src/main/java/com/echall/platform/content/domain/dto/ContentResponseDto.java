@@ -40,6 +40,7 @@ public class ContentResponseDto {
 		String title,
 		String thumbnailUrl,
 		List<Script> scriptList
+		// 
 	) {
 
 	}

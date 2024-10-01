@@ -12,8 +12,8 @@ import com.fasterxml.jackson.databind.JsonNode;
 
 public interface CrawlingService {
 	// YouTube
-	CrawlingResponseDto.CrawlingContentResponseDto getYoutubeInfo(String youtubeUrl, String credentials) throws
-		Exception;
+	CrawlingResponseDto.CrawlingContentResponseDto getYoutubeInfo(String youtubeUrl, String credentials)
+		throws Exception;
 
 	JsonNode getSnippetNode(String body) throws JsonProcessingException;
 
