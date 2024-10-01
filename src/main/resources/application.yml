@@ -10,7 +10,7 @@ spring:
   profiles:
     group:
       logging: log
-    active: prod, local
+    active: local
   jpa:
     hibernate:
       ddl-auto: update
