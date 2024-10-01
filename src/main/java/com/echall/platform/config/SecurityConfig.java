@@ -1,11 +1,15 @@
 package com.echall.platform.config;
 
+import java.util.Collections;
+import java.util.List;
+
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
+import org.springframework.security.config.annotation.web.configurers.HttpBasicConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.HttpStatusEntryPoint;
@@ -13,6 +17,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
+import org.springframework.web.cors.CorsUtils;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 import com.echall.platform.oauth2.OAuth2SuccessHandler;
@@ -40,7 +45,7 @@ public class SecurityConfig {
 		http
 			.formLogin(AbstractHttpConfigurer::disable)
 			.logout(AbstractHttpConfigurer::disable)
-			.httpBasic(AbstractHttpConfigurer::disable)
+			.httpBasic(HttpBasicConfigurer::disable)
 			.csrf(AbstractHttpConfigurer::disable)
 			.cors(cors -> cors.configurationSource(corsConfigurationSource()));
 
@@ -71,6 +76,8 @@ public class SecurityConfig {
 					.requestMatchers("/swagger-ui/**").hasRole("DEVELOPER")
 					.requestMatchers("/api-info/**").hasRole("DEVELOPER")
 
+
+					.requestMatchers(CorsUtils::isPreFlightRequest).permitAll()
 					.anyRequest().permitAll();
 			});
 
@@ -120,23 +127,25 @@ public class SecurityConfig {
 
 	@Bean
 	public CorsConfigurationSource corsConfigurationSource() {
-		CorsConfiguration corsConfiguration = new CorsConfiguration();
-		corsConfiguration.addAllowedOriginPattern("*");
-		corsConfiguration.addExposedHeader("Authorization");
-		corsConfiguration.addExposedHeader("refresh_token");
-		corsConfiguration.addExposedHeader("Set-Cookie");
-		corsConfiguration.addAllowedHeader("*");
-		corsConfiguration.addAllowedMethod("*");
+		return request -> {
+			CorsConfiguration corsConfiguration = new CorsConfiguration();
+			corsConfiguration.setAllowedOrigins(List.of("http://localhost:3000"));
+			corsConfiguration.setAllowedHeaders(Collections.singletonList("*"));
+			corsConfiguration.setExposedHeaders(Collections.singletonList("*"));
+			corsConfiguration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
+			corsConfiguration.setAllowedOriginPatterns(Collections.singletonList("http://localhost:3000"));
+			corsConfiguration.setAllowCredentials(true);
+			return corsConfiguration;
+		};
+
 		// corsConfiguration.addAllowedOrigin(System.getenv("WEBSITE_DOMAIN"));
 		// corsConfiguration.addAllowedOrigin(System.getenv("API_DOMAIN"));
-		corsConfiguration.addAllowedOrigin("http://localhost:8080"); // JUST FOR LOCAL DEV
-		corsConfiguration.addAllowedOrigin("http://localhost:8081"); // JUST FOR LOCAL DEV
-		corsConfiguration.addAllowedOrigin("http://localhost:3000"); // JUST FOR LOCAL DEV
-		corsConfiguration.addAllowedHeader("http://13.238.253.88:8080"); // JUST FOR PROD
-		corsConfiguration.setAllowCredentials(true);
-
-		UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-		source.registerCorsConfiguration("/**", corsConfiguration);
-		return source;
+		// corsConfiguration.addAllowedOrigin("http://localhost:8080"); // JUST FOR LOCAL DEV
+		// corsConfiguration.addAllowedOrigin("http://localhost:3000"); // JUST FOR LOCAL DEV
+		// corsConfiguration.addAllowedHeader("http://13.238.253.88:8080"); // JUST FOR PROD
+		//
+		// UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+		// source.registerCorsConfiguration("/**", corsConfiguration);
+		// return source;
 	}
 }
