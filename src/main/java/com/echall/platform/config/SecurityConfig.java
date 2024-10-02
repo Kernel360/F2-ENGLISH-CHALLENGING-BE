@@ -110,7 +110,14 @@ public class SecurityConfig {
 			CorsConfiguration corsConfiguration = new CorsConfiguration();
 			corsConfiguration.setAllowedHeaders(Collections.singletonList("*"));
 			corsConfiguration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "PATCH"));
-			corsConfiguration.setAllowedOriginPatterns(Collections.singletonList("http://localhost:3000"));
+			corsConfiguration.setAllowedOriginPatterns(List.of("http://localhost:3000",
+				"http://localhost:8080",
+				"https://biengual.store",
+				"https://dev.biengual.store",
+				"https://www.biengual.store",
+				"https://f2-english-fe.vercel.app",
+				"https://front.biengual.store"
+				));
 			corsConfiguration.setAllowCredentials(true);
 			return corsConfiguration;
 		};
