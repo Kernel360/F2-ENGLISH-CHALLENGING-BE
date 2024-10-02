@@ -1,8 +1,9 @@
 package com.echall.platform.bookmark.controller;
 
+import static com.echall.platform.message.response.BookmarkResponseCode.*;
+
 import java.util.List;
 
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -15,6 +16,8 @@ import org.springframework.web.bind.annotation.RestController;
 import com.echall.platform.bookmark.domain.dto.BookmarkRequestDto;
 import com.echall.platform.bookmark.domain.dto.BookmarkResponseDto;
 import com.echall.platform.bookmark.service.BookmarkService;
+import com.echall.platform.message.ApiCustomResponse;
+import com.echall.platform.message.ResponseEntityFactory;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -37,12 +40,13 @@ public class BookmarkApiController {
 		@ApiResponse(responseCode = "204", description = "컨텐츠가 없습니다.", content = @Content),
 		@ApiResponse(responseCode = "500", description = "서버 에러가 발생하였습니다.", content = @Content)
 	})
-	public ResponseEntity<List<BookmarkResponseDto.BookmarkMyListResponse>> getBookmarks(
+	public ResponseEntity<ApiCustomResponse<List<BookmarkResponseDto.BookmarkMyListResponse>>> getBookmarks(
 		Authentication authentication,
 		@PathVariable Long id
 	) {
-		return ResponseEntity.status(HttpStatus.OK)
-			.body(bookmarkService.getBookmarks(authentication.getName(), id));
+		return ResponseEntityFactory.toResponseEntity(
+			BOOKMARK_VIEW_SUCCESS, bookmarkService.getBookmarks(authentication.getName(), id)
+		);
 	}
 
 	@PostMapping("/update")
@@ -52,12 +56,14 @@ public class BookmarkApiController {
 		@ApiResponse(responseCode = "204", description = "컨텐츠가 없습니다.", content = @Content),
 		@ApiResponse(responseCode = "500", description = "서버 에러가 발생하였습니다.", content = @Content)
 	})
-	public ResponseEntity<BookmarkResponseDto.BookmarkUpdateResponse> updateBookmark(
+	public ResponseEntity<ApiCustomResponse<BookmarkResponseDto.BookmarkUpdateResponse>> updateBookmark(
 		Authentication authentication, @RequestBody BookmarkRequestDto.BookmarkUpdateRequest bookmarkRequestDto
 	) {
 
-		return ResponseEntity.status(HttpStatus.OK)
-			.body(bookmarkService.updateBookmark(authentication.getName(), bookmarkRequestDto));
+		return ResponseEntityFactory.toResponseEntity(
+			BOOKMARK_UPDATE_SUCCESS, bookmarkService.updateBookmark(authentication.getName(), bookmarkRequestDto)
+		);
+
 	}
 
 }

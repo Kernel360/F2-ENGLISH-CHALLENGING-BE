@@ -1,8 +1,10 @@
 package com.echall.platform.user.service;
 
+import static com.echall.platform.message.error.code.UserErrorCode.*;
+
 import org.springframework.stereotype.Service;
 
-import com.echall.platform.exception.user.UserNotFoundException;
+import com.echall.platform.message.error.exception.CommonException;
 import com.echall.platform.user.domain.dto.UserRequestDto;
 import com.echall.platform.user.domain.dto.UserResponseDto;
 import com.echall.platform.user.domain.entity.UserEntity;
@@ -48,9 +50,7 @@ public class UserService {
 
 	public UserEntity getUserById(Long userId) {
 		UserEntity user = userRepository.findById(userId)
-			.orElseThrow(
-				() -> new UserNotFoundException(userId.toString())
-			);
+			.orElseThrow(() -> new CommonException(USER_NOT_FOUND));
 		AssertThat_UserAccountIsAppropriate(user);
 		return user;
 	}
@@ -58,15 +58,15 @@ public class UserService {
 	// Internal Methods=================================================================================================
 	public UserEntity getUserByEmail(String email) {
 		return userRepository.findByEmail(email)
-			.orElseThrow(() -> new RuntimeException("User not found"));
+			.orElseThrow(() -> new CommonException(USER_NOT_FOUND));
 	}
 
 	protected void AssertThat_UserAccountIsAppropriate(UserEntity user) {
 		if (user.getUserStatus().equals(UserStatus.USER_STATUS_DEACTIVATED)) {
-			throw new RuntimeException("User deactivated");
+			throw new CommonException(USER_FAIL_DEACTIVATE);
 		}
 		if (user.getUserStatus().equals(UserStatus.USER_STATUS_SUSPENDED)) {
-			throw new RuntimeException("User suspended");
+			throw new CommonException(USER_FAIL_SUSPEND);
 		}
 	}
 

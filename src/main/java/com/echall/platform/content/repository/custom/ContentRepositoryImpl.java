@@ -1,6 +1,7 @@
 package com.echall.platform.content.repository.custom;
 
 import static com.echall.platform.content.domain.entity.QContentEntity.*;
+import static com.echall.platform.message.error.code.UserErrorCode.*;
 
 import java.util.List;
 import java.util.Optional;
@@ -18,6 +19,7 @@ import com.echall.platform.content.domain.entity.ContentEntity;
 import com.echall.platform.content.domain.entity.Script;
 import com.echall.platform.content.domain.enums.SearchCondition;
 import com.echall.platform.content.repository.ContentScriptRepository;
+import com.echall.platform.message.error.exception.CommonException;
 import com.querydsl.jpa.JPQLQuery;
 
 public class ContentRepositoryImpl extends QuerydslRepositorySupport implements ContentRepositoryCustom {
@@ -49,7 +51,7 @@ public class ContentRepositoryImpl extends QuerydslRepositorySupport implements 
 		}
 
 		List<ContentEntity> contentEntities = Optional.ofNullable(getQuerydsl())
-			.orElseThrow(RuntimeException::new)
+			.orElseThrow(() -> new CommonException(USER_NOT_FOUND))
 			.applyPagination(pageable, jpaQuery)
 			.fetch();
 
@@ -76,7 +78,7 @@ public class ContentRepositoryImpl extends QuerydslRepositorySupport implements 
 					entity.getMongoContentId(),
 					entity.getTitle(),
 					scriptSentences,
-					scriptSentences,	// TODO: 번역 필요
+					scriptSentences,    // TODO: 번역 필요
 					entity.getContentType(),
 					entity.getCreatedAt(),
 					entity.getUpdatedAt()

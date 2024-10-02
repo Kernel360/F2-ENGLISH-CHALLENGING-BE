@@ -1,5 +1,7 @@
 package com.echall.platform.crawling.service;
 
+import static com.echall.platform.message.error.code.CrawlingErrorCode.*;
+
 import java.io.IOException;
 import java.time.Duration;
 import java.util.ArrayList;
@@ -27,6 +29,7 @@ import org.springframework.web.client.RestTemplate;
 
 import com.echall.platform.content.domain.entity.Script;
 import com.echall.platform.crawling.domain.dto.CrawlingResponseDto;
+import com.echall.platform.message.error.exception.CommonException;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -62,7 +65,7 @@ public class CrawlingServiceImpl implements CrawlingService {
 
 		Duration duration = Duration.parse(contentDetailsNode.path("duration").asText());
 		if (duration.compareTo(Duration.ofMinutes(10)) > 0) {
-			throw new IllegalArgumentException("Duration exceeds 10 minutes");
+			throw new CommonException(CRAWLING_OUT_OF_BOUNDS);
 		}
 
 		return new CrawlingResponseDto.CrawlingContentResponseDto(
@@ -109,7 +112,7 @@ public class CrawlingServiceImpl implements CrawlingService {
 		try {
 			transcriptLines = runSelenium(driver, youtubeInfo, seconds);
 		} catch (Exception e) {
-			throw new RuntimeException(e);
+			throw new CommonException(SELENIUM_RUNTIME_ERROR);
 		} finally {
 			driver.quit();
 		}

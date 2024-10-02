@@ -1,5 +1,7 @@
 package com.echall.platform.content.service;
 
+import static com.echall.platform.message.error.code.ContentErrorCode.*;
+
 import org.bson.types.ObjectId;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -17,6 +19,7 @@ import com.echall.platform.content.repository.ContentRepository;
 import com.echall.platform.content.repository.ContentScriptRepository;
 import com.echall.platform.crawling.domain.dto.CrawlingResponseDto;
 import com.echall.platform.crawling.service.CrawlingServiceImpl;
+import com.echall.platform.message.error.exception.CommonException;
 
 import lombok.RequiredArgsConstructor;
 
@@ -70,7 +73,7 @@ public class ContentServiceImpl implements ContentService {
 		Long id, ContentRequestDto.ContentUpdateRequestDto contentUpdateRequest
 	) {
 		ContentEntity content = contentRepository.findById(id)
-			.orElseThrow(() -> new IllegalArgumentException("Content not found"));
+			.orElseThrow(() -> new CommonException(CONTENT_NOT_FOUND));
 		content.update(contentUpdateRequest);
 		contentRepository.save(content);
 
@@ -85,7 +88,7 @@ public class ContentServiceImpl implements ContentService {
 	@Override
 	public ContentResponseDto.ContentUpdateResponseDto deactivateContent(Long id) {
 		ContentEntity content = contentRepository.findById(id)
-			.orElseThrow(() -> new IllegalArgumentException("Content not found"));
+			.orElseThrow(() -> new CommonException(CONTENT_NOT_FOUND));
 		content.updateStatus(ContentStatus.DEACTIVATED);
 		contentRepository.save(content);
 
@@ -95,11 +98,11 @@ public class ContentServiceImpl implements ContentService {
 	@Override
 	public ContentResponseDto.ContentDetailResponseDto getScriptsOfContent(Long id) {
 		ContentEntity content = contentRepository.findById(id)
-			.orElseThrow(() -> new IllegalArgumentException("Content not found"));
+			.orElseThrow(() -> new CommonException(CONTENT_NOT_FOUND));
 		ContentDocument contentDocument = contentScriptRepository.findById(
 			new ObjectId(content.getMongoContentId())
 		).orElseThrow(
-			() -> new IllegalArgumentException("Content not found")
+			() -> new CommonException(CONTENT_NOT_FOUND)
 		);
 
 		return new ContentResponseDto.ContentDetailResponseDto(

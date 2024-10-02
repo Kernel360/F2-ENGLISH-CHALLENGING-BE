@@ -1,16 +1,17 @@
 spring:
   config:
+    import:
+      - optional:file:.env[.properties]
     activate:
       on-profile: local
 
   datasource:
-    url: jdbc:mysql://127.0.0.1:3306/echall_local_db
+    url: ${MY_LOCAL_DATA_SOURCE}
     username: ${DB_ROOT_USERNAME}
     password: ${DB_ROOT_PASSWORD}
     driver-class-name: com.mysql.cj.jdbc.Driver
 
   data:
-
     redis:
       host: 127.0.0.1
       port: 6379

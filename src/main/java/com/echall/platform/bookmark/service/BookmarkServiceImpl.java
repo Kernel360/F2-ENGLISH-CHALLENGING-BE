@@ -1,5 +1,7 @@
 package com.echall.platform.bookmark.service;
 
+import static com.echall.platform.message.error.code.UserErrorCode.*;
+
 import java.util.List;
 
 import org.springframework.stereotype.Service;
@@ -8,7 +10,7 @@ import com.echall.platform.bookmark.domain.dto.BookmarkRequestDto;
 import com.echall.platform.bookmark.domain.dto.BookmarkResponseDto;
 import com.echall.platform.bookmark.domain.entity.BookmarkEntity;
 import com.echall.platform.bookmark.repository.BookmarkRepository;
-import com.echall.platform.exception.user.UserNotFoundException;
+import com.echall.platform.message.error.exception.CommonException;
 import com.echall.platform.user.domain.entity.UserEntity;
 import com.echall.platform.user.repository.UserRepository;
 
@@ -23,7 +25,7 @@ public class BookmarkServiceImpl implements BookmarkService {
 	@Override
 	public List<BookmarkResponseDto.BookmarkMyListResponse> getBookmarks(String email, Long contentId) {
 		UserEntity user = userRepository.findByEmail(email)
-			.orElseThrow(() -> new UserNotFoundException(email));
+			.orElseThrow(() -> new CommonException(USER_NOT_FOUND));
 		List<BookmarkEntity> bookmark = user.getBookmarks()
 			.stream()
 			.filter(bookmarkEntity -> bookmarkEntity.getScriptIndex().equals(contentId))
@@ -40,7 +42,7 @@ public class BookmarkServiceImpl implements BookmarkService {
 		String email, BookmarkRequestDto.BookmarkUpdateRequest bookmarkRequestDto
 	) {
 		UserEntity user = userRepository.findByEmail(email)
-			.orElseThrow(() -> new UserNotFoundException(email));
+			.orElseThrow(() -> new CommonException(USER_NOT_FOUND));
 		BookmarkEntity bookmark = BookmarkEntity.builder()
 			.scriptIndex(bookmarkRequestDto.scriptIndex())
 			.sentenceIndex(bookmarkRequestDto.sentenceIndex())

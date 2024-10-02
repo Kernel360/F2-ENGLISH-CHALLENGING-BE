@@ -1,10 +1,11 @@
 package com.echall.platform.content.controller;
 
+import static com.echall.platform.message.response.ContentResponseCode.*;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -15,6 +16,8 @@ import com.echall.platform.content.domain.dto.ContentPageResponse;
 import com.echall.platform.content.domain.dto.ContentResponseDto;
 import com.echall.platform.content.domain.enums.SearchCondition;
 import com.echall.platform.content.service.ContentService;
+import com.echall.platform.message.ApiCustomResponse;
+import com.echall.platform.message.ResponseEntityFactory;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -30,7 +33,7 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 @RestController
 @RequestMapping("/api/p1/contents")
-@Tag(name = "Content API", description = "컨텐츠 공통 API")
+@Tag(name = "Content - public API", description = "컨텐츠 공통 API")
 public class ContentPublicController {
 
 	private final ContentService contentService;
@@ -53,14 +56,13 @@ public class ContentPublicController {
 		@Parameter(name = "size", description = "페이지당 데이터 수", in = ParameterIn.QUERY, schema = @Schema(type = "integer", defaultValue = "10")),
 		@Parameter(name = "sort", description = "정렬 기준 (예: createdAt,desc)", in = ParameterIn.QUERY, schema = @Schema(type = "string"))
 	})
-	public ResponseEntity<Page<ContentResponseDto.ContentViewResponseDto>> getPreviewContents(
+	public ResponseEntity<ApiCustomResponse<Page<ContentResponseDto.ContentViewResponseDto>>> getPreviewContents(
 		@Parameter(hidden = true) @PageableDefault(page = 0, size = 10, sort = "createdAt", direction = Sort.Direction.DESC) Pageable pageable,
 		SearchCondition searchCondition) {
 		Page<ContentResponseDto.ContentViewResponseDto> pageContentList
 			= contentService.getAllContents(pageable, searchCondition);
 
-		return ResponseEntity.status(HttpStatus.OK)
-			.body(pageContentList);
+		return ResponseEntityFactory.toResponseEntity(CONTENT_VIEW_SUCCESS, pageContentList);
 	}
 
 	/**
@@ -75,14 +77,13 @@ public class ContentPublicController {
 		@ApiResponse(responseCode = "204", description = "컨텐츠가 없습니다.", content = @Content),
 		@ApiResponse(responseCode = "500", description = "서버 에러가 발생하였습니다.", content = @Content)
 	})
-	public ResponseEntity<ContentResponseDto.ContentDetailResponseDto> getDetailContents(
+	public ResponseEntity<ApiCustomResponse<ContentResponseDto.ContentDetailResponseDto>> getDetailContents(
 		@PathVariable Long id
 	) {
 
 		ContentResponseDto.ContentDetailResponseDto scriptsOfContent = contentService.getScriptsOfContent(id);
 
-		return ResponseEntity.status(HttpStatus.OK)
-			.body(scriptsOfContent);
+		return ResponseEntityFactory.toResponseEntity(CONTENT_VIEW_SUCCESS, scriptsOfContent);
 	}
 
 }

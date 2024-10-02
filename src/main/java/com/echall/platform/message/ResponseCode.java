@@ -1,11 +1,11 @@
-package com.echall.platform.exception.common;
+package com.echall.platform.message;
 
 import org.springframework.http.HttpStatus;
 
 import lombok.Getter;
-
+// TODO: 삭제 예정
 @Getter
-public enum ErrorCode {
+public enum ResponseCode {
 
 	// Common Error
 	INVALID_INPUT_VALUE("C-001", "Invalid Input Value", HttpStatus.BAD_REQUEST),
@@ -43,7 +43,7 @@ public enum ErrorCode {
 	private final String message;
 	private final HttpStatus status;
 
-	ErrorCode(String code, String message, HttpStatus status) {
+	ResponseCode(String code, String message, HttpStatus status) {
 		this.code = code;
 		this.message = message;
 		this.status = status;
