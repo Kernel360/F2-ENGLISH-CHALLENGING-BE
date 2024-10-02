@@ -1,6 +1,5 @@
 package com.echall.platform.config;
 
-import org.apache.http.HttpHeaders;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
@@ -11,7 +10,14 @@ public class WebConfig implements WebMvcConfigurer {
 	@Override
 	public void addCorsMappings(final CorsRegistry registry) {
 		registry.addMapping("/**")
+			.allowedOriginPatterns("http://localhost:3000",
+				"http://localhost:8080",
+				"https://biengual.store",
+				"https://dev.biengual.store",
+				"https://www.biengual.store",
+				"https://f2-english-fe.vercel.app")
 			.allowedMethods("OPTIONS", "HEAD", "GET", "POST", "PUT", "DELETE", "TRACE", "PATCH")
-			.exposedHeaders(HttpHeaders.LOCATION);
+			.allowedHeaders("*")
+			.allowCredentials(true);
 	}
 }

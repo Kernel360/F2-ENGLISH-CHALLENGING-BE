@@ -54,7 +54,7 @@ public class CookieUtil {
 
 	private String createCookieValue(String name, String value, int maxAge) {
 		ResponseCookie.ResponseCookieBuilder cookieBuilder = ResponseCookie.from(name, value)
-			.httpOnly(false)
+			.httpOnly(true)
 			.path("/")
 			.maxAge(maxAge);
 
@@ -66,7 +66,7 @@ public class CookieUtil {
 		if ("prod".equals(activeProfile)) {
 			cookieBuilder.secure(true)
 				.sameSite("None")
-				.domain(".biengual.store");
+				.domain(".f2-english-fe.vercel.app");
 		}
 
 		return cookieBuilder.build().toString();

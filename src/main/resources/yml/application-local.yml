@@ -49,3 +49,5 @@ spring:
             client-secret: ${MY_NAVER_CLIENT_SECRET}
             redirect-uri: ${MY_NAVER_LOCAL_REDIRECT_URI}
             authorization-grant-type: authorization_code
+      success:
+        redirect-uri: ${OAUTH2_SUCCESS_LOCAL_REDIRECTION_PATH}
