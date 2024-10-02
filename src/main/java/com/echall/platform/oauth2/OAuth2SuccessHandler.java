@@ -27,7 +27,7 @@ public class OAuth2SuccessHandler implements AuthenticationSuccessHandler {
 	public static final String REFRESH_TOKEN = "refresh_token";
 	public static final Duration ACCESS_TOKEN_EXPIRE = Duration.ofDays(1);
 	public static final Duration REFRESH_TOKEN_EXPIRE = Duration.ofDays(7);
-	public static final String OAUTH2_SUCCESS_REDIRECTION_PATH = "http://localhost:8080/swagger-ui/index.html#"; // TODO: to .env
+	public static final String OAUTH2_SUCCESS_REDIRECTION_PATH = "http://localhost:3000"; // TODO: to .env
 
 	private final TokenProvider tokenProvider;
 	private final RefreshTokenRepository refreshTokenRepository;
