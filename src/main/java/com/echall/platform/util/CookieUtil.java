@@ -54,7 +54,7 @@ public class CookieUtil {
 
 	private String createCookieValue(String name, String value, int maxAge) {
 		ResponseCookie.ResponseCookieBuilder cookieBuilder = ResponseCookie.from(name, value)
-			.httpOnly(false)
+			.httpOnly(true)
 			.path("/")
 			.maxAge(maxAge);
 
