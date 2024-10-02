@@ -1,8 +1,9 @@
 package com.echall.platform.config;
 
-import java.util.Collections;
-import java.util.List;
-
+import com.echall.platform.oauth2.OAuth2SuccessHandler;
+import com.echall.platform.oauth2.TokenProvider;
+import com.echall.platform.oauth2.service.OAuth2UserCustomService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpStatus;
@@ -19,14 +20,8 @@ import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.CorsUtils;
 
-import com.echall.platform.oauth2.OAuth2SuccessHandler;
-import com.echall.platform.oauth2.TokenProvider;
-import com.echall.platform.oauth2.repository.OAuth2AuthorizationRequestBasedOnCookieRepository;
-import com.echall.platform.oauth2.repository.RefreshTokenRepository;
-import com.echall.platform.oauth2.service.OAuth2UserCustomService;
-import com.echall.platform.user.service.UserService;
-
-import lombok.RequiredArgsConstructor;
+import java.util.Collections;
+import java.util.List;
 
 @EnableWebSecurity
 @Configuration
@@ -35,8 +30,7 @@ public class SecurityConfig {
 
 	private final OAuth2UserCustomService oAuth2UserCustomService;
 	private final TokenProvider tokenProvider;
-	private final RefreshTokenRepository refreshTokenRepository;
-	private final UserService userService;
+	private final OAuth2SuccessHandler oAuth2SuccessHandler;
 
 	@Bean
 	public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
@@ -75,6 +69,7 @@ public class SecurityConfig {
 					.requestMatchers("/swagger-ui/**").hasRole("DEVELOPER")
 					.requestMatchers("/api-info/**").hasRole("DEVELOPER")
 
+
 					.requestMatchers(CorsUtils::isPreFlightRequest).permitAll()
 					.anyRequest().permitAll();
 			});
@@ -82,14 +77,10 @@ public class SecurityConfig {
 		http
 			.oauth2Login(oauth2 -> oauth2
 				.loginPage("/login")
-				.authorizationEndpoint(authorizationEndpoint -> authorizationEndpoint
-					.baseUri("/oauth2/authorization")
-					.authorizationRequestRepository(oAuth2AuthorizationRequestBasedOnCookieRepository())
-				)
 				.userInfoEndpoint(userInfoEndpoint -> userInfoEndpoint
 					.userService(oAuth2UserCustomService)
 				)
-				.successHandler(oAuth2SuccessHandler())
+				.successHandler(oAuth2SuccessHandler)
 
 			);
 		http
@@ -104,33 +95,15 @@ public class SecurityConfig {
 	}
 
 	@Bean
-	public OAuth2SuccessHandler oAuth2SuccessHandler() {
-		return new OAuth2SuccessHandler(
-			tokenProvider,
-			refreshTokenRepository,
-			oAuth2AuthorizationRequestBasedOnCookieRepository(),
-			userService
-		);
-	}
-
-	@Bean
 	public TokenAuthenticationFilter tokenAuthenticationFilter() {
 		return new TokenAuthenticationFilter(tokenProvider);
-	}
-
-	@Bean
-	public OAuth2AuthorizationRequestBasedOnCookieRepository oAuth2AuthorizationRequestBasedOnCookieRepository() {
-		return new OAuth2AuthorizationRequestBasedOnCookieRepository();
 	}
 
 	@Bean
 	public CorsConfigurationSource corsConfigurationSource() {
 		return request -> {
 			CorsConfiguration corsConfiguration = new CorsConfiguration();
-
-			// corsConfiguration.addAllowedOrigin(System.getenv("WEBSITE_DOMAIN"));
-			// corsConfiguration.addAllowedOrigin(System.getenv("API_DOMAIN"));
-			corsConfiguration.setAllowedOrigins(List.of("http://localhost:3000", "http://localhost:8080"));
+			corsConfiguration.setAllowedOrigins(List.of("http://localhost:3000"));
 			corsConfiguration.setAllowedHeaders(Collections.singletonList("*"));
 			corsConfiguration.setExposedHeaders(Collections.singletonList("*"));
 			corsConfiguration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
