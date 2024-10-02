@@ -66,7 +66,7 @@ public class CookieUtil {
 		if ("prod".equals(activeProfile)) {
 			cookieBuilder.secure(true)
 				.sameSite("None")
-				.domain(".f2-english-fe.vercel.app");
+				.domain(".biengual.store");
 		}
 
 		return cookieBuilder.build().toString();
