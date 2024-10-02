@@ -8,6 +8,7 @@ import com.echall.platform.util.CookieUtil;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
@@ -27,7 +28,9 @@ public class OAuth2SuccessHandler implements AuthenticationSuccessHandler {
 	public static final String REFRESH_TOKEN = "refresh_token";
 	public static final Duration ACCESS_TOKEN_EXPIRE = Duration.ofDays(1);
 	public static final Duration REFRESH_TOKEN_EXPIRE = Duration.ofDays(7);
-	public static final String OAUTH2_SUCCESS_REDIRECTION_PATH = "http://localhost:3000"; // TODO: to .env
+
+	@Value("${spring.security.oauth2.success.redirect-uri}")
+	public String oAuth2SuccessRedirectUri;
 
 	private final TokenProvider tokenProvider;
 	private final RefreshTokenRepository refreshTokenRepository;
@@ -59,7 +62,7 @@ public class OAuth2SuccessHandler implements AuthenticationSuccessHandler {
 		String accessToken = tokenProvider.generateToken(user, ACCESS_TOKEN_EXPIRE);
 		addTokenToCookie(request, response, accessToken, FALSE);
 
-		response.sendRedirect(OAUTH2_SUCCESS_REDIRECTION_PATH);
+		response.sendRedirect(oAuth2SuccessRedirectUri);
 	}
 
 	// Internal Methods=================================================================================================

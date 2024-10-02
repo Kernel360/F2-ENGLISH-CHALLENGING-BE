@@ -12,7 +12,6 @@ spring:
     driver-class-name: com.mysql.cj.jdbc.Driver
 
   data:
-
     redis:
       host: 127.0.0.1
       port: 6379
@@ -50,3 +49,5 @@ spring:
             client-secret: ${MY_NAVER_CLIENT_SECRET}
             redirect-uri: ${MY_NAVER_PROD_REDIRECT_URI}
             authorization-grant-type: authorization_code
+      success:
+        redirect-uri: ${OAUTH2_SUCCESS_PROD_REDIRECTION_PATH}
