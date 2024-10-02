@@ -36,7 +36,6 @@ spring:
               - profile
               - https://www.googleapis.com/auth/youtube.force-ssl
               - https://www.googleapis.com/auth/youtube.readonly
-            redirect-uri: ${MY_GOOGLE_LOCAL_REDIRECT_URI}
           kakao:
             client-id: ${MY_KAKAO_CLIENT_ID}
             client-secret: ${MY_KAKAO_CLIENT_SECRET}
