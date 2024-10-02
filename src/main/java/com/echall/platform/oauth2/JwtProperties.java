@@ -13,6 +13,4 @@ import lombok.Setter;
 public class JwtProperties {
 	private String issuer;
 	private String secret;
-
-
 }
