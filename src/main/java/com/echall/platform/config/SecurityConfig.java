@@ -18,7 +18,6 @@ import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.CorsUtils;
-import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 import com.echall.platform.oauth2.OAuth2SuccessHandler;
 import com.echall.platform.oauth2.TokenProvider;
@@ -75,7 +74,6 @@ public class SecurityConfig {
 					.requestMatchers("/api/token").hasRole("DEVELOPER")
 					.requestMatchers("/swagger-ui/**").hasRole("DEVELOPER")
 					.requestMatchers("/api-info/**").hasRole("DEVELOPER")
-
 
 					.requestMatchers(CorsUtils::isPreFlightRequest).permitAll()
 					.anyRequest().permitAll();

@@ -1,30 +1,28 @@
 package com.echall.platform.oauth2;
 
-import static java.lang.Boolean.*;
+import com.echall.platform.oauth2.domain.entity.RefreshToken;
+import com.echall.platform.oauth2.repository.RefreshTokenRepository;
+import com.echall.platform.user.domain.entity.UserEntity;
+import com.echall.platform.user.service.UserService;
+import com.echall.platform.util.CookieUtil;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.oauth2.core.user.OAuth2User;
+import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
+import org.springframework.stereotype.Component;
 
 import java.io.IOException;
 import java.time.Duration;
 import java.util.LinkedHashMap;
 
-import org.springframework.security.core.Authentication;
-import org.springframework.security.oauth2.core.user.OAuth2User;
-import org.springframework.security.web.authentication.SimpleUrlAuthenticationSuccessHandler;
-import org.springframework.stereotype.Component;
-
-import com.echall.platform.oauth2.domain.entity.RefreshToken;
-import com.echall.platform.oauth2.repository.OAuth2AuthorizationRequestBasedOnCookieRepository;
-import com.echall.platform.oauth2.repository.RefreshTokenRepository;
-import com.echall.platform.user.domain.entity.UserEntity;
-import com.echall.platform.user.service.UserService;
-import com.echall.platform.util.CookieUtil;
-
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
-import lombok.RequiredArgsConstructor;
+import static java.lang.Boolean.FALSE;
+import static java.lang.Boolean.TRUE;
 
 @Component
 @RequiredArgsConstructor
-public class OAuth2SuccessHandler extends SimpleUrlAuthenticationSuccessHandler {
+public class OAuth2SuccessHandler implements AuthenticationSuccessHandler {
 	public static final String ACCESS_TOKEN = "access_token";
 	public static final String REFRESH_TOKEN = "refresh_token";
 	public static final Duration ACCESS_TOKEN_EXPIRE = Duration.ofDays(1);
@@ -33,8 +31,8 @@ public class OAuth2SuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
 
 	private final TokenProvider tokenProvider;
 	private final RefreshTokenRepository refreshTokenRepository;
-	private final OAuth2AuthorizationRequestBasedOnCookieRepository oAuth2AuthorizationRequestBasedOnCookieRepository;
 	private final UserService userService;
+	private final CookieUtil cookieUtil;
 
 	@Override
 	public void onAuthenticationSuccess(
@@ -61,9 +59,7 @@ public class OAuth2SuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
 		String accessToken = tokenProvider.generateToken(user, ACCESS_TOKEN_EXPIRE);
 		addTokenToCookie(request, response, accessToken, FALSE);
 
-		clearAuthenticationAttributes(request);
-		oAuth2AuthorizationRequestBasedOnCookieRepository.removeAuthorizationRequestCookies(request, response);
-		getRedirectStrategy().sendRedirect(request, response, OAUTH2_SUCCESS_REDIRECTION_PATH);
+		response.sendRedirect(OAUTH2_SUCCESS_REDIRECTION_PATH);
 	}
 
 	// Internal Methods=================================================================================================
@@ -90,8 +86,8 @@ public class OAuth2SuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
 			duration = ACCESS_TOKEN_EXPIRE.toSeconds();
 		}
 
-		CookieUtil.removeCookie(request, response, token);
-		CookieUtil.addCookie(response, token, refreshToken,
+		cookieUtil.removeCookie(request, response, token);
+		cookieUtil.addCookie(response, token, refreshToken,
 			Math.toIntExact(duration));
 	}
 
