@@ -17,7 +17,12 @@ import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.HttpStatusEntryPoint;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.CorsUtils;
+
+import java.util.Collections;
+import java.util.List;
 
 @EnableWebSecurity
 @Configuration
@@ -36,7 +41,10 @@ public class SecurityConfig {
 			.formLogin(AbstractHttpConfigurer::disable)
 			.logout(AbstractHttpConfigurer::disable)
 			.httpBasic(HttpBasicConfigurer::disable)
-			.csrf(AbstractHttpConfigurer::disable);
+			.csrf(AbstractHttpConfigurer::disable)
+			.cors(cors -> cors.configurationSource(corsConfigurationSource()))
+			;
+
 
 		http
 			.sessionManagement((session) -> session
@@ -94,5 +102,18 @@ public class SecurityConfig {
 	@Bean
 	public TokenAuthenticationFilter tokenAuthenticationFilter() {
 		return new TokenAuthenticationFilter(tokenProvider);
+	}
+
+	@Bean
+	public CorsConfigurationSource corsConfigurationSource() {
+		return request -> {
+			CorsConfiguration corsConfiguration = new CorsConfiguration();
+			corsConfiguration.setAllowedHeaders(Collections.singletonList("*"));
+			corsConfiguration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "PATCH"));
+			corsConfiguration.setAllowedOriginPatterns(Collections.singletonList("http://localhost:3000"));
+			corsConfiguration.setAllowCredentials(true);
+			return corsConfiguration;
+		};
+
 	}
 }
