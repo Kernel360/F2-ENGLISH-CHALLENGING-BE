@@ -15,7 +15,8 @@ public class WebConfig implements WebMvcConfigurer {
 				"https://biengual.store",
 				"https://dev.biengual.store",
 				"https://www.biengual.store",
-				"https://f2-english-fe.vercel.app")
+				"https://f2-english-fe.vercel.app",
+				"https://front.biengual.store")
 			.allowedMethods("OPTIONS", "HEAD", "GET", "POST", "PUT", "DELETE", "TRACE", "PATCH")
 			.allowedHeaders("*")
 			.allowCredentials(true);
