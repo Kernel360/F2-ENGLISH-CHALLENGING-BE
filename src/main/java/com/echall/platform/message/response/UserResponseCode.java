@@ -9,9 +9,9 @@ import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
 public enum UserResponseCode implements ResponseCode {
-	USER_INPUT_INFO(HttpStatus.CREATED, UserServiceStatus.USER_INPUT_INFO, "유저 추가 정보 입력"),
+	USER_INPUT_INFO(HttpStatus.OK, UserServiceStatus.USER_INPUT_INFO, "유저 추가 정보 입력"),
 	USER_GET_INFO(HttpStatus.OK, UserServiceStatus.USER_GET_INFO, "유저 개인 정보 조회"),
-	USER_UPDATE_INFO(HttpStatus.ACCEPTED, UserServiceStatus.USER_UPDATE_INFO, "유저 개인 정보 수정"),
+	USER_UPDATE_INFO(HttpStatus.OK, UserServiceStatus.USER_UPDATE_INFO, "유저 개인 정보 수정"),
 	USER_GET_CHALLENGE(HttpStatus.OK, UserServiceStatus.USER_GET_INFO, "유저 챌린지 조회");
 
 	private final HttpStatus code;

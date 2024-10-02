@@ -7,7 +7,7 @@ public enum TokenServiceStatus implements ServiceStatus {
 	// success
 
 	// failure
-	REFRESH_TOKEN_NOT_FOUND("R-101")
+	REFRESH_TOKEN_NOT_FOUND("U-R-901")
 	;
 	private final String code;
 
