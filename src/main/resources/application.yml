@@ -10,7 +10,7 @@ spring:
   profiles:
     group:
       logging: log
-    active: prod, local
+    active: local
   jpa:
     hibernate:
       ddl-auto: update
@@ -23,27 +23,6 @@ spring:
   security:
     oauth2:
       client:
-        registration:
-          google:
-            client-id: ${MY_GOOGLE_CLIENT_ID}
-            client-secret: ${MY_GOOGLE_CLIENT_SECRET}
-            scope:
-              - email
-              - profile
-              - https://www.googleapis.com/auth/youtube.force-ssl
-              - https://www.googleapis.com/auth/youtube.readonly
-          kakao:
-            client-id: ${MY_KAKAO_CLIENT_ID}
-            client-secret: ${MY_KAKAO_CLIENT_SECRET}
-            client-authentication-method: client_secret_post
-            authorization-grant-type: authorization_code
-            redirect-uri: ${MY_KAKAO_REDIRECT_URI}
-            client-name: kakao
-          naver:
-            client-id: ${MY_NAVER_CLIENT_ID}
-            client-secret: ${MY_NAVER_CLIENT_SECRET}
-            redirect-uri: ${MY_NAVER_REDIRECT_URI}
-            authorization-grant-type: authorization_code
         provider:
           google:
             authorization-uri: https://accounts.google.com/o/oauth2/auth

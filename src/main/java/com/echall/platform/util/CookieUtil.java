@@ -1,66 +1,74 @@
 package com.echall.platform.util;
 
-import java.io.ByteArrayInputStream;
-import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.util.Base64;
-
-import org.springframework.util.SerializationUtils;
-
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.ResponseCookie;
+import org.springframework.stereotype.Component;
 
+
+@Component
 public class CookieUtil {
+
+	@Value("${spring.profiles.active}")
+	private String activeProfile;
+
 	// TODO: https 연결하고 검토 필요
-	public static void addCookie(HttpServletResponse response, String name, String value, int maxAge) {
-		Cookie cookie = new Cookie(name, value);
-		cookie.setMaxAge(maxAge);
-		cookie.setPath("/");
-		cookie.setHttpOnly(false);
-		cookie.setSecure(false);		
-    	// cookie.setAttribute("SameSite", "None");
+	public void addCookie(HttpServletResponse response, String name, String value, int maxAge) {
+		String cookieValue = createCookieValue(name, value, maxAge);
 
-
-		// cookie.setHttpOnly(true);
-		// cookie.setSecure(true);
-		// cookie.setDomain("localhost");
-
-		response.addCookie(cookie);
+		response.addHeader("Set-Cookie", cookieValue);
 	}
 
-	public static void removeCookie(HttpServletRequest request, HttpServletResponse response, String name) {
+	public void removeCookie(HttpServletRequest request, HttpServletResponse response, String name) {
 		Cookie[] cookies = request.getCookies();
 		if (cookies != null) {
 			for (Cookie cookie : cookies) {
 				if (cookie.getName().equals(name)) {
-					cookie.setValue("");
-					cookie.setMaxAge(0);
-					cookie.setPath("/");
-					// cookie.setHttpOnly(true);
-					// cookie.setSecure(true);
+					String cookieValue = createCookieValue(name, "", 0);
 
-					response.addCookie(cookie);
+					response.addHeader("Set-Cookie", cookieValue);
 				}
 			}
 		}
 	}
 
-	public static String serialize(Object obj) {
-		return Base64.getUrlEncoder()
-			.encodeToString(SerializationUtils.serialize(obj));
-	}
+// TODO: 추후에도 필요가 없어지면 삭제
+//	public String serialize(Object obj) {
+//		return Base64.getUrlEncoder()
+//			.encodeToString(SerializationUtils.serialize(obj));
+//	}
+//
+//	public <T> T deserialize(Cookie cookie, Class<T> cls) {
+//		byte[] decodedBytes = Base64.getUrlDecoder().decode(cookie.getValue());
+//
+//		try (
+//			 ObjectInputStream objectInputStream = new ObjectInputStream(new ByteArrayInputStream(decodedBytes))
+//		) {
+//			return cls.cast(objectInputStream.readObject());
+//		} catch (IOException | ClassNotFoundException e) {
+//			throw new IllegalArgumentException("Failed to deserialize object", e);
+//		}
+//	}
 
-	public static <T> T deserialize(Cookie cookie, Class<T> cls) {
-		byte[] decodedBytes = Base64.getUrlDecoder().decode(cookie.getValue());
+	private String createCookieValue(String name, String value, int maxAge) {
+		ResponseCookie.ResponseCookieBuilder cookieBuilder = ResponseCookie.from(name, value)
+			.httpOnly(false)
+			.path("/")
+			.maxAge(maxAge);
 
-		try (
-			 ObjectInputStream objectInputStream = new ObjectInputStream(new ByteArrayInputStream(decodedBytes))
-		) {
-			return cls.cast(objectInputStream.readObject());
-		} catch (IOException | ClassNotFoundException e) {
-			throw new IllegalArgumentException("Failed to deserialize object", e);
+		if ("local".equals(activeProfile)) {
+			cookieBuilder.secure(false)
+				.domain(".localhost");
 		}
-	}
 
+		if ("prod".equals(activeProfile)) {
+			cookieBuilder.secure(true)
+				.sameSite("None")
+				.domain(".biengual.store");
+		}
+
+		return cookieBuilder.build().toString();
+	}
 }

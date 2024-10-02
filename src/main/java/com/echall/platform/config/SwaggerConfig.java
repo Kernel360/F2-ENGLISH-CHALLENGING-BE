@@ -1,18 +1,22 @@
 package com.echall.platform.config;
 
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
-import org.springframework.http.HttpHeaders;
-
 import io.swagger.v3.oas.models.Components;
 import io.swagger.v3.oas.models.OpenAPI;
 import io.swagger.v3.oas.models.info.Info;
 import io.swagger.v3.oas.models.security.SecurityRequirement;
 import io.swagger.v3.oas.models.security.SecurityScheme;
+import io.swagger.v3.oas.models.servers.Server;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+
+import java.util.List;
 
 @Configuration
 public class SwaggerConfig {
+
+	@Value("${spring.profiles.active}")
+	private String activeProfile;
 
 	private Info apiInfo() {
 		return new Info()
@@ -34,8 +38,11 @@ public class SwaggerConfig {
 					.name(securitySchemeName)
 					.type(SecurityScheme.Type.HTTP)
 					.scheme("bearer")
-					.bearerFormat("JWT")));
+					.bearerFormat("JWT")))
+			.servers(List.of(new Server().url(getServerUrl())));
 	}
 
-
+	private String getServerUrl() {
+		return "local".equals(activeProfile) ? "http://localhost:8080" : "https://biengual.store";
+	}
 }
