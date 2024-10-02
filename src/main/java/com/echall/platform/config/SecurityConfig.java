@@ -112,14 +112,5 @@ public class SecurityConfig {
 			return corsConfiguration;
 		};
 
-		// corsConfiguration.addAllowedOrigin(System.getenv("WEBSITE_DOMAIN"));
-		// corsConfiguration.addAllowedOrigin(System.getenv("API_DOMAIN"));
-		// corsConfiguration.addAllowedOrigin("http://localhost:8080"); // JUST FOR LOCAL DEV
-		// corsConfiguration.addAllowedOrigin("http://localhost:3000"); // JUST FOR LOCAL DEV
-		// corsConfiguration.addAllowedHeader("http://13.238.253.88:8080"); // JUST FOR PROD
-		//
-		// UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-		// source.registerCorsConfiguration("/**", corsConfiguration);
-		// return source;
 	}
 }
