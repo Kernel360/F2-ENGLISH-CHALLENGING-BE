@@ -1,5 +1,6 @@
 package com.echall.platform.config;
 
+import com.echall.platform.oauth2.OAuth2FailureHandler;
 import com.echall.platform.oauth2.OAuth2SuccessHandler;
 import com.echall.platform.oauth2.TokenProvider;
 import com.echall.platform.oauth2.service.OAuth2UserCustomService;
@@ -16,12 +17,7 @@ import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.HttpStatusEntryPoint;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
-import org.springframework.web.cors.CorsConfiguration;
-import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.CorsUtils;
-
-import java.util.Collections;
-import java.util.List;
 
 @EnableWebSecurity
 @Configuration
@@ -31,6 +27,7 @@ public class SecurityConfig {
 	private final OAuth2UserCustomService oAuth2UserCustomService;
 	private final TokenProvider tokenProvider;
 	private final OAuth2SuccessHandler oAuth2SuccessHandler;
+	private final OAuth2FailureHandler oAuth2FailureHandler;
 
 	@Bean
 	public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
@@ -39,8 +36,7 @@ public class SecurityConfig {
 			.formLogin(AbstractHttpConfigurer::disable)
 			.logout(AbstractHttpConfigurer::disable)
 			.httpBasic(HttpBasicConfigurer::disable)
-			.csrf(AbstractHttpConfigurer::disable)
-			.cors(cors -> cors.configurationSource(corsConfigurationSource()));
+			.csrf(AbstractHttpConfigurer::disable);
 
 		http
 			.sessionManagement((session) -> session
@@ -81,6 +77,7 @@ public class SecurityConfig {
 					.userService(oAuth2UserCustomService)
 				)
 				.successHandler(oAuth2SuccessHandler)
+				.failureHandler(oAuth2FailureHandler)
 
 			);
 		http
@@ -97,20 +94,5 @@ public class SecurityConfig {
 	@Bean
 	public TokenAuthenticationFilter tokenAuthenticationFilter() {
 		return new TokenAuthenticationFilter(tokenProvider);
-	}
-
-	@Bean
-	public CorsConfigurationSource corsConfigurationSource() {
-		return request -> {
-			CorsConfiguration corsConfiguration = new CorsConfiguration();
-			corsConfiguration.setAllowedOrigins(List.of("http://localhost:3000"));
-			corsConfiguration.setAllowedHeaders(Collections.singletonList("*"));
-			corsConfiguration.setExposedHeaders(Collections.singletonList("*"));
-			corsConfiguration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
-			corsConfiguration.setAllowedOriginPatterns(Collections.singletonList("http://localhost:3000"));
-			corsConfiguration.setAllowCredentials(true);
-			return corsConfiguration;
-		};
-
 	}
 }
