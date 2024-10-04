@@ -116,7 +116,8 @@ public class SecurityConfig {
 				"https://dev.biengual.store",
 				"https://www.biengual.store",
 				"https://f2-english-fe.vercel.app",
-				"https://front.biengual.store"
+				"https://front.biengual.store",
+				"https://local.biengual.store:3000"
 				));
 			corsConfiguration.setAllowCredentials(true);
 			return corsConfiguration;
