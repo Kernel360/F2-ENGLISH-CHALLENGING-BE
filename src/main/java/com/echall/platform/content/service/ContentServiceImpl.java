@@ -23,7 +23,6 @@ import com.echall.platform.message.error.exception.CommonException;
 
 import lombok.RequiredArgsConstructor;
 
-//TODO : custom exception 클래스 작성후 적용 필요합니다
 @Service
 @RequiredArgsConstructor
 public class ContentServiceImpl implements ContentService {
@@ -77,8 +76,8 @@ public class ContentServiceImpl implements ContentService {
 		content.update(contentUpdateRequest);
 		contentRepository.save(content);
 
-		ContentDocument contentDocument = contentScriptRepository.findContentDocumentById(
-			new ObjectId(content.getMongoContentId()));
+		ContentDocument contentDocument
+			= contentScriptRepository.findContentDocumentById(new ObjectId(content.getMongoContentId()));
 		contentDocument.updateScript(contentUpdateRequest.script());
 		contentScriptRepository.save(contentDocument);
 
@@ -101,9 +100,7 @@ public class ContentServiceImpl implements ContentService {
 			.orElseThrow(() -> new CommonException(CONTENT_NOT_FOUND));
 		ContentDocument contentDocument = contentScriptRepository.findById(
 			new ObjectId(content.getMongoContentId())
-		).orElseThrow(
-			() -> new CommonException(CONTENT_NOT_FOUND)
-		);
+		).orElseThrow(() -> new CommonException(CONTENT_NOT_FOUND));
 
 		return new ContentResponseDto.ContentDetailResponseDto(
 			id,

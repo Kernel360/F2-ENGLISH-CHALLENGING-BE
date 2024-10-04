@@ -174,7 +174,6 @@ public class CrawlingServiceImpl implements CrawlingService {
 				.getText();
 
 			if (text != null && !text.isEmpty()) {
-
 				scripts.add(
 					Script.builder()
 						.startTimeInSecond(startTime)
@@ -183,6 +182,7 @@ public class CrawlingServiceImpl implements CrawlingService {
 						.koScript(translateTextWithPython(text))
 						.build()
 				);
+
 			}
 		}
 		return scripts;
@@ -234,8 +234,8 @@ public class CrawlingServiceImpl implements CrawlingService {
 			imageUrls.add(img.attr("src"));
 		}
 		String imgUrl = imageUrls.toString();*/
-
 		String imgUrl = images.get(0).attr("src").toString();
+
 		// 본문 추출
 		Elements paragraphs = doc.select("div.article__content p");
 		StringBuilder fullText = new StringBuilder();
@@ -257,27 +257,27 @@ public class CrawlingServiceImpl implements CrawlingService {
 						.startTimeInSecond(0)
 						.durationInSecond(0)
 						.enScript(sentence)
-						.koScript(sentence) // TODO: 번역기 추가 해야 함
+						.koScript(translateTextWithPython(sentence))
 						.build()
 				).toList()
-
 		);
 	}
-	// Private Methods
 
+	// Private Methods -------------------------------------------------------------------------------------------------
 	private void setUpSelenium(WebDriver driver)
 		throws InterruptedException {
-
+		// Initial setting
 		driver.manage().window().maximize();
 		WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
 		JavascriptExecutor js = (JavascriptExecutor)driver;
 		wait.until(webDriver -> js.executeScript("return document.readyState").equals("complete"));
 		Thread.sleep(5000);
+
 		// Zoom out
 		js.executeScript("document.body.style.zoom='30%'");
 		Thread.sleep(2000);
 
-		// Click the "더보기" button to expand
+		// Click the "expand" button to expand
 		List<WebElement> expandButton = driver.findElements(By.cssSelector("tp-yt-paper-button#expand"));
 		for (WebElement button : expandButton) {
 			if (button.isDisplayed() && button.isEnabled()) {
@@ -287,7 +287,7 @@ public class CrawlingServiceImpl implements CrawlingService {
 		}
 		Thread.sleep(3000);
 
-		// Locate and click the "스크립트 표시" button
+		// Locate and click the "Show transcript" button
 		WebElement transcriptButton = wait.until(
 			ExpectedConditions.elementToBeClickable(
 				By.xpath("//yt-button-shape//button[@aria-label='Show transcript']")));
@@ -295,23 +295,25 @@ public class CrawlingServiceImpl implements CrawlingService {
 		Thread.sleep(5000);
 	}
 
-	private String translateTextWithPython(String text) throws IOException {
+	private String translateTextWithPython(String text) {
 		String pythonPath = "src\\main\\java\\com\\echall\\platform\\crawling\\bot\\Translator.py";
 
-		ProcessBuilder processBuilder = new ProcessBuilder(Arrays.asList("python", pythonPath));
+		try {
+			ProcessBuilder processBuilder = new ProcessBuilder(Arrays.asList("python", pythonPath));
+			Process process = processBuilder.start();
 
-		Process process = processBuilder.start();
-
-		// Write input to Python process
-		try (BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(process.getOutputStream()))) {
+			// Write input to Python process
+			BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(process.getOutputStream()));
 			writer.write(text);
 			writer.newLine();
 			writer.flush();
-		}
 
-		// Read output from Python process
-		try (BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()))) {
-			return reader.readLine(); // Assuming one line of output per input
+			// Read output from Python process
+			BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()));
+
+			return reader.readLine();
+		} catch (IOException e) {
+			throw new CommonException(CRAWLING_TRANSLATE_FAILURE);
 		}
 	}
 

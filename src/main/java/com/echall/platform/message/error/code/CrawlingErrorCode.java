@@ -14,7 +14,11 @@ public enum CrawlingErrorCode implements ErrorCode {
 	),
 	SELENIUM_RUNTIME_ERROR(
 		HttpStatus.NO_CONTENT, CrawlingServiceStatus.CRAWLING_SELENIUM_FAILURE, "셀레니움 런타임 에러"
+	),
+	CRAWLING_TRANSLATE_FAILURE(
+		HttpStatus.CONFLICT, CrawlingServiceStatus.CRAWLING_TRANSLATE_FAILURE, "파이썬 번역 에러"
 	)
+
 	;
 
 	private final HttpStatus httpStatus;
