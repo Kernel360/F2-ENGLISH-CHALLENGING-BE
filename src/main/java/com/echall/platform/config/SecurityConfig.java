@@ -5,6 +5,7 @@ import com.echall.platform.oauth2.OAuth2SuccessHandler;
 import com.echall.platform.oauth2.TokenProvider;
 import com.echall.platform.oauth2.service.OAuth2UserCustomService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpStatus;
@@ -21,6 +22,7 @@ import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.CorsUtils;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -33,6 +35,9 @@ public class SecurityConfig {
 	private final TokenProvider tokenProvider;
 	private final OAuth2SuccessHandler oAuth2SuccessHandler;
 	private final OAuth2FailureHandler oAuth2FailureHandler;
+
+	@Value("${spring.profiles.active}")
+	private String activeProfile;
 
 	@Bean
 	public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
@@ -110,15 +115,23 @@ public class SecurityConfig {
 			CorsConfiguration corsConfiguration = new CorsConfiguration();
 			corsConfiguration.setAllowedHeaders(Collections.singletonList("*"));
 			corsConfiguration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "PATCH"));
-			corsConfiguration.setAllowedOriginPatterns(List.of("http://localhost:3000",
-				"http://localhost:8080",
-				"https://biengual.store",
-				"https://dev.biengual.store",
-				"https://www.biengual.store",
-				"https://f2-english-fe.vercel.app",
-				"https://front.biengual.store",
-				"https://local.biengual.store:3000"
-				));
+
+			List<String> originPatterns = new ArrayList<>();
+
+			if ("local".equals(activeProfile)) {
+				originPatterns.add("http://localhost:3000");
+			}
+
+			if ("dev".equals(activeProfile)) {
+				originPatterns.add("https://local.biengual.store:3000");
+			}
+
+			if ("prod".equals(activeProfile)) {
+				originPatterns.add("https://biengual.store");
+				originPatterns.add("https://www.biengual.store");
+			}
+
+			corsConfiguration.setAllowedOriginPatterns(originPatterns);
 			corsConfiguration.setAllowCredentials(true);
 			return corsConfiguration;
 		};
