@@ -92,7 +92,7 @@ public class CrawlingServiceImpl implements CrawlingService {
 		try {
 			cnnResponseDto = fetchArticle(cnnUrl);
 		} catch (IOException e) {
-			e.printStackTrace();
+			throw new CommonException(CRAWLING_JSOUP_FAILURE);
 		}
 
 		return cnnResponseDto;
