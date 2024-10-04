@@ -17,6 +17,8 @@ public interface CrawlingService {
 
 	JsonNode getSnippetNode(String body) throws JsonProcessingException;
 
+	String getThumbnailUrl(JsonNode thumbnailNode, int index);
+
 	List<Script> getYoutubeScript(String youtubeInfo, double duration);
 
 	List<Script> runSelenium(WebDriver driver, String youtubeInfo, double duration) throws Exception;
@@ -25,13 +27,11 @@ public interface CrawlingService {
 
 	String getCategoryName(String categoryId) throws Exception;
 
-	double getSecondsFromString(String time);
 
 	// CNN
 	CrawlingResponseDto.CrawlingContentResponseDto getCNNInfo(String cnnUrl, String credentials) throws Exception;
 
 	CrawlingResponseDto.CrawlingContentResponseDto fetchArticle(String url) throws IOException;
 
-	List<String> splitIntoSentences(String text);
 
 }

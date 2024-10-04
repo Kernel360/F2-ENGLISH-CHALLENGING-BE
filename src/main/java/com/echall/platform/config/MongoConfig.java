@@ -14,11 +14,10 @@ import com.mongodb.client.MongoClients;
 
 @Configuration
 public class MongoConfig extends AbstractMongoClientConfiguration {
-
-	@Value("${MONGO_URI}")
+	@Value("${spring.data.mongodb.uri}")
 	private String uri;
 
-	@Value("${MONGO_DATABASE}")
+	@Value("${spring.data.mongodb.database}")
 	private String database;
 
 	@Override

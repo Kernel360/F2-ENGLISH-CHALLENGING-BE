@@ -1,8 +1,10 @@
+# -*- coding: utf-8 -*-
 import random
 import re
 import nltk
 import pandas as pd
 import os
+import java.nio.charset.Charset
 
 from nltk.corpus import wordnet as wn
 from nltk.corpus import stopwords

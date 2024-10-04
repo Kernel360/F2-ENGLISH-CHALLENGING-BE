@@ -20,7 +20,7 @@ spring:
 
 
     mongodb:
-      uri: ${MONGO_URI}
+      uri: ${MONGO_LOCAL_URI}
       database: admin
       username: ${DB_ROOT_USERNAME}
       password: ${DB_ROOT_PASSWORD}
