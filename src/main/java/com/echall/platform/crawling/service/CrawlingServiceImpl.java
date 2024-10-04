@@ -2,10 +2,19 @@ package com.echall.platform.crawling.service;
 
 import static com.echall.platform.message.error.code.CrawlingErrorCode.*;
 
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
 import java.time.Duration;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -71,7 +80,7 @@ public class CrawlingServiceImpl implements CrawlingService {
 		return new CrawlingResponseDto.CrawlingContentResponseDto(
 			youtubeUrl,
 			snippetNode.path("title").asText(),
-			snippetNode.path("thumbnails").get("standard").get("url").toString(),
+			getThumbnailUrl(snippetNode.path("thumbnails"), 0),
 			getCategoryName(snippetNode.path("categoryId").asText()),
 			getYoutubeScript(youtubeUrl, Double.parseDouble(String.valueOf(duration.getSeconds())))
 		);
@@ -95,6 +104,21 @@ public class CrawlingServiceImpl implements CrawlingService {
 	public JsonNode getSnippetNode(String body) throws JsonProcessingException {
 		ObjectMapper objectMapper = new ObjectMapper();
 		return objectMapper.readTree(body).path("items").get(0);
+	}
+
+	@Override
+	public String getThumbnailUrl(JsonNode thumbnailNode, int index) {
+		Iterator<Map.Entry<String, JsonNode>> thumbnails = thumbnailNode.fields();
+		HashMap<String, JsonNode> thumbnailHashMap = new HashMap<>();
+
+		while (thumbnails.hasNext()) {
+			Map.Entry<String, JsonNode> thumbnailMap = thumbnails.next();
+			thumbnailHashMap.put(thumbnailMap.getKey(), thumbnailMap.getValue());
+		}
+
+		List<String> keys = Collections.singletonList(thumbnailHashMap.keySet().stream().toList().get(0));
+
+		return thumbnailHashMap.get(keys.get(index)).get("url").toString();
 	}
 
 	@Override
@@ -125,41 +149,7 @@ public class CrawlingServiceImpl implements CrawlingService {
 		List<Script> scripts = new ArrayList<>();
 
 		driver.get(youtubeInfo);
-		driver.manage().window().maximize();
-		WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
-		JavascriptExecutor js = (JavascriptExecutor)driver;
-		wait.until(webDriver -> js.executeScript("return document.readyState").equals("complete"));
-		Thread.sleep(5000);
-
-/*			// TODO: 혹시 필요하면 주석 풀어서 사용해야 함
-			try {
-				WebElement closeAdButton = wait.until(
-					ExpectedConditions.elementToBeClickable(By.cssSelector("button[aria-label='광고 건너뛰기']")));
-				closeAdButton.click();
-			} catch (Exception e) {
-				System.out.println("광고가 없습니다.");
-			}*/
-
-		// Zoom out
-		js.executeScript("document.body.style.zoom='30%'");
-		Thread.sleep(2000);
-
-		// Click the "더보기" button to expand
-		List<WebElement> expandButton = driver.findElements(By.cssSelector("tp-yt-paper-button#expand"));
-		for (WebElement button : expandButton) {
-			if (button.isDisplayed() && button.isEnabled()) {
-				button.click();
-				break;
-			}
-		}
-		Thread.sleep(3000);
-
-		// Locate and click the "스크립트 표시" button
-		WebElement transcriptButton = wait.until(
-			ExpectedConditions.elementToBeClickable(
-				By.xpath("//yt-button-shape//button[@aria-label='Show transcript']")));
-		transcriptButton.click();
-		Thread.sleep(5000);
+		setUpSelenium(driver);
 
 		// Use XPath to find all elements containing the transcript text
 		List<WebElement> segmentElements = driver.findElements(
@@ -184,18 +174,17 @@ public class CrawlingServiceImpl implements CrawlingService {
 				.getText();
 
 			if (text != null && !text.isEmpty()) {
+
 				scripts.add(
 					Script.builder()
 						.startTimeInSecond(startTime)
 						.durationInSecond(endtime - startTime)
 						.enScript(text)
-						.koScript(text) // TODO: 번역기 사용 필요
+						.koScript(translateTextWithPython(text))
 						.build()
 				);
 			}
-
 		}
-
 		return scripts;
 	}
 
@@ -274,9 +263,59 @@ public class CrawlingServiceImpl implements CrawlingService {
 
 		);
 	}
+	// Private Methods
 
-	@Override
-	public List<String> splitIntoSentences(String text) {
+	private void setUpSelenium(WebDriver driver)
+		throws InterruptedException {
+
+		driver.manage().window().maximize();
+		WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
+		JavascriptExecutor js = (JavascriptExecutor)driver;
+		wait.until(webDriver -> js.executeScript("return document.readyState").equals("complete"));
+		Thread.sleep(5000);
+		// Zoom out
+		js.executeScript("document.body.style.zoom='30%'");
+		Thread.sleep(2000);
+
+		// Click the "더보기" button to expand
+		List<WebElement> expandButton = driver.findElements(By.cssSelector("tp-yt-paper-button#expand"));
+		for (WebElement button : expandButton) {
+			if (button.isDisplayed() && button.isEnabled()) {
+				button.click();
+				break;
+			}
+		}
+		Thread.sleep(3000);
+
+		// Locate and click the "스크립트 표시" button
+		WebElement transcriptButton = wait.until(
+			ExpectedConditions.elementToBeClickable(
+				By.xpath("//yt-button-shape//button[@aria-label='Show transcript']")));
+		transcriptButton.click();
+		Thread.sleep(5000);
+	}
+
+	private String translateTextWithPython(String text) throws IOException {
+		String pythonPath = "src\\main\\java\\com\\echall\\platform\\crawling\\bot\\Translator.py";
+
+		ProcessBuilder processBuilder = new ProcessBuilder(Arrays.asList("python", pythonPath));
+
+		Process process = processBuilder.start();
+
+		// Write input to Python process
+		try (BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(process.getOutputStream()))) {
+			writer.write(text);
+			writer.newLine();
+			writer.flush();
+		}
+
+		// Read output from Python process
+		try (BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()))) {
+			return reader.readLine(); // Assuming one line of output per input
+		}
+	}
+
+	private List<String> splitIntoSentences(String text) {
 		List<String> sentences = new ArrayList<>();
 
 		// 정규 표현식을 사용하여 문장 단위로 나누기
@@ -289,8 +328,7 @@ public class CrawlingServiceImpl implements CrawlingService {
 		return sentences;
 	}
 
-	@Override
-	public double getSecondsFromString(String time) {
+	private double getSecondsFromString(String time) {
 		return Double.parseDouble(time.split(":")[0]) * 60 + Double.parseDouble(time.split(":")[1]);
 	}
 }
