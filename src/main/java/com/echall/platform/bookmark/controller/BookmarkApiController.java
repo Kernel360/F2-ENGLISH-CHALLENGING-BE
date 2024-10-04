@@ -50,7 +50,7 @@ public class BookmarkApiController {
 	}
 
 	@PostMapping("/update")
-	@Operation(summary = "북마크 수정", description = "회원이 북마크를 추가 및 수정합니다.")
+@Operation(summary = "북마크 수정", description = "회원이 북마크를 수정합니다.")
 	@ApiResponses(value = {
 		@ApiResponse(responseCode = "200", description = "요청에 성공하였습니다.", content = @Content),
 		@ApiResponse(responseCode = "204", description = "컨텐츠가 없습니다.", content = @Content),

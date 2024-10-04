@@ -23,10 +23,4 @@ public class Script {
 		this.koScript = koScript;
 	}
 
-
-	public void setTexts(String enScript, String koScript) {
-		this.enScript = enScript;
-		this.koScript = koScript;
-	}
-
 }

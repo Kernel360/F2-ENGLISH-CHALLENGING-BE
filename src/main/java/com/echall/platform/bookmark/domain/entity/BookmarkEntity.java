@@ -1,14 +1,11 @@
 package com.echall.platform.bookmark.domain.entity;
 
 import com.echall.platform.user.domain.entity.BaseEntity;
-import com.echall.platform.user.domain.entity.UserEntity;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.PrimaryKeyJoinColumn;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotNull;
 import lombok.AccessLevel;
@@ -34,7 +31,6 @@ public class BookmarkEntity extends BaseEntity {
 	private Long sentenceIndex;
 
 	private Long wordIndex;
-
 
 	@Builder
 	public BookmarkEntity(
