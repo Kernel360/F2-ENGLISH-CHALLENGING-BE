@@ -5,6 +5,7 @@ spring:
     import:
       - optional:file:.env[.properties]
       - classpath:/yml/application-prod.yml
+      - classpath:/yml/application-dev.yml
       - classpath:/yml/application-local.yml
       - classpath:/yml/logging/application-log.yml
   profiles:
