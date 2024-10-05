@@ -38,10 +38,10 @@ jobs:
           echo "${{ secrets.DOCKERHUB_PASSWORD }}" | docker login -u ${{ secrets.DOCKERHUB_USERNAME }} --password-stdin
 
           # Build the Docker image with the 'latest' tag
-          docker build --build-arg PROFILES prod -t ${{ secrets.DOCKERHUB_CONTAINERNAME }}/${{ secrets.DOCKERHUB_REPOSITORY }}-prod .
+          docker build --build-arg PROFILES prod -t ${{ secrets.DOCKERHUB_CONTAINERNAME }}/english-challenge-prod .
 
           # Push the Docker image to Docker Hub
-          docker push ${{ secrets.DOCKERHUB_CONTAINERNAME }}/${{ secrets.DOCKERHUB_REPOSITORY }}-prod:latest
+          docker push ${{ secrets.DOCKERHUB_CONTAINERNAME }}/english-challenge-prod:latest
 
   prod-deploy:
     needs: if-main-merge
@@ -71,7 +71,7 @@ jobs:
             echo "${{ secrets.DOCKERHUB_PASSWORD }}" | sudo docker login -u ${{ secrets.DOCKERHUB_USERNAME }} --password-stdin
             
             echo "최신 Docker 이미지 Pull"
-            sudo docker pull ${{ secrets.DOCKERHUB_CONTAINERNAME }}/${{ secrets.DOCKERHUB_REPOSITORY }}-prod:latest
+            sudo docker pull ${{ secrets.DOCKERHUB_CONTAINERNAME }}/english-challenge-prod:latest
             
             echo "기존 컨테이너가 있을 경우 중지 및 제거"
             sudo docker ps -q -f name=${{ secrets.DOCKERHUB_CONTAINERNAME }} | xargs -r sudo docker stop
@@ -80,7 +80,7 @@ jobs:
             sudo docker run -d \
               -p 8080:8080 \
               --name ${{ secrets.DOCKERHUB_CONTAINERNAME }} \
-              ${{ secrets.DOCKERHUB_CONTAINERNAME }}/${{ secrets.DOCKERHUB_REPOSITORY }}:latest
+              ${{ secrets.DOCKERHUB_CONTAINERNAME }}/english-challenge-prod:latest
             
             echo "오래된 Docker 이미지 정리"
             sudo docker image prune -f
