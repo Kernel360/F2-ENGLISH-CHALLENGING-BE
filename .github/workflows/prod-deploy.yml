@@ -81,6 +81,7 @@ jobs:
             sudo docker ps -a -q -f name=${{ secrets.DOCKERHUB_CONTAINERNAME }} | xargs -r sudo docker rm
             
             sudo docker run -d \
+              -e PROFILES=prod \
               -p 8080:8080 \
               --name ${{ secrets.DOCKERHUB_CONTAINERNAME }} \
               ${{ secrets.DOCKERHUB_USERNAME }}/english-challenge-prod:latest
