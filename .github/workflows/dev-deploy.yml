@@ -38,7 +38,7 @@ jobs:
           echo "${{ secrets.DOCKERHUB_PASSWORD }}" | docker login -u ${{ secrets.DOCKERHUB_USERNAME }} --password-stdin
 
           # Build the Docker image with the 'latest' tag
-          docker build -t ${{ secrets.DOCKERHUB_CONTAINERNAME }}/${{ secrets.DOCKERHUB_REPOSITORY }}-dev --build-arg PROFILES dev .
+          docker build --build-arg PROFILES dev -t ${{ secrets.DOCKERHUB_CONTAINERNAME }}/${{ secrets.DOCKERHUB_REPOSITORY }}-dev .
 
           # Push the Docker image to Docker Hub
           docker push ${{ secrets.DOCKERHUB_CONTAINERNAME }}/${{ secrets.DOCKERHUB_REPOSITORY }}-dev:latest
