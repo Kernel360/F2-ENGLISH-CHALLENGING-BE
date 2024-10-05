@@ -41,7 +41,7 @@ jobs:
       - name: Build and push Docker image
         run: |
           # Build the Docker image with the 'latest' tag
-          docker build --build-arg PROFILES dev -t ${{ secrets.DOCKERHUB_USERNAME }}/english-challenge-dev .
+          docker build --build-arg PROFILES=dev -t ${{ secrets.DOCKERHUB_USERNAME }}/english-challenge-dev .
 
           # Push the Docker image to Docker Hub
           docker push ${{ secrets.DOCKERHUB_USERNAME }}/english-challenge-dev:latest

@@ -41,7 +41,7 @@ jobs:
       - name: Build and push Docker image
         run: |
           # Build the Docker image with the 'latest' tag
-          docker build --build-arg PROFILES prod -t ${{ secrets.DOCKERHUB_USERNAME }}/english-challenge-prod .
+          docker build --build-arg PROFILES=prod -t ${{ secrets.DOCKERHUB_USERNAME }}/english-challenge-prod .
 
           # Push the Docker image to Docker Hub
           docker push ${{ secrets.DOCKERHUB_USERNAME }}/english-challenge-prod:latest
