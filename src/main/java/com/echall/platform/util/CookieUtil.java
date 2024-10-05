@@ -63,7 +63,7 @@ public class CookieUtil {
 				.domain(".localhost");
 		}
 
-		if ("prod".equals(activeProfile)) {
+		if ("dev".equals(activeProfile) || "prod".equals(activeProfile)) {
 			cookieBuilder.secure(true)
 				.sameSite("None")
 				.domain(".biengual.store");

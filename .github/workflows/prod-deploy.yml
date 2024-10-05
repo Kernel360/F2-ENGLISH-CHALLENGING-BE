@@ -1,5 +1,5 @@
-name: DEV CD
-run-name: Running
+name: PROD CD
+run-name: PROD DEPLOY Running
 
 on:
   pull_request:
@@ -7,8 +7,8 @@ on:
       - closed
 
 jobs:
-  if-dev-merge:
-    if: github.event.pull_request.merged == true && github.event.pull_request.base.ref == 'dev'
+  if-main-merge:
+    if: github.event.pull_request.merged == true && github.event.pull_request.base.ref == 'main'
     runs-on: ubuntu-latest
 
     steps:
@@ -38,20 +38,20 @@ jobs:
           echo "${{ secrets.DOCKERHUB_PASSWORD }}" | docker login -u ${{ secrets.DOCKERHUB_USERNAME }} --password-stdin
 
           # Build the Docker image with the 'latest' tag
-          docker build -t ${{ secrets.DOCKERHUB_CONTAINERNAME }}/${{ secrets.DOCKERHUB_REPOSITORY }} .
+          docker build -t ${{ secrets.DOCKERHUB_CONTAINERNAME }}/${{ secrets.DOCKERHUB_REPOSITORY }}-prod --build-arg PROFILES prod .
 
           # Push the Docker image to Docker Hub
-          docker push ${{ secrets.DOCKERHUB_CONTAINERNAME }}/${{ secrets.DOCKERHUB_REPOSITORY }}:latest
+          docker push ${{ secrets.DOCKERHUB_CONTAINERNAME }}/${{ secrets.DOCKERHUB_REPOSITORY }}-prod:latest
 
-  deploy:
-    needs: if-dev-merge
+  prod-deploy:
+    needs: if-main-merge
     runs-on: ubuntu-latest
 
     steps:
       - name: Test SSH connection
         uses: appleboy/ssh-action@master
         with:
-          host: ${{ secrets.PUBLIC_DNS }}
+          host: ${{ secrets.PROD_PUBLIC_DNS }}
           username: ${{ secrets.EC2_USER }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           port: 22
@@ -62,7 +62,7 @@ jobs:
       - name: Deploy to EC2 Server
         uses: appleboy/ssh-action@master
         with:
-          host: ${{ secrets.PUBLIC_DNS }}
+          host: ${{ secrets.PROD_PUBLIC_DNS }}
           username: ${{ secrets.EC2_USER }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           port: 22
@@ -71,7 +71,7 @@ jobs:
             echo "${{ secrets.DOCKERHUB_PASSWORD }}" | sudo docker login -u ${{ secrets.DOCKERHUB_USERNAME }} --password-stdin
             
             echo "최신 Docker 이미지 Pull"
-            sudo docker pull ${{ secrets.DOCKERHUB_CONTAINERNAME }}/${{ secrets.DOCKERHUB_REPOSITORY }}:latest
+            sudo docker pull ${{ secrets.DOCKERHUB_CONTAINERNAME }}/${{ secrets.DOCKERHUB_REPOSITORY }}-prod:latest
             
             echo "기존 컨테이너가 있을 경우 중지 및 제거"
             sudo docker ps -q -f name=${{ secrets.DOCKERHUB_CONTAINERNAME }} | xargs -r sudo docker stop
