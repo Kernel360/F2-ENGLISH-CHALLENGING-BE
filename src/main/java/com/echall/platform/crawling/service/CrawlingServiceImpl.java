@@ -39,17 +39,15 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import io.github.bonigarcia.wdm.WebDriverManager;
+import lombok.RequiredArgsConstructor;
 
+@RequiredArgsConstructor
 @Service
 public class CrawlingServiceImpl implements CrawlingService {
 	@Value("${YOUTUBE_API_KEY}")
 	private String YOUTUBE_API_KEY;
 
 	private final TranslateService translateService;
-
-	public CrawlingServiceImpl(TranslateService translateService) {
-		this.translateService = translateService;
-	}
 
 	@Override
 	public CrawlingResponseDto.CrawlingContentResponseDto getYoutubeInfo(String youtubeUrl, String credentials)

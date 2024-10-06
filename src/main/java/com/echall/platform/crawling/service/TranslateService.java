@@ -37,9 +37,9 @@ public class TranslateService {
 	}
 
 	// This function prettifies the json response.
-	private String extractText(String json_text) {
+	private String extractText(String jsonText) {
 		JsonParser parser = new JsonParser();
-		JsonElement json = parser.parse(json_text);
+		JsonElement json = parser.parse(jsonText);
 		JsonArray translations = json.getAsJsonArray().get(0).getAsJsonObject().getAsJsonArray("translations");
 		return translations.get(0).getAsJsonObject().get("text").getAsString();
 	}
