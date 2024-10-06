@@ -11,7 +11,6 @@ import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Service;
 
 @Service
-@RequiredArgsConstructor
 public class OAuth2UserCustomService extends DefaultOAuth2UserService {
 
 	@Override
