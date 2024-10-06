@@ -1,15 +1,13 @@
-package com.echall.platform.oauth2.domain;
+package com.echall.platform.oauth2.domain.info;
+
+import lombok.AllArgsConstructor;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
 
+@AllArgsConstructor
 public class KakaoUserInfo implements OAuth2UserInfo {
-
 	private final Map<String, Object> kakaoAccount;
-
-	public KakaoUserInfo(Map<String, Object> attributes ) {
-		this.kakaoAccount = attributes;
-	}
 
 	@Override
 	public String getProviderId() {
@@ -31,6 +29,11 @@ public class KakaoUserInfo implements OAuth2UserInfo {
 	@Override
 	public String getUsername() {
 		return String.valueOf(kakaoAccount.get("username"));
+	}
+
+	@Override
+	public Map<String, Object> getAttributes() {
+		return kakaoAccount;
 	}
 
 }

@@ -1,13 +1,12 @@
-package com.echall.platform.oauth2.domain;
+package com.echall.platform.oauth2.domain.info;
+
+import lombok.AllArgsConstructor;
 
 import java.util.Map;
 
+@AllArgsConstructor
 public class GoogleUserInfo implements OAuth2UserInfo {
 	private final Map<String, Object> attributes; // oauth2User.getAttributes()
-
-	public GoogleUserInfo(Map<String, Object> attributes) {
-		this.attributes = attributes;
-	}
 
 	@Override
 	public String getProviderId() {
@@ -27,5 +26,10 @@ public class GoogleUserInfo implements OAuth2UserInfo {
 	@Override
 	public String getUsername() {
 		return String.valueOf(attributes.get("name"));
+	}
+
+	@Override
+	public Map<String, Object> getAttributes() {
+		return attributes;
 	}
 }

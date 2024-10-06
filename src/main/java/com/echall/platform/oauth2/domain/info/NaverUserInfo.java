@@ -1,16 +1,13 @@
-package com.echall.platform.oauth2.domain;
+package com.echall.platform.oauth2.domain.info;
 
-import java.util.Collections;
+import lombok.AllArgsConstructor;
+
 import java.util.LinkedHashMap;
 import java.util.Map;
 
+@AllArgsConstructor
 public class NaverUserInfo implements OAuth2UserInfo {
-
 	private final Map<String, Object> naverAccount;
-
-	public NaverUserInfo(Map<String, Object> attributes) {
-		this.naverAccount = attributes;
-	}
 
 	@Override
 	public String getProviderId() {
@@ -34,6 +31,11 @@ public class NaverUserInfo implements OAuth2UserInfo {
 	public String getUsername() {
 		LinkedHashMap<String, Object> accountInfo = (LinkedHashMap<String, Object>)naverAccount.get("response");
 		return String.valueOf(accountInfo.get("name"));
+	}
+
+	@Override
+	public Map<String, Object> getAttributes() {
+		return naverAccount;
 	}
 
 }
