@@ -2,14 +2,9 @@ package com.echall.platform.crawling.service;
 
 import static com.echall.platform.message.error.code.CrawlingErrorCode.*;
 
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
 import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.OutputStreamWriter;
 import java.time.Duration;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -50,6 +45,12 @@ public class CrawlingServiceImpl implements CrawlingService {
 	@Value("${YOUTUBE_API_KEY}")
 	private String YOUTUBE_API_KEY;
 
+	private final TranslateService translateService;
+
+	public CrawlingServiceImpl(TranslateService translateService) {
+		this.translateService = translateService;
+	}
+
 	@Override
 	public CrawlingResponseDto.CrawlingContentResponseDto getYoutubeInfo(String youtubeUrl, String credentials)
 		throws Exception {
@@ -73,7 +74,7 @@ public class CrawlingServiceImpl implements CrawlingService {
 		JsonNode contentDetailsNode = getSnippetNode(response.getBody()).path("contentDetails");
 
 		Duration duration = Duration.parse(contentDetailsNode.path("duration").asText());
-		if (duration.compareTo(Duration.ofMinutes(10)) > 0) {
+		if (duration.compareTo(Duration.ofMinutes(8)) > 0) {
 			throw new CommonException(CRAWLING_OUT_OF_BOUNDS);
 		}
 
@@ -179,7 +180,7 @@ public class CrawlingServiceImpl implements CrawlingService {
 						.startTimeInSecond(startTime)
 						.durationInSecond(endtime - startTime)
 						.enScript(text)
-						.koScript(translateTextWithPython(text))
+						.koScript(translateService.translate(text, "en", "ko"))
 						.build()
 				);
 
@@ -257,7 +258,7 @@ public class CrawlingServiceImpl implements CrawlingService {
 						.startTimeInSecond(0)
 						.durationInSecond(0)
 						.enScript(sentence)
-						.koScript(translateTextWithPython(sentence))
+						.koScript(translateService.translate(sentence, "en", "ko"))
 						.build()
 				).toList()
 		);
@@ -294,7 +295,7 @@ public class CrawlingServiceImpl implements CrawlingService {
 		transcriptButton.click();
 		Thread.sleep(5000);
 	}
-
+/*
 	private String translateTextWithPython(String text) {
 		String pythonPath = "src\\main\\java\\com\\echall\\platform\\crawling\\bot\\Translator.py";
 
@@ -315,7 +316,7 @@ public class CrawlingServiceImpl implements CrawlingService {
 		} catch (IOException e) {
 			throw new CommonException(CRAWLING_TRANSLATE_FAILURE);
 		}
-	}
+	}*/
 
 	private List<String> splitIntoSentences(String text) {
 		List<String> sentences = new ArrayList<>();
