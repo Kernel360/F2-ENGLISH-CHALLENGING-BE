@@ -1,15 +1,7 @@
 package com.echall.platform.config;
 
-import java.io.IOException;
-import java.util.Arrays;
-
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.web.filter.OncePerRequestFilter;
-
 import com.echall.platform.oauth2.TokenProvider;
-import com.echall.platform.oauth2.OAuth2SuccessHandler;
-
+import com.echall.platform.util.CookieUtil;
 import groovy.util.logging.Slf4j;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -17,6 +9,12 @@ import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.web.filter.OncePerRequestFilter;
+
+import java.io.IOException;
+import java.util.Arrays;
 
 @RequiredArgsConstructor
 @Slf4j
@@ -36,7 +34,7 @@ public class TokenAuthenticationFilter extends OncePerRequestFilter {
 			return;
 		}
 		Arrays.stream(cookies)
-			.filter(cookie -> cookie.getName().equals(OAuth2SuccessHandler.ACCESS_TOKEN))
+			.filter(cookie -> cookie.getName().equals(CookieUtil.ACCESS_TOKEN_NAME))
 			.findFirst()
 			.ifPresent(cookie -> {
 				try {

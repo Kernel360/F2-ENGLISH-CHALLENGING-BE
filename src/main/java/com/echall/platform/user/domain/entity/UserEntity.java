@@ -8,14 +8,17 @@ import com.echall.platform.user.domain.enums.Role;
 import com.echall.platform.user.domain.enums.UserStatus;
 import com.echall.platform.util.RandomNicknameGenerator;
 import jakarta.persistence.*;
-import lombok.*;
+import lombok.AccessLevel;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
 import java.util.List;
 
-@Table(name = "user")
-@Entity
 @Getter
+@Entity
+@Table(name = "user")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class UserEntity extends BaseEntity {
 
@@ -58,7 +61,7 @@ public class UserEntity extends BaseEntity {
 	@Column(nullable = false, columnDefinition = "varchar(255)")
 	private String providerId;
 
-	@OneToMany(mappedBy = "user")
+	@OneToMany()
 	private List<BookmarkEntity> bookmarks;
 
 	// For Spring Security==============================================================================================
