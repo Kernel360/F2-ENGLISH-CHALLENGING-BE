@@ -44,12 +44,13 @@ public class OAuth2SuccessHandler implements AuthenticationSuccessHandler {
 
 		UserEntity user = userService.getUserByOAuthUser(oAuth2UserPrincipal.getOAuth2UserInfo());
 
-		String refreshToken = tokenProvider.generateToken(user, REFRESH_TOKEN_EXPIRE);
-		saveRefreshToken(user.getId(), refreshToken);
+		String refreshToken = tokenProvider.generateRefreshToken(user);
 		addTokenToCookie(request, response, refreshToken, TRUE);
 
-		String accessToken = tokenProvider.generateToken(user, ACCESS_TOKEN_EXPIRE);
+		String accessToken = tokenProvider.generateAccessToken(user);
 		addTokenToCookie(request, response, accessToken, FALSE);
+
+		saveRefreshToken(user.getId(), refreshToken);
 
 		response.sendRedirect(oAuth2SuccessRedirectUri);
 	}

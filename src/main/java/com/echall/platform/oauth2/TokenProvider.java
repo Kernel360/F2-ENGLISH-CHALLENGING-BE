@@ -23,8 +23,18 @@ import lombok.RequiredArgsConstructor;
 @Service
 public class TokenProvider {
 	private final JwtProperties jwtProperties;
+	public static final Duration ACCESS_TOKEN_EXPIRE = Duration.ofDays(1);
+	public static final Duration REFRESH_TOKEN_EXPIRE = Duration.ofDays(7);
 
-	public String generateToken(UserEntity user, Duration expiredAt) {
+	public String generateAccessToken(UserEntity user) {
+		return generateToken(user, ACCESS_TOKEN_EXPIRE);
+	}
+
+	public String generateRefreshToken(UserEntity user) {
+		return generateToken(user, REFRESH_TOKEN_EXPIRE);
+	}
+
+	private String generateToken(UserEntity user, Duration expiredAt) {
 		Date now = new Date();
 		return Jwts.builder()
 			.setHeaderParam(Header.TYPE, Header.JWT_TYPE)
