@@ -1,68 +1,58 @@
 package com.echall.platform.oauth2.domain.info;
 
-import lombok.AllArgsConstructor;
+import com.echall.platform.user.domain.entity.UserEntity;
+import com.echall.platform.user.domain.enums.Role;
+import lombok.Builder;
 import lombok.Getter;
 import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Map;
 
 @Getter
-@AllArgsConstructor
-public class OAuth2UserPrincipal implements UserDetails, OAuth2User {
-    private final OAuth2UserInfo oAuth2UserInfo;
+@Builder
+public class OAuth2UserPrincipal implements OAuth2User {
+    private String email;
+    private String username;
+    private String provider;
+    private String providerId;
+    private Role role;
 
     // OAuth2User Override Method
     @Override
     public String getName() {
-        return null;
-    }
-
-    @Override
-    public <A> A getAttribute(String name) {
-        return OAuth2User.super.getAttribute(name);
+        return this.email;
     }
 
     @Override
     public Map<String, Object> getAttributes() {
-        return oAuth2UserInfo.getAttributes();
+        return null;
     }
 
-    // UserDetails Override Method
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return null;
+        return Collections.singleton(new SimpleGrantedAuthority(role.name()));
     }
 
-    @Override
-    public String getPassword() {
-        return null;
+    public static OAuth2UserPrincipal from(OAuth2UserInfo oAuth2UserInfo) {
+        return OAuth2UserPrincipal.builder()
+            .email(oAuth2UserInfo.getEmail())
+            .username(oAuth2UserInfo.getUsername())
+            .provider(oAuth2UserInfo.getProvider())
+            .providerId(oAuth2UserInfo.getProviderId())
+            .build();
     }
 
-    @Override
-    public String getUsername() {
-        return oAuth2UserInfo.getEmail();
-    }
-
-    @Override
-    public boolean isAccountNonExpired() {
-        return UserDetails.super.isAccountNonExpired();
-    }
-
-    @Override
-    public boolean isAccountNonLocked() {
-        return UserDetails.super.isAccountNonLocked();
-    }
-
-    @Override
-    public boolean isCredentialsNonExpired() {
-        return UserDetails.super.isCredentialsNonExpired();
-    }
-
-    @Override
-    public boolean isEnabled() {
-        return UserDetails.super.isEnabled();
+    public static OAuth2UserPrincipal from(UserEntity user) {
+        return OAuth2UserPrincipal.builder()
+            .email(user.getEmail())
+            .username(user.getUsername())
+            .provider(user.getProvider())
+            .providerId(user.getProviderId())
+            .role(user.getRole())
+            .build();
     }
 }

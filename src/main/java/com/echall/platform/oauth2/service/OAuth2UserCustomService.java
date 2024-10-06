@@ -3,7 +3,6 @@ package com.echall.platform.oauth2.service;
 import com.echall.platform.oauth2.domain.info.OAuth2UserInfo;
 import com.echall.platform.oauth2.domain.info.OAuth2UserInfoFactory;
 import com.echall.platform.oauth2.domain.info.OAuth2UserPrincipal;
-import lombok.RequiredArgsConstructor;
 import org.springframework.security.oauth2.client.userinfo.DefaultOAuth2UserService;
 import org.springframework.security.oauth2.client.userinfo.OAuth2UserRequest;
 import org.springframework.security.oauth2.core.OAuth2AuthenticationException;
@@ -21,6 +20,6 @@ public class OAuth2UserCustomService extends DefaultOAuth2UserService {
 
 		OAuth2UserInfo oAuth2UserInfo = OAuth2UserInfoFactory.getOAuth2UserInfo(provider, user.getAttributes());
 
-        return new OAuth2UserPrincipal(oAuth2UserInfo);
+        return OAuth2UserPrincipal.from(oAuth2UserInfo);
 	}
 }

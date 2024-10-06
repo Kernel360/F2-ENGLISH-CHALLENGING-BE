@@ -32,7 +32,7 @@ public class OAuth2SuccessHandler implements AuthenticationSuccessHandler {
 	) throws IOException {
 		OAuth2UserPrincipal oAuth2UserPrincipal = (OAuth2UserPrincipal) authentication.getPrincipal();
 
-		UserEntity user = userService.getUserByOAuthUser(oAuth2UserPrincipal.getOAuth2UserInfo());
+		UserEntity user = userService.getUserByOAuthUser(oAuth2UserPrincipal);
 
 		String refreshToken = tokenProvider.generateRefreshToken(user);
 		cookieUtil.addRefreshTokenCookie(request, response, refreshToken);
