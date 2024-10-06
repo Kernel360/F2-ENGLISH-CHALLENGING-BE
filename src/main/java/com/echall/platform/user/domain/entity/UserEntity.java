@@ -1,10 +1,12 @@
 package com.echall.platform.user.domain.entity;
 
 import com.echall.platform.bookmark.domain.entity.BookmarkEntity;
+import com.echall.platform.oauth2.domain.info.OAuth2UserInfo;
 import com.echall.platform.user.domain.dto.UserRequestDto;
 import com.echall.platform.user.domain.enums.Gender;
 import com.echall.platform.user.domain.enums.Role;
 import com.echall.platform.user.domain.enums.UserStatus;
+import com.echall.platform.util.RandomNicknameGenerator;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -14,42 +16,49 @@ import java.util.List;
 @Table(name = "user")
 @Entity
 @Getter
-@ToString
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class UserEntity extends BaseEntity {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	@Column(name = "id", updatable = false, nullable = false)
 	private Long id;
 
+	@Column(nullable = false, columnDefinition = "varchar(255)")
 	private String username;
+
+	@Column(nullable = false, columnDefinition = "varchar(255)")
 	private String nickname;
+
+	@Column(columnDefinition = "varchar(255)")
 	private String password;
 
-	@Column(nullable = false)
+	@Column(nullable = false, columnDefinition = "varchar(255)")
 	private String email;
 
-	@Column(name = "phone_number")
+	@Column(name = "phone_number", columnDefinition = "varchar(255)")
 	private String phoneNumber;
 
+	@Column(columnDefinition = "date")
 	private LocalDate birth;
 
 	@Enumerated(EnumType.STRING)
 	private Gender gender;
 
 	@Enumerated(EnumType.STRING)
+	@Column(nullable = false)
 	private Role role;
 
-	@Column(name = "user_status")
 	@Enumerated(EnumType.STRING)
+	@Column(nullable = false, name = "user_status")
 	private UserStatus userStatus;
 
+	@Column(nullable = false, columnDefinition = "varchar(255)")
 	private String provider;
 
+	@Column(nullable = false, columnDefinition = "varchar(255)")
 	private String providerId;
 
-	@OneToMany
+	@OneToMany(mappedBy = "user")
 	private List<BookmarkEntity> bookmarks;
 
 	// For Spring Security==============================================================================================
@@ -93,5 +102,17 @@ public class UserEntity extends BaseEntity {
 	public UserEntity updateUsername(String username) {
 		this.username = username;
 		return this;
+	}
+
+	public static UserEntity createByOAuthUser(OAuth2UserInfo oAuth2UserInfo) {
+		return UserEntity.builder()
+			.username(oAuth2UserInfo.getUsername())
+			.nickname(RandomNicknameGenerator.setRandomNickname())
+			.email(oAuth2UserInfo.getEmail())
+			.role(Role.ROLE_USER)
+			.userStatus(UserStatus.USER_STATUS_CREATED)
+			.provider(oAuth2UserInfo.getProvider())
+			.providerId(oAuth2UserInfo.getProviderId())
+			.build();
 	}
 }
