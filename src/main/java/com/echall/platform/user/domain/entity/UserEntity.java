@@ -1,39 +1,22 @@
 package com.echall.platform.user.domain.entity;
 
-import java.time.LocalDate;
-import java.util.Collection;
-import java.util.List;
-
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.userdetails.UserDetails;
-
 import com.echall.platform.bookmark.domain.entity.BookmarkEntity;
 import com.echall.platform.user.domain.dto.UserRequestDto;
 import com.echall.platform.user.domain.enums.Gender;
 import com.echall.platform.user.domain.enums.Role;
 import com.echall.platform.user.domain.enums.UserStatus;
+import jakarta.persistence.*;
+import lombok.*;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.OneToMany;
-import jakarta.persistence.Table;
-import lombok.AccessLevel;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.ToString;
+import java.time.LocalDate;
+import java.util.List;
 
 @Table(name = "user")
 @Entity
 @Getter
 @ToString
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class UserEntity extends BaseEntity implements UserDetails {
+public class UserEntity extends BaseEntity {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -111,32 +94,4 @@ public class UserEntity extends BaseEntity implements UserDetails {
 		this.username = username;
 		return this;
 	}
-
-	// Override methods
-
-	@Override
-	public Collection<? extends GrantedAuthority> getAuthorities() {
-		return List.of();
-	}
-
-	@Override
-	public boolean isAccountNonExpired() {
-		return UserDetails.super.isAccountNonExpired();
-	}
-
-	@Override
-	public boolean isAccountNonLocked() {
-		return UserDetails.super.isAccountNonLocked();
-	}
-
-	@Override
-	public boolean isCredentialsNonExpired() {
-		return UserDetails.super.isCredentialsNonExpired();
-	}
-
-	@Override
-	public boolean isEnabled() {
-		return UserDetails.super.isEnabled();
-	}
-
 }
