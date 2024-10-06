@@ -93,7 +93,9 @@ dependencies {
 	// Jsoup
 	implementation 'org.jsoup:jsoup:1.17.2'
 
-
+	// Microsoft Azure Translator
+	implementation "com.squareup.okhttp3:okhttp:4.10.0"
+	implementation "com.google.code.gson:gson:2.9.0"
 }
 
 tasks.named('test') {

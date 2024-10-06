@@ -59,3 +59,9 @@ springdoc:
 jwt:
   issuer: ${MY_JWT_ISSUER}
   secret: ${MY_JWT_SECRET_KEY}
+
+# MICROSOFT AZURE AI TRANSLATOR
+microsoft:
+  location: ${TRANSLATOR_TEXT_LOCATION}
+  endpoint: ${TRANSLATOR_TEXT_ENDPOINT}
+  key: ${TRANSLATOR_TEXT_SUBSCRIPTION_KEY}

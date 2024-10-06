@@ -10,16 +10,16 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public enum CrawlingErrorCode implements ErrorCode {
 	CRAWLING_OUT_OF_BOUNDS(
-		HttpStatus.BAD_REQUEST, CrawlingServiceStatus.CRAWLING_OUT_OF_BOUNDS, "유튜브 영상 길이가 10분 이상입니다."
+		HttpStatus.BAD_REQUEST, CrawlingServiceStatus.CRAWLING_OUT_OF_BOUNDS, "유튜브 영상 길이가 8분 이상입니다."
 	),
 	SELENIUM_RUNTIME_ERROR(
-		HttpStatus.NO_CONTENT, CrawlingServiceStatus.CRAWLING_SELENIUM_FAILURE, "셀레니움 런타임 에러"
+		HttpStatus.NOT_ACCEPTABLE, CrawlingServiceStatus.CRAWLING_SELENIUM_FAILURE, "셀레니움 런타임 에러"
 	),
 	CRAWLING_TRANSLATE_FAILURE(
-		HttpStatus.CONFLICT, CrawlingServiceStatus.CRAWLING_TRANSLATE_FAILURE, "파이썬 번역 에러"
+		HttpStatus.CONFLICT, CrawlingServiceStatus.CRAWLING_TRANSLATE_FAILURE, "Azure API 번역 에러"
 	),
 	CRAWLING_JSOUP_FAILURE(
-		HttpStatus.NO_CONTENT, CrawlingServiceStatus.CRAWLING_JSOUP_FAILURE, "JSOUP 런타임 에러"
+		HttpStatus.NOT_ACCEPTABLE, CrawlingServiceStatus.CRAWLING_JSOUP_FAILURE, "JSOUP 런타임 에러"
 	)
 
 	;
