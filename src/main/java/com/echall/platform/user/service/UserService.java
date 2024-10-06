@@ -1,19 +1,17 @@
 package com.echall.platform.user.service;
 
-import static com.echall.platform.message.error.code.UserErrorCode.*;
-
-import com.echall.platform.oauth2.domain.info.OAuth2UserInfo;
-import org.springframework.stereotype.Service;
-
 import com.echall.platform.message.error.exception.CommonException;
+import com.echall.platform.oauth2.domain.info.OAuth2UserPrincipal;
 import com.echall.platform.user.domain.dto.UserRequestDto;
 import com.echall.platform.user.domain.dto.UserResponseDto;
 import com.echall.platform.user.domain.entity.UserEntity;
 import com.echall.platform.user.domain.enums.UserStatus;
 import com.echall.platform.user.repository.UserRepository;
-
 import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import static com.echall.platform.message.error.code.UserErrorCode.*;
 
 @RequiredArgsConstructor
 @Service
@@ -73,15 +71,15 @@ public class UserService {
 	}
 
 	@Transactional
-	public UserEntity getUserByOAuthUser(OAuth2UserInfo oAuth2UserInfo) {
-		UserEntity user = userRepository.findByEmailAndProvider(oAuth2UserInfo.getEmail(), oAuth2UserInfo.getProvider())
+	public UserEntity getUserByOAuthUser(OAuth2UserPrincipal oAuthUser) {
+		UserEntity user = userRepository.findByEmail(oAuthUser.getEmail())
 			.orElseGet(() -> {
-				UserEntity newUser = UserEntity.createByOAuthUser(oAuth2UserInfo);
+				UserEntity newUser = UserEntity.createByOAuthUser(oAuthUser);
 
 				return userRepository.save(newUser);
 			});
 
-		user.updateUsername(oAuth2UserInfo.getUsername());
+		user.updateAfterOAuth2Login(oAuthUser);
 
 		return user;
 	}

@@ -1,7 +1,7 @@
 package com.echall.platform.user.domain.entity;
 
 import com.echall.platform.bookmark.domain.entity.BookmarkEntity;
-import com.echall.platform.oauth2.domain.info.OAuth2UserInfo;
+import com.echall.platform.oauth2.domain.info.OAuth2UserPrincipal;
 import com.echall.platform.user.domain.dto.UserRequestDto;
 import com.echall.platform.user.domain.enums.Gender;
 import com.echall.platform.user.domain.enums.Role;
@@ -12,6 +12,7 @@ import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.DynamicUpdate;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -19,6 +20,7 @@ import java.util.List;
 @Getter
 @Entity
 @Table(name = "user")
+@DynamicUpdate
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class UserEntity extends BaseEntity {
 
@@ -102,20 +104,21 @@ public class UserEntity extends BaseEntity {
 		this.bookmarks.add(bookmark);
 	}
 
-	public UserEntity updateUsername(String username) {
-		this.username = username;
-		return this;
+	public void updateAfterOAuth2Login(OAuth2UserPrincipal oAuthUser) {
+		this.username = oAuthUser.getUsername();
+		this.provider = oAuthUser.getProvider();
+		this.providerId = oAuthUser.getProviderId();
 	}
 
-	public static UserEntity createByOAuthUser(OAuth2UserInfo oAuth2UserInfo) {
+	public static UserEntity createByOAuthUser(OAuth2UserPrincipal oAuthUser) {
 		return UserEntity.builder()
-			.username(oAuth2UserInfo.getUsername())
+			.username(oAuthUser.getUsername())
 			.nickname(RandomNicknameGenerator.setRandomNickname())
-			.email(oAuth2UserInfo.getEmail())
+			.email(oAuthUser.getEmail())
 			.role(Role.ROLE_USER)
 			.userStatus(UserStatus.USER_STATUS_CREATED)
-			.provider(oAuth2UserInfo.getProvider())
-			.providerId(oAuth2UserInfo.getProviderId())
+			.provider(oAuthUser.getProvider())
+			.providerId(oAuthUser.getProviderId())
 			.build();
 	}
 }
