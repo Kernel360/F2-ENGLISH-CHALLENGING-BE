@@ -1,28 +1,27 @@
 package com.echall.platform.oauth2;
 
-import java.time.Duration;
-import java.util.Collections;
-import java.util.Date;
-import java.util.Set;
-
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.userdetails.User;
-import org.springframework.stereotype.Service;
-
+import com.echall.platform.oauth2.domain.info.OAuth2UserPrincipal;
 import com.echall.platform.user.domain.entity.UserEntity;
-
+import com.echall.platform.user.service.UserService;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Header;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
-@RequiredArgsConstructor
+import java.time.Duration;
+import java.util.Date;
+
 @Service
+@RequiredArgsConstructor
 public class TokenProvider {
 	private final JwtProperties jwtProperties;
+	private final UserService userService;
+
 	public static final Duration ACCESS_TOKEN_EXPIRE = Duration.ofDays(1);
 	public static final Duration REFRESH_TOKEN_EXPIRE = Duration.ofDays(7);
 
@@ -57,16 +56,15 @@ public class TokenProvider {
 		}
 	}
 
+	@Transactional(readOnly = true)
 	public Authentication getAuthentication(String token) {
 		Claims claims = getClaims(token);
 
-		String role = claims.get("role", String.class);
-		Set<SimpleGrantedAuthority> authorities
-			= Collections.singleton(new SimpleGrantedAuthority(role == null ? "ROLE_USER_UNCERTIFIED" : role));
-		User user = new User(
-			claims.getSubject(), "", authorities
-		);
-		return new UsernamePasswordAuthenticationToken(user, token, authorities);
+		UserEntity user = userService.getUserById(claims.get("id", Long.class));
+
+		OAuth2UserPrincipal principal = OAuth2UserPrincipal.from(user);
+
+		return new UsernamePasswordAuthenticationToken(principal, token, principal.getAuthorities());
 	}
 
 	private Claims getClaims(String token) {
