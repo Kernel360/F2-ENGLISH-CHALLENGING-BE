@@ -45,10 +45,10 @@ public class OAuth2SuccessHandler implements AuthenticationSuccessHandler {
 		UserEntity user = userService.getUserByOAuthUser(oAuth2UserPrincipal.getOAuth2UserInfo());
 
 		String refreshToken = tokenProvider.generateRefreshToken(user);
-		addTokenToCookie(request, response, refreshToken, TRUE);
+		cookieUtil.addRefreshTokenCookie(request, response, refreshToken);
 
 		String accessToken = tokenProvider.generateAccessToken(user);
-		addTokenToCookie(request, response, accessToken, FALSE);
+		cookieUtil.addAccessTokenCookie(request, response, accessToken);
 
 		saveRefreshToken(user.getId(), refreshToken);
 
@@ -63,25 +63,4 @@ public class OAuth2SuccessHandler implements AuthenticationSuccessHandler {
 			.orElse(new RefreshToken(userId, newRefreshToken));
 		refreshTokenRepository.save(refreshToken);
 	}
-
-	private void addTokenToCookie(
-		HttpServletRequest request, HttpServletResponse response,
-		String refreshToken, boolean type
-	) {
-		String token = null;
-		long duration;
-
-		if (type) {
-			token = REFRESH_TOKEN;
-			duration = REFRESH_TOKEN_EXPIRE.toSeconds();
-		} else {
-			token = ACCESS_TOKEN;
-			duration = ACCESS_TOKEN_EXPIRE.toSeconds();
-		}
-
-		cookieUtil.removeCookie(request, response, token);
-		cookieUtil.addCookie(response, token, refreshToken,
-			Math.toIntExact(duration));
-	}
-
 }
