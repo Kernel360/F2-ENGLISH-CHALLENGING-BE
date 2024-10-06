@@ -9,4 +9,6 @@ import com.echall.platform.user.domain.entity.UserEntity;
 public interface UserRepository extends JpaRepository<UserEntity, Long> {
 
 	Optional<UserEntity> findByEmail(String email);
+
+	Optional<UserEntity> findByEmailAndProvider(String email, String provider);
 }

@@ -1,6 +1,7 @@
 package com.echall.platform.oauth2;
 
 import com.echall.platform.oauth2.domain.entity.RefreshToken;
+import com.echall.platform.oauth2.domain.info.OAuth2UserPrincipal;
 import com.echall.platform.oauth2.repository.RefreshTokenRepository;
 import com.echall.platform.user.domain.entity.UserEntity;
 import com.echall.platform.user.service.UserService;
@@ -10,13 +11,11 @@ import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
 import java.time.Duration;
-import java.util.LinkedHashMap;
 
 import static java.lang.Boolean.FALSE;
 import static java.lang.Boolean.TRUE;
@@ -41,20 +40,10 @@ public class OAuth2SuccessHandler implements AuthenticationSuccessHandler {
 	public void onAuthenticationSuccess(
 		HttpServletRequest request, HttpServletResponse response, Authentication authentication
 	) throws IOException {
-		OAuth2User oAuth2User = (OAuth2User)authentication.getPrincipal();
-		String email = null;
-		if (oAuth2User.getAttribute("email") != null) {
-			email = oAuth2User.getAttribute("email");
-		}
-		if (oAuth2User.getAttribute("response") != null) {
-			email = ((LinkedHashMap<String, Object>)oAuth2User.getAttribute("response")).get("email").toString();
-		}
-		if (oAuth2User.getAttribute("kakao_account") != null) {
-			email = ((LinkedHashMap<String, Object>)oAuth2User.getAttribute("kakao_account")).get("email").toString();
-		}
+		OAuth2UserPrincipal oAuth2UserPrincipal = (OAuth2UserPrincipal) authentication.getPrincipal();
 
-		assert email != null;
-		UserEntity user = userService.getUserByEmail(email);
+		UserEntity user = userService.getUserByOAuthUser(oAuth2UserPrincipal.getOAuth2UserInfo());
+
 		String refreshToken = tokenProvider.generateToken(user, REFRESH_TOKEN_EXPIRE);
 		saveRefreshToken(user.getId(), refreshToken);
 		addTokenToCookie(request, response, refreshToken, TRUE);

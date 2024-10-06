@@ -2,6 +2,7 @@ package com.echall.platform.user.service;
 
 import static com.echall.platform.message.error.code.UserErrorCode.*;
 
+import com.echall.platform.oauth2.domain.info.OAuth2UserInfo;
 import org.springframework.stereotype.Service;
 
 import com.echall.platform.message.error.exception.CommonException;
@@ -12,6 +13,7 @@ import com.echall.platform.user.domain.enums.UserStatus;
 import com.echall.platform.user.repository.UserRepository;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.transaction.annotation.Transactional;
 
 @RequiredArgsConstructor
 @Service
@@ -70,4 +72,17 @@ public class UserService {
 		}
 	}
 
+	@Transactional
+	public UserEntity getUserByOAuthUser(OAuth2UserInfo oAuth2UserInfo) {
+		UserEntity user = userRepository.findByEmailAndProvider(oAuth2UserInfo.getEmail(), oAuth2UserInfo.getProvider())
+			.orElseGet(() -> {
+				UserEntity newUser = UserEntity.createByOAuthUser(oAuth2UserInfo);
+
+				return userRepository.save(newUser);
+			});
+
+		user.updateUsername(oAuth2UserInfo.getUsername());
+
+		return user;
+	}
 }
