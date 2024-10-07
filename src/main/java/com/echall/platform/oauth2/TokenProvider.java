@@ -1,12 +1,10 @@
 package com.echall.platform.oauth2;
 
+import com.echall.platform.message.error.exception.CommonException;
 import com.echall.platform.oauth2.domain.info.OAuth2UserPrincipal;
 import com.echall.platform.user.domain.entity.UserEntity;
 import com.echall.platform.user.service.UserService;
-import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.Header;
-import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
+import io.jsonwebtoken.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -15,6 +13,9 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.Duration;
 import java.util.Date;
+
+import static com.echall.platform.message.error.code.TokenErrorCode.TOKEN_EXPIRED;
+import static com.echall.platform.message.error.code.TokenErrorCode.TOKEN_INVALID;
 
 @Service
 @RequiredArgsConstructor
@@ -51,8 +52,10 @@ public class TokenProvider {
 		try {
 			Jwts.parser().setSigningKey(jwtProperties.getSecret()).parseClaimsJws(token);
 			return true;
+		} catch (ExpiredJwtException e) {
+			throw new CommonException(TOKEN_EXPIRED);
 		} catch (Exception e) {
-			return false;
+			throw new CommonException(TOKEN_INVALID);
 		}
 	}
 

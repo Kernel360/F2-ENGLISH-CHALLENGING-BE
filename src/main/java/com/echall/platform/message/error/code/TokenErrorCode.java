@@ -11,8 +11,9 @@ import lombok.RequiredArgsConstructor;
 public enum TokenErrorCode implements ErrorCode {
 	REFRESH_TOKEN_NOT_FOUND(
 		HttpStatus.NOT_FOUND, TokenServiceStatus.REFRESH_TOKEN_NOT_FOUND, "리프레시 토큰 확인 불가"
-	)
-
+	),
+	TOKEN_EXPIRED(HttpStatus.UNAUTHORIZED, TokenServiceStatus.TOKEN_EXPIRED, "토큰 만료"),
+	TOKEN_INVALID(HttpStatus.UNAUTHORIZED, TokenServiceStatus.TOKEN_INVALID, "유효하지 않은 토큰")
 	;
 
 	private final HttpStatus httpStatus;
