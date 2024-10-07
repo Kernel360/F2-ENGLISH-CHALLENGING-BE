@@ -6,7 +6,7 @@ import com.echall.platform.oauth2.service.RefreshTokenService;
 import com.echall.platform.user.domain.entity.UserEntity;
 import com.echall.platform.user.service.UserService;
 import com.echall.platform.util.CookieUtil;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import com.echall.platform.util.HttpServletResponseUtil;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
@@ -17,7 +17,6 @@ import org.springframework.security.web.authentication.AuthenticationSuccessHand
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
-import java.util.Map;
 
 @Slf4j
 @Component
@@ -53,24 +52,9 @@ public class OAuth2SuccessHandler implements AuthenticationSuccessHandler {
 		} catch (CommonException e) {
 			log.error(e.getErrorCode().getCode() + " : " + e.getErrorCode().getMessage());
 
-			setErrorResponse(response, e);
+			HttpServletResponseUtil.createErrorResponse(response, e);
 		}
 
 		// TODO: 나머지 Exception에 대한 응답 컨벤션에 따라 추가될 수 있음 ex) Server Internal Error
-	}
-
-	private void setErrorResponse(HttpServletResponse response, CommonException e) throws IOException {
-		response.setContentType("application/json;charset=UTF-8");
-		response.setStatus(e.getErrorCode().getStatus().value());
-
-		ObjectMapper objectMapper = new ObjectMapper();
-
-		String jsonResponse = objectMapper.writeValueAsString(
-			Map.of("code", e.getErrorCode().getCode(),
-				"message", e.getErrorCode().getMessage())
-		);
-
-		response.getWriter().write(jsonResponse);
-		response.getWriter().flush();
 	}
 }

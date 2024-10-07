@@ -3,6 +3,7 @@ package com.echall.platform.config;
 import com.echall.platform.message.error.exception.CommonException;
 import com.echall.platform.oauth2.TokenProvider;
 import com.echall.platform.util.CookieUtil;
+import com.echall.platform.util.HttpServletResponseUtil;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -52,22 +53,7 @@ public class TokenAuthenticationFilter extends OncePerRequestFilter {
 			filterChain.doFilter(request, response);
 
 		} catch (CommonException e) {
-			setErrorResponse(response, e);
+			HttpServletResponseUtil.createErrorResponse(response, e);
 		}
-	}
-
-	private void setErrorResponse(HttpServletResponse response, CommonException e) throws IOException {
-		response.setContentType("application/json;charset=UTF-8");
-		response.setStatus(e.getErrorCode().getStatus().value());
-
-		ObjectMapper objectMapper = new ObjectMapper();
-
-		String jsonResponse = objectMapper.writeValueAsString(
-			Map.of("code", e.getErrorCode().getCode(),
-				"message", e.getErrorCode().getMessage())
-		);
-
-		response.getWriter().write(jsonResponse);
-		response.getWriter().flush();
 	}
 }
