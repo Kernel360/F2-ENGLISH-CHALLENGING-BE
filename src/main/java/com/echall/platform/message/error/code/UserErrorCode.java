@@ -17,6 +17,9 @@ public enum UserErrorCode implements ErrorCode {
 	),
 	USER_FAIL_SUSPEND(
 		HttpStatus.BAD_REQUEST, UserServiceStatus.USER_FAIL_SUSPEND, "정지된 유저입니다."
+	),
+	USER_PERMISSION_DENIED(
+		HttpStatus.FORBIDDEN, UserServiceStatus.USER_PERMISSION_DENIED, "접근 권한이 없는 유저입니다."
 	);
 
 	private final HttpStatus httpStatus;

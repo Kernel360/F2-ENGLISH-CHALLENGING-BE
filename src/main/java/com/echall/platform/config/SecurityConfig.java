@@ -15,6 +15,7 @@ import org.springframework.security.config.annotation.web.configurers.AbstractHt
 import org.springframework.security.config.annotation.web.configurers.HttpBasicConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.access.AccessDeniedHandler;
 import org.springframework.security.web.authentication.HttpStatusEntryPoint;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
@@ -35,6 +36,7 @@ public class SecurityConfig {
 	private final TokenProvider tokenProvider;
 	private final OAuth2SuccessHandler oAuth2SuccessHandler;
 	private final OAuth2FailureHandler oAuth2FailureHandler;
+	private final AccessDeniedHandler accessDeniedHandler;
 
 	@Value("${spring.profiles.active}")
 	private String activeProfile;
@@ -100,6 +102,9 @@ public class SecurityConfig {
 					new AntPathRequestMatcher("/api/**")
 				)
 			);
+
+		http.exceptionHandling(configurer -> configurer
+			.accessDeniedHandler(accessDeniedHandler));
 
 		return http.build();
 	}
