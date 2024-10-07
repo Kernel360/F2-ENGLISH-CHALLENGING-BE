@@ -1,6 +1,5 @@
 package com.echall.platform.oauth2;
 
-import com.echall.platform.message.ResponseEntityFactory;
 import com.echall.platform.message.error.exception.CommonException;
 import com.echall.platform.oauth2.domain.info.OAuth2UserPrincipal;
 import com.echall.platform.oauth2.service.RefreshTokenService;
@@ -54,20 +53,24 @@ public class OAuth2SuccessHandler implements AuthenticationSuccessHandler {
 		} catch (CommonException e) {
 			log.error(e.getErrorCode().getCode() + " : " + e.getErrorCode().getMessage());
 
-			response.setContentType("application/json;charset=UTF-8");
-			response.setStatus(e.getErrorCode().getStatus().value());
-
-			ObjectMapper objectMapper = new ObjectMapper();
-
-			String jsonResponse = objectMapper.writeValueAsString(
-				Map.of("code", e.getErrorCode().getCode(),
-					"message", e.getErrorCode().getMessage())
-			);
-
-			response.getWriter().write(jsonResponse);
-			response.getWriter().flush();
+			setErrorResponse(response, e);
 		}
 
 		// TODO: 나머지 Exception에 대한 응답 컨벤션에 따라 추가될 수 있음 ex) Server Internal Error
+	}
+
+	private void setErrorResponse(HttpServletResponse response, CommonException e) throws IOException {
+		response.setContentType("application/json;charset=UTF-8");
+		response.setStatus(e.getErrorCode().getStatus().value());
+
+		ObjectMapper objectMapper = new ObjectMapper();
+
+		String jsonResponse = objectMapper.writeValueAsString(
+			Map.of("code", e.getErrorCode().getCode(),
+				"message", e.getErrorCode().getMessage())
+		);
+
+		response.getWriter().write(jsonResponse);
+		response.getWriter().flush();
 	}
 }
