@@ -1,4 +1,6 @@
-package com.echall.platform.oauth2.domain;
+package com.echall.platform.oauth2.domain.info;
+
+import java.util.Map;
 
 public interface OAuth2UserInfo {
 	String getProviderId();
@@ -8,4 +10,6 @@ public interface OAuth2UserInfo {
 	String getEmail();
 
 	String getUsername();
+
+	Map<String, Object> getAttributes();
 }

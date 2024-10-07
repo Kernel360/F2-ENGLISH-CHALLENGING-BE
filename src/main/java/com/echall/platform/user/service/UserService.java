@@ -1,23 +1,24 @@
 package com.echall.platform.user.service;
 
-import static com.echall.platform.message.error.code.UserErrorCode.*;
-
-import org.springframework.stereotype.Service;
-
 import com.echall.platform.message.error.exception.CommonException;
+import com.echall.platform.oauth2.domain.info.OAuth2UserPrincipal;
 import com.echall.platform.user.domain.dto.UserRequestDto;
 import com.echall.platform.user.domain.dto.UserResponseDto;
 import com.echall.platform.user.domain.entity.UserEntity;
 import com.echall.platform.user.domain.enums.UserStatus;
 import com.echall.platform.user.repository.UserRepository;
-
 import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import static com.echall.platform.message.error.code.UserErrorCode.*;
 
 @RequiredArgsConstructor
 @Service
 public class UserService {
 	private final UserRepository userRepository;
 
+	@Transactional
 	public UserResponseDto.UserUpdateResponse updateUserInfo(
 		UserRequestDto.UserUpdateRequest userUpdateRequest,
 		String email
@@ -35,6 +36,7 @@ public class UserService {
 		return UserResponseDto.UserUpdateResponse.toDto(user);
 	}
 
+	@Transactional(readOnly = true)
 	public UserResponseDto.UserMyPageResponse getMyPage(String email) {
 		UserEntity user = this.getUserByEmail(email);
 		AssertThat_UserAccountIsAppropriate(user);
@@ -42,16 +44,34 @@ public class UserService {
 		return UserResponseDto.UserMyPageResponse.toDto(user);
 	}
 
+	@Transactional(readOnly = true)
 	public UserResponseDto.UserChallengeResponse getMyChallenge(String email) {
 		UserEntity user = this.getUserByEmail(email);
 		AssertThat_UserAccountIsAppropriate(user);
 		return UserResponseDto.UserChallengeResponse.toDto(user);
 	}
 
+	@Transactional(readOnly = true)
 	public UserEntity getUserById(Long userId) {
 		UserEntity user = userRepository.findById(userId)
 			.orElseThrow(() -> new CommonException(USER_NOT_FOUND));
 		AssertThat_UserAccountIsAppropriate(user);
+		return user;
+	}
+
+	@Transactional
+	public UserEntity getUserByOAuthUser(OAuth2UserPrincipal oAuthUser) {
+		UserEntity user = userRepository.findByEmail(oAuthUser.getEmail())
+			.orElseGet(() -> {
+				UserEntity newUser = UserEntity.createByOAuthUser(oAuthUser);
+
+				return userRepository.save(newUser);
+			});
+
+		AssertThat_UserAccountIsAppropriate(user);
+
+		user.updateAfterOAuth2Login(oAuthUser);
+
 		return user;
 	}
 

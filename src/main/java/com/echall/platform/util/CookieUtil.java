@@ -7,14 +7,30 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseCookie;
 import org.springframework.stereotype.Component;
 
+import java.time.Duration;
+
 
 @Component
 public class CookieUtil {
+	public static final String ACCESS_TOKEN_NAME = "access_token";
+	public static final String REFRESH_TOKEN_NAME = "refresh_token";
+	public static final Duration ACCESS_TOKEN_COOKIE_EXPIRE = Duration.ofDays(1);
+	public static final Duration REFRESH_TOKEN_COOKIE_EXPIRE = Duration.ofDays(7);
 
 	@Value("${spring.profiles.active}")
 	private String activeProfile;
 
-	// TODO: https 연결하고 검토 필요
+	public void addAccessTokenCookie(HttpServletRequest request, HttpServletResponse response, String accessToken) {
+		removeCookie(request, response, ACCESS_TOKEN_NAME);
+		addCookie(response, ACCESS_TOKEN_NAME, accessToken, (int) ACCESS_TOKEN_COOKIE_EXPIRE.toSeconds());
+	}
+
+	public void addRefreshTokenCookie(HttpServletRequest request, HttpServletResponse response, String accessToken) {
+		removeCookie(request, response, REFRESH_TOKEN_NAME);
+		addCookie(response, REFRESH_TOKEN_NAME, accessToken, (int) REFRESH_TOKEN_COOKIE_EXPIRE.toSeconds());
+	}
+
+	// TODO: https 연결하고 검토 필요, private화 생각해볼 것
 	public void addCookie(HttpServletResponse response, String name, String value, int maxAge) {
 		String cookieValue = createCookieValue(name, value, maxAge);
 
