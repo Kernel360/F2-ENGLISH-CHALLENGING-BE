@@ -63,7 +63,7 @@ public class UserEntity extends BaseEntity {
 	@Column(nullable = false, columnDefinition = "varchar(255)")
 	private String providerId;
 
-	@OneToMany()
+	@OneToMany
 	private List<BookmarkEntity> bookmarks;
 
 	// For Spring Security==============================================================================================
