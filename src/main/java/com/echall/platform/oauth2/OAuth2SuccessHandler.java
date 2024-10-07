@@ -11,6 +11,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
@@ -19,6 +20,7 @@ import org.springframework.stereotype.Component;
 import java.io.IOException;
 import java.util.Map;
 
+@Slf4j
 @Component
 @RequiredArgsConstructor
 public class OAuth2SuccessHandler implements AuthenticationSuccessHandler {
@@ -50,6 +52,8 @@ public class OAuth2SuccessHandler implements AuthenticationSuccessHandler {
 			response.sendRedirect(oAuth2SuccessRedirectUri);
 
 		} catch (CommonException e) {
+			log.error(e.getErrorCode().getCode() + " : " + e.getErrorCode().getMessage());
+
 			response.setContentType("application/json;charset=UTF-8");
 			response.setStatus(e.getErrorCode().getStatus().value());
 
