@@ -34,7 +34,7 @@ public class OAuth2UserPrincipal implements OAuth2User {
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return Collections.singleton(new SimpleGrantedAuthority(role.name()));
+        return this.role == null ? null : Collections.singleton(new SimpleGrantedAuthority(this.role.name()));
     }
 
     public static OAuth2UserPrincipal from(OAuth2UserInfo oAuth2UserInfo) {
