@@ -34,5 +34,9 @@ public class BookmarkResponseDto {
 			);
 		}
 	}
+	public record BookmarkDeleteResponse(
+		Long bookmarkId
+	){
+	}
 
 }

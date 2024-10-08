@@ -6,6 +6,7 @@ import java.util.List;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -64,11 +65,12 @@ public class BookmarkApiController {
 	) {
 
 		return ResponseEntityFactory.toResponseEntity(
-			BOOKMARK_CREATE_SUCCESS, bookmarkService.createBookmark(authentication.getName(), bookmarkRequestDto, contentId)
+			BOOKMARK_CREATE_SUCCESS,
+			bookmarkService.createBookmark(authentication.getName(), bookmarkRequestDto, contentId)
 		);
 	}
 
-	@PutMapping("/update/{id}")
+	@PutMapping("/update/{contentId}")
 	@Operation(summary = "북마크 메모 수정", description = "회원이 북마크 메모를 수정합니다.")
 	@ApiResponses(value = {
 		@ApiResponse(responseCode = "200", description = "요청에 성공하였습니다.", content = @Content),
@@ -76,13 +78,29 @@ public class BookmarkApiController {
 		@ApiResponse(responseCode = "500", description = "서버 에러가 발생하였습니다.", content = @Content)
 	})
 	public ResponseEntity<ApiCustomResponse<BookmarkResponseDto.BookmarkMyListResponse>> updateBookmark(
-		Authentication authentication,
-		@PathVariable Long id,
+		@PathVariable Long contentId,
 		@RequestBody BookmarkRequestDto.BookmarkUpdateRequest bookmarkRequestDto
 	) {
 
 		return ResponseEntityFactory.toResponseEntity(
-			BOOKMARK_UPDATE_SUCCESS, bookmarkService.updateBookmark(authentication.getName(), bookmarkRequestDto, id)
+			BOOKMARK_UPDATE_SUCCESS, bookmarkService.updateBookmark(bookmarkRequestDto, contentId)
+		);
+	}
+
+	@DeleteMapping("/delete/{bookmarkId}")
+	@Operation(summary = "북마크 삭제", description = "회원이 북마크를 삭제합니다.")
+	@ApiResponses(value = {
+		@ApiResponse(responseCode = "200", description = "요청에 성공하였습니다.", content = @Content),
+		@ApiResponse(responseCode = "204", description = "컨텐츠가 없습니다.", content = @Content),
+		@ApiResponse(responseCode = "500", description = "서버 에러가 발생하였습니다.", content = @Content)
+	})
+	public ResponseEntity<ApiCustomResponse<BookmarkResponseDto.BookmarkDeleteResponse>> deleteBookmark(
+		Authentication authentication,
+		@PathVariable Long bookmarkId
+	) {
+
+		return ResponseEntityFactory.toResponseEntity(
+			BOOKMARK_DELETE_SUCCESS, bookmarkService.deleteBookmark(authentication.getName(), bookmarkId)
 		);
 	}
 

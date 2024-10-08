@@ -8,6 +8,7 @@ public enum BookmarkServiceStatus implements ServiceStatus {
 	BOOKMARK_VIEW_SUCCESS("U-B-001"),
 	BOOKMARK_UPDATE_SUCCESS("U-B-002"),
 	BOOKMARK_CREATE_SUCCESS("U-B-003"),
+	BOOKMARK_DELETE_SUCCESS("U-B-004"),
 
 	// failure,
 	BOOKMARK_NOT_FOUND("U-B-901"),

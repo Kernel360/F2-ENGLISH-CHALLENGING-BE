@@ -37,7 +37,9 @@ public class BookmarkServiceImpl implements BookmarkService {
 			throw new CommonException(BOOKMARK_NOT_FOUND);
 		}
 
-		return bookmarks.stream().map(BookmarkResponseDto.BookmarkMyListResponse::of).toList();
+		return bookmarks.stream()
+			.map(BookmarkResponseDto.BookmarkMyListResponse::of)
+			.toList();
 	}
 
 	@Override
@@ -47,7 +49,7 @@ public class BookmarkServiceImpl implements BookmarkService {
 	) {
 		if (bookmarkRequestDto.wordIndex() != null && bookmarkRequestDto.sentenceIndex() == null) {
 			throw new CommonException(BOOKMARK_WORD_NEED_SENTENCE);
-		}
+		} // TODO: DTO 커스텀 해서 DTO 에서 검증 가능
 
 		UserEntity user = userRepository.findByEmail(email)
 			.orElseThrow(() -> new CommonException(USER_NOT_FOUND));
@@ -72,11 +74,8 @@ public class BookmarkServiceImpl implements BookmarkService {
 	@Override
 	@Transactional
 	public BookmarkResponseDto.BookmarkMyListResponse updateBookmark(
-		String email, BookmarkRequestDto.BookmarkUpdateRequest bookmarkRequestDto, Long contentId
+		BookmarkRequestDto.BookmarkUpdateRequest bookmarkRequestDto, Long contentId
 	) {
-		if (userRepository.findByEmail(email).isEmpty()) {
-			throw new CommonException(USER_NOT_FOUND);
-		}
 
 		BookmarkEntity bookmark = bookmarkRepository.findById(bookmarkRequestDto.bookmarkId())
 			.orElseThrow(() -> new CommonException(BOOKMARK_NOT_FOUND));
@@ -84,5 +83,23 @@ public class BookmarkServiceImpl implements BookmarkService {
 		bookmark.updateDescription(bookmarkRequestDto);
 
 		return BookmarkResponseDto.BookmarkMyListResponse.of(bookmark);
+	}
+
+	@Override
+	@Transactional
+	public BookmarkResponseDto.BookmarkDeleteResponse deleteBookmark(
+		String email, Long bookmarkId
+	) {
+		UserEntity user = userRepository.findUserWithBookmarks(bookmarkId);
+		BookmarkEntity bookmark = user.getBookmarks()
+			.stream()
+			.filter(bookmarkEntity -> bookmarkEntity.getId().equals(bookmarkId))
+			.findFirst()
+			.orElseThrow(() -> new CommonException(BOOKMARK_NOT_FOUND));
+
+		user.getBookmarks().remove(bookmark);
+		bookmarkRepository.delete(bookmark);
+
+		return new BookmarkResponseDto.BookmarkDeleteResponse(bookmarkId);
 	}
 }

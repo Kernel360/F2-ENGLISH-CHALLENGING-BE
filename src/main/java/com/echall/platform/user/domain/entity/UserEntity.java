@@ -1,6 +1,9 @@
 package com.echall.platform.user.domain.entity;
 
+import static com.echall.platform.message.error.code.BookmarkErrorCode.*;
+
 import com.echall.platform.bookmark.domain.entity.BookmarkEntity;
+import com.echall.platform.message.error.exception.CommonException;
 import com.echall.platform.oauth2.domain.info.OAuth2UserPrincipal;
 import com.echall.platform.user.domain.dto.UserRequestDto;
 import com.echall.platform.user.domain.enums.Gender;
@@ -65,6 +68,7 @@ public class UserEntity extends BaseEntity {
 	private String providerId;
 
 	@OneToMany
+	@JoinColumn(name = "user_id")
 	private List<BookmarkEntity> bookmarks = new ArrayList<>();
 
 	// For Spring Security==============================================================================================
