@@ -9,7 +9,6 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
-import jakarta.transaction.Transactional;
 import jakarta.validation.constraints.NotNull;
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -50,12 +49,7 @@ public class BookmarkEntity extends BaseEntity {
 		this.description = description;
 	}
 
-	@Transactional
-	public boolean updateDescription(BookmarkRequestDto.BookmarkUpdateRequest bookmarkRequestDto) {
-		if (this.description != null && this.description.equals(bookmarkRequestDto.description())) {
-			return false;
-		}
+	public void updateDescription(BookmarkRequestDto.BookmarkUpdateRequest bookmarkRequestDto) {
 		this.description = bookmarkRequestDto.description();
-		return true;
 	}
 }

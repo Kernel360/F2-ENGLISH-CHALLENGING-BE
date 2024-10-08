@@ -81,9 +81,7 @@ public class BookmarkServiceImpl implements BookmarkService {
 		BookmarkEntity bookmark = bookmarkRepository.findById(bookmarkRequestDto.bookmarkId())
 			.orElseThrow(() -> new CommonException(BOOKMARK_NOT_FOUND));
 
-		if (!bookmark.updateDescription(bookmarkRequestDto)) {
-			throw new CommonException(BOOKMARK_DESCRIPTION_SAME);
-		}
+		bookmark.updateDescription(bookmarkRequestDto);
 
 		return BookmarkResponseDto.BookmarkMyListResponse.of(bookmark);
 	}
