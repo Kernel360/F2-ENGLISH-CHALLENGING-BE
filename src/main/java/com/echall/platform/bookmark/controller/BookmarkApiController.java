@@ -34,7 +34,7 @@ import lombok.RequiredArgsConstructor;
 public class BookmarkApiController {
 	private final BookmarkService bookmarkService;
 
-	@GetMapping("/view/{id}")
+	@GetMapping("/view/{contentId}")
 	@Operation(summary = "게시글 북마크 조회", description = "게시글에 대해 회원이 등록해 둔 북마크 목록을 조회합니다.")
 	@ApiResponses(value = {
 		@ApiResponse(responseCode = "200", description = "요청에 성공하였습니다.", content = @Content),
@@ -43,14 +43,14 @@ public class BookmarkApiController {
 	})
 	public ResponseEntity<ApiCustomResponse<List<BookmarkResponseDto.BookmarkMyListResponse>>> getBookmarks(
 		Authentication authentication,
-		@PathVariable Long id
+		@PathVariable Long contentId
 	) {
 		return ResponseEntityFactory.toResponseEntity(
-			BOOKMARK_VIEW_SUCCESS, bookmarkService.getBookmarks(authentication.getName(), id)
+			BOOKMARK_VIEW_SUCCESS, bookmarkService.getBookmarks(authentication.getName(), contentId)
 		);
 	}
 
-	@PostMapping("/create/{id}")
+	@PostMapping("/create/{contentId}")
 	@Operation(summary = "북마크 생성", description = "회원이 북마크를 생성합니다.")
 	@ApiResponses(value = {
 		@ApiResponse(responseCode = "200", description = "요청에 성공하였습니다.", content = @Content),
@@ -59,12 +59,12 @@ public class BookmarkApiController {
 	})
 	public ResponseEntity<ApiCustomResponse<BookmarkResponseDto.BookmarkCreateResponse>> createBookmark(
 		Authentication authentication,
-		@PathVariable Long id,
+		@PathVariable Long contentId,
 		@RequestBody BookmarkRequestDto.BookmarkCreateRequest bookmarkRequestDto
 	) {
 
 		return ResponseEntityFactory.toResponseEntity(
-			BOOKMARK_CREATE_SUCCESS, bookmarkService.createBookmark(authentication.getName(), bookmarkRequestDto, id)
+			BOOKMARK_CREATE_SUCCESS, bookmarkService.createBookmark(authentication.getName(), bookmarkRequestDto, contentId)
 		);
 	}
 
