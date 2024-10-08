@@ -1,6 +1,7 @@
 package com.echall.platform.content.repository.custom;
 
 import static com.echall.platform.content.domain.entity.QContentEntity.*;
+import static com.echall.platform.message.error.code.ContentErrorCode.*;
 import static com.echall.platform.message.error.code.UserErrorCode.*;
 
 import java.lang.reflect.Field;
@@ -109,7 +110,7 @@ public class ContentRepositoryImpl extends QuerydslRepositorySupport implements 
 		try {
 			field = contentEntity.getClass().getField(sortBy);
 		} catch (NoSuchFieldException e) {
-			throw new RuntimeException(e);
+			throw new CommonException(CONTENT_SORT_COL_NOT_FOUND);
 		}
 
 		Path<?> path = Expressions.path(field.getType(), contentEntity, field.getName());
