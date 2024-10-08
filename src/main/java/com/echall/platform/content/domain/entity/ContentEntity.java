@@ -80,7 +80,6 @@ public class ContentEntity extends BaseEntity {
 		);
 	}
 
-	@Transactional
 	public void update(ContentRequestDto.ContentUpdateRequestDto dto) {
 		this.url = dto.url();
 		this.title = dto.title();
@@ -93,7 +92,6 @@ public class ContentEntity extends BaseEntity {
 			, 255);
 	}
 
-	@Transactional
 	public void updateStatus(ContentStatus contentStatus) {
 		this.contentStatus = contentStatus == null ? ContentStatus.ACTIVATED : contentStatus;
 	}

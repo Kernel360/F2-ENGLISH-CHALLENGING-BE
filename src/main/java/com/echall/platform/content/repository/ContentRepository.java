@@ -1,7 +1,5 @@
 package com.echall.platform.content.repository;
 
-import java.util.List;
-
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import com.echall.platform.content.domain.entity.ContentEntity;
