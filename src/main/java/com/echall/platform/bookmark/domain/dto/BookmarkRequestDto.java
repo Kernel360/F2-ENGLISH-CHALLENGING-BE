@@ -1,6 +1,7 @@
 package com.echall.platform.bookmark.domain.dto;
 
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 
 public class BookmarkRequestDto {
 	public record BookmarkCreateRequest(
@@ -10,6 +11,7 @@ public class BookmarkRequestDto {
 	}
 
 	public record BookmarkUpdateRequest(
+		@NotNull
 		Long bookmarkId,
 		@NotBlank
 		String description
