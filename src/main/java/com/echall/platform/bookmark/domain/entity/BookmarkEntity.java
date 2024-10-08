@@ -30,13 +30,13 @@ public class BookmarkEntity extends BaseEntity {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 
-	@Column(nullable = false, columnDefinition = "varchar(255)")
+	@Column(nullable = false, columnDefinition = "bigint")
 	private Long scriptIndex;
 
-	@Column(columnDefinition = "varchar(255)")
+	@Column(columnDefinition = "bigint")
 	private Long sentenceIndex;
 
-	@Column(columnDefinition = "varchar(255)")
+	@Column(columnDefinition = "bigint")
 	private Long wordIndex;
 
 	@Column(columnDefinition = "varchar(255)")
