@@ -3,6 +3,7 @@ package com.echall.platform.bookmark.domain.entity;
 import com.echall.platform.bookmark.domain.dto.BookmarkRequestDto;
 import com.echall.platform.user.domain.entity.BaseEntity;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -27,13 +28,16 @@ public class BookmarkEntity extends BaseEntity {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 
-	@NotNull
+	@Column(nullable = false, columnDefinition = "varchar(255)")
 	private Long scriptIndex;
 
+	@Column(columnDefinition = "varchar(255)")
 	private Long sentenceIndex;
 
+	@Column(columnDefinition = "varchar(255)")
 	private Long wordIndex;
 
+	@Column(columnDefinition = "varchar(255)")
 	private String description;
 
 	@Builder
