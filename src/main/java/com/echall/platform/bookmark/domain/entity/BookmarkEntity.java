@@ -49,8 +49,7 @@ public class BookmarkEntity extends BaseEntity {
 		this.scriptIndex = scriptIndex;
 		this.sentenceIndex = sentenceIndex;
 		this.wordIndex = wordIndex;
-		this.description = description;
-	}
+		this.description = description;	}
 
 	public void updateDescription(BookmarkRequestDto.BookmarkUpdateRequest bookmarkRequestDto) {
 		this.description = bookmarkRequestDto.description();
