@@ -1,5 +1,6 @@
 package com.echall.platform.bookmark.domain.entity;
 
+import com.echall.platform.bookmark.domain.dto.BookmarkRequestDto;
 import com.echall.platform.user.domain.entity.BaseEntity;
 
 import jakarta.persistence.Entity;
@@ -7,6 +8,7 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
+import jakarta.transaction.Transactional;
 import jakarta.validation.constraints.NotNull;
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -32,13 +34,24 @@ public class BookmarkEntity extends BaseEntity {
 
 	private Long wordIndex;
 
+	private String description;
+
 	@Builder
 	public BookmarkEntity(
-		@NotNull Long scriptIndex, Long sentenceIndex, Long wordIndex
+		@NotNull Long scriptIndex, Long sentenceIndex, Long wordIndex, String description
 	) {
 		this.scriptIndex = scriptIndex;
 		this.sentenceIndex = sentenceIndex;
 		this.wordIndex = wordIndex;
+		this.description = description;
 	}
 
+	@Transactional
+	public boolean updateDescription(BookmarkRequestDto.BookmarkUpdateRequest bookmarkRequestDto) {
+		if (this.description != null && this.description.equals(bookmarkRequestDto.description())) {
+			return false;
+		}
+		this.description = bookmarkRequestDto.description();
+		return true;
+	}
 }

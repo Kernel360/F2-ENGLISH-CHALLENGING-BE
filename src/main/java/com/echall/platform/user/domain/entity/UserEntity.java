@@ -15,6 +15,7 @@ import lombok.NoArgsConstructor;
 import org.hibernate.annotations.DynamicUpdate;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 
 @Getter
@@ -64,7 +65,7 @@ public class UserEntity extends BaseEntity {
 	private String providerId;
 
 	@OneToMany
-	private List<BookmarkEntity> bookmarks;
+	private List<BookmarkEntity> bookmarks = new ArrayList<>();
 
 	// For Spring Security==============================================================================================
 	@Builder
