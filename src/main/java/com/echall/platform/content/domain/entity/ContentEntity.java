@@ -15,6 +15,7 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
+import jakarta.transaction.Transactional;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.AccessLevel;
@@ -42,6 +43,9 @@ public class ContentEntity extends BaseEntity {
 
 	private String category;
 
+	@Column(columnDefinition = "integer default 0")
+	private int hits;
+
 	private String thumbnailUrl;
 
 	@Size(max = 255)
@@ -61,7 +65,6 @@ public class ContentEntity extends BaseEntity {
 		ContentType contentType, String mongoContentId,
 		List<Script> preScripts
 	) {
-
 		this.url = url;
 		this.title = title;
 		this.category = category;
@@ -77,6 +80,7 @@ public class ContentEntity extends BaseEntity {
 		);
 	}
 
+	@Transactional
 	public void update(ContentRequestDto.ContentUpdateRequestDto dto) {
 		this.url = dto.url();
 		this.title = dto.title();
@@ -89,6 +93,7 @@ public class ContentEntity extends BaseEntity {
 			, 255);
 	}
 
+	@Transactional
 	public void updateStatus(ContentStatus contentStatus) {
 		this.contentStatus = contentStatus == null ? ContentStatus.ACTIVATED : contentStatus;
 	}

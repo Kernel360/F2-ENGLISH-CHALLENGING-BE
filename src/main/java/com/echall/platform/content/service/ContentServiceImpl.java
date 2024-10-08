@@ -2,11 +2,14 @@ package com.echall.platform.content.service;
 
 import static com.echall.platform.message.error.code.ContentErrorCode.*;
 
+import java.util.List;
+
 import org.bson.types.ObjectId;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.echall.platform.content.domain.dto.ContentRequestDto;
 import com.echall.platform.content.domain.dto.ContentResponseDto;
@@ -32,6 +35,7 @@ public class ContentServiceImpl implements ContentService {
 	private final CrawlingServiceImpl crawlingService;
 
 	@Override
+	@Transactional(readOnly = true)
 	public Page<ContentResponseDto.ContentViewResponseDto> getAllContents(
 		Pageable pageable, SearchCondition searchCondition
 	) {
@@ -39,6 +43,7 @@ public class ContentServiceImpl implements ContentService {
 	}
 
 	@Override
+	@Transactional
 	public ContentResponseDto.ContentCreateResponseDto createContent(
 		Authentication authentication,
 		ContentRequestDto.ContentCreateRequestDto contentCreateRequestDto
@@ -68,6 +73,7 @@ public class ContentServiceImpl implements ContentService {
 	}
 
 	@Override
+	@Transactional
 	public ContentResponseDto.ContentUpdateResponseDto updateContent(
 		Long id, ContentRequestDto.ContentUpdateRequestDto contentUpdateRequest
 	) {
@@ -84,7 +90,14 @@ public class ContentServiceImpl implements ContentService {
 		return new ContentResponseDto.ContentUpdateResponseDto(content.getId());
 	}
 
+	public List<ContentResponseDto.ContentPreviewResponseDto> getPreviewContents(
+		ContentType contentType, String sortBy, int num
+	) {
+		return contentRepository.getPreviewContents(contentType, sortBy, num);
+	}
+
 	@Override
+	@Transactional
 	public ContentResponseDto.ContentUpdateResponseDto deactivateContent(Long id) {
 		ContentEntity content = contentRepository.findById(id)
 			.orElseThrow(() -> new CommonException(CONTENT_NOT_FOUND));
@@ -95,12 +108,15 @@ public class ContentServiceImpl implements ContentService {
 	}
 
 	@Override
+	@Transactional	// hit 증가 로직 있어서 readOnly 생략
 	public ContentResponseDto.ContentDetailResponseDto getScriptsOfContent(Long id) {
 		ContentEntity content = contentRepository.findById(id)
 			.orElseThrow(() -> new CommonException(CONTENT_NOT_FOUND));
 		ContentDocument contentDocument = contentScriptRepository.findById(
 			new ObjectId(content.getMongoContentId())
 		).orElseThrow(() -> new CommonException(CONTENT_NOT_FOUND));
+
+		contentRepository.updateHit(id); // TODO: 추후 레디스로 바꿀 예정
 
 		return new ContentResponseDto.ContentDetailResponseDto(
 			id,
