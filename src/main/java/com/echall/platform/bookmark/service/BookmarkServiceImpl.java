@@ -90,7 +90,8 @@ public class BookmarkServiceImpl implements BookmarkService {
 	public BookmarkResponseDto.BookmarkDeleteResponse deleteBookmark(
 		String email, Long bookmarkId
 	) {
-		UserEntity user = userRepository.findUserWithBookmarks(bookmarkId);
+		UserEntity user = userRepository.findUserWithBookmarks(bookmarkId)
+			.orElseThrow(() -> new CommonException(USER_NOT_FOUND));
 		BookmarkEntity bookmark = user.getBookmarks()
 			.stream()
 			.filter(bookmarkEntity -> bookmarkEntity.getId().equals(bookmarkId))
