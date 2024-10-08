@@ -1,5 +1,11 @@
 package com.echall.platform.user.domain.entity;
 
+import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
+
+import org.hibernate.annotations.DynamicUpdate;
+
 import com.echall.platform.bookmark.domain.entity.BookmarkEntity;
 import com.echall.platform.oauth2.domain.info.OAuth2UserPrincipal;
 import com.echall.platform.user.domain.dto.UserRequestDto;
@@ -7,15 +13,23 @@ import com.echall.platform.user.domain.enums.Gender;
 import com.echall.platform.user.domain.enums.Role;
 import com.echall.platform.user.domain.enums.UserStatus;
 import com.echall.platform.util.RandomNicknameGenerator;
-import jakarta.persistence.*;
+
+import jakarta.persistence.Column;
+import jakarta.persistence.ConstraintMode;
+import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.ForeignKey;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.OneToMany;
+import jakarta.persistence.Table;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.hibernate.annotations.DynamicUpdate;
-
-import java.time.LocalDate;
-import java.util.List;
 
 @Getter
 @Entity
@@ -64,7 +78,8 @@ public class UserEntity extends BaseEntity {
 	private String providerId;
 
 	@OneToMany
-	private List<BookmarkEntity> bookmarks;
+	@JoinColumn(name = "user_id", foreignKey = @ForeignKey(value = ConstraintMode.NO_CONSTRAINT))
+	private List<BookmarkEntity> bookmarks = new ArrayList<>();
 
 	// For Spring Security==============================================================================================
 	@Builder
@@ -81,6 +96,18 @@ public class UserEntity extends BaseEntity {
 		this.userStatus = userStatus;
 		this.provider = provider;
 		this.providerId = providerId;
+	}
+
+	public static UserEntity createByOAuthUser(OAuth2UserPrincipal oAuthUser) {
+		return UserEntity.builder()
+			.username(oAuthUser.getUsername())
+			.nickname(RandomNicknameGenerator.setRandomNickname())
+			.email(oAuthUser.getEmail())
+			.role(Role.ROLE_USER)
+			.userStatus(UserStatus.USER_STATUS_CREATED)
+			.provider(oAuthUser.getProvider())
+			.providerId(oAuthUser.getProviderId())
+			.build();
 	}
 
 	public void setUserInitialInfo(UserRequestDto.UserUpdateRequest userUpdateRequest) {
@@ -108,17 +135,5 @@ public class UserEntity extends BaseEntity {
 		this.username = oAuthUser.getUsername();
 		this.provider = oAuthUser.getProvider();
 		this.providerId = oAuthUser.getProviderId();
-	}
-
-	public static UserEntity createByOAuthUser(OAuth2UserPrincipal oAuthUser) {
-		return UserEntity.builder()
-			.username(oAuthUser.getUsername())
-			.nickname(RandomNicknameGenerator.setRandomNickname())
-			.email(oAuthUser.getEmail())
-			.role(Role.ROLE_USER)
-			.userStatus(UserStatus.USER_STATUS_CREATED)
-			.provider(oAuthUser.getProvider())
-			.providerId(oAuthUser.getProviderId())
-			.build();
 	}
 }

@@ -10,7 +10,8 @@ public enum ContentServiceStatus implements ServiceStatus {
 	CONTENT_MODIFY_SUCCESS("U-C-003"),
 	CONTENT_DEACTIVATE_SUCCESS("U-C-004"),
 	// error
-	CONTENT_NOT_FOUND("U-C-901")
+	CONTENT_NOT_FOUND("U-C-901"),
+	CONTENT_SORT_COL_NOT_FOUND("U-C-902")
 	;
 
 	private final String code;
