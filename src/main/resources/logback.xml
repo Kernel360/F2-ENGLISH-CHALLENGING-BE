@@ -92,7 +92,7 @@
             <appender-ref ref="ERROR_FILE"/>
         </root>
 
-        <logger name="com.fastcampus.befinal" level="DEBUG"/>
+        <logger name="com.echall.platform" level="DEBUG"/>
 
     </springProfile>
 
@@ -104,7 +104,7 @@
             <appender-ref ref="ERROR_FILE"/>
         </root>
 
-        <logger name="com.fastcampus.befinal" level="DEBUG"/>
+        <logger name="com.echall.platform" level="DEBUG"/>
 
     </springProfile>
 
