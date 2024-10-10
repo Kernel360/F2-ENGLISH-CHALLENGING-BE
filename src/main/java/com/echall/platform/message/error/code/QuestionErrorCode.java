@@ -9,7 +9,7 @@ import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
 public enum QuestionErrorCode implements ErrorCode {
-	QUESTION_NOT_FOUND(HttpStatus.NOT_FOUND, QuestionServiceStatus.QUESTION_NOT_FOUND, "컨텐츠 조회 실패");
+	QUESTION_NOT_FOUND(HttpStatus.NOT_FOUND, QuestionServiceStatus.QUESTION_NOT_FOUND, "문제 조회 실패");
 
 	private final HttpStatus httpStatus;
 	private final ServiceStatus serviceStatus;
