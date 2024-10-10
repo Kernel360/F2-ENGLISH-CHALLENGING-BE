@@ -11,6 +11,7 @@ import org.aspectj.lang.annotation.*;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 
 import static com.echall.platform.message.status.UserServiceStatus.USER_LOGIN_SUCCESS;
@@ -45,10 +46,23 @@ public class LoggingAspect {
             ApiCustomResponse<?> apiResponse = (ApiCustomResponse<?>) body;
             String customCode = apiResponse.code();
 
-            log.info("server: {}, controller: {}, responseTime: {}ms, code: {}",
-                activeProfile, methodName, executionTime, customCode);
+            String user = getUserIdentifier();
+
+            log.info("server: {}, user: {}, controller: {}, responseTime: {}ms, code: {}",
+                activeProfile, user, methodName, executionTime, customCode);
         }
         return result;
+    }
+
+    private String getUserIdentifier() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+
+        if (authentication != null && authentication.getPrincipal() != null) {
+            OAuth2UserPrincipal principal = (OAuth2UserPrincipal) authentication.getPrincipal();
+            return principal.getEmail();
+        } else {
+            return "guest";
+        }
     }
 
     @After(value = "login() && args(request, response, authentication)")
