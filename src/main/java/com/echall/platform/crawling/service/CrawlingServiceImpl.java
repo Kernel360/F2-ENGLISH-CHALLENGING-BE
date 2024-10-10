@@ -44,10 +44,9 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 @Service
 public class CrawlingServiceImpl implements CrawlingService {
+	private final TranslateService translateService;
 	@Value("${YOUTUBE_API_KEY}")
 	private String YOUTUBE_API_KEY;
-
-	private final TranslateService translateService;
 
 	@Override
 	public CrawlingResponseDto.CrawlingContentResponseDto getYoutubeInfo(String youtubeUrl, String credentials)
@@ -129,15 +128,18 @@ public class CrawlingServiceImpl implements CrawlingService {
 		// 공통 옵션 설정
 		ChromeOptions options = new ChromeOptions();
 		options.addArguments("--disable-gpu");
+		options.addArguments("--remote-allow-origins=*");
 		options.addArguments("--lang=en-US");
 
 		WebDriverManager.chromedriver().setup();
 
-		 if (os.contains("linux")) {
+		if (os.contains("linux")) {
 			// Ubuntu의 경우
 			options.addArguments("--headless");
 			options.addArguments("--no-sandbox");
 			options.addArguments("--disable-dev-shm-usage");
+			options.addArguments("--ignore-ssl-errors=yes");
+			options.addArguments("--ignore-certificate-errors");
 			// Xvfb를 사용하는 경우
 			if (System.getenv("DISPLAY") == null) {
 				System.setProperty("DISPLAY", ":99");
