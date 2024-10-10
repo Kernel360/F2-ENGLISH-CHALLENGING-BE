@@ -129,11 +129,13 @@ public class SecurityConfig {
 
 			if ("dev".equals(activeProfile)) {
 				originPatterns.add("https://local.biengual.store:3000");
+				originPatterns.add("https://dev.biengual.store");
 			}
 
 			if ("prod".equals(activeProfile)) {
 				originPatterns.add("https://biengual.store");
 				originPatterns.add("https://www.biengual.store");
+				originPatterns.add("https://api.biengual.store");
 			}
 
 			corsConfiguration.setAllowedOriginPatterns(originPatterns);
