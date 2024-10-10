@@ -290,17 +290,18 @@ public class CrawlingServiceImpl implements CrawlingService {
 	// Private Methods -------------------------------------------------------------------------------------------------
 	private void setUpSelenium(WebDriver driver)
 		throws InterruptedException {
+		log.error("SETUP SELENIUM START");
 		// Initial setting
 		driver.manage().window().maximize();
 		WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
 		JavascriptExecutor js = (JavascriptExecutor)driver;
 		wait.until(webDriver -> js.executeScript("return document.readyState").equals("complete"));
 		Thread.sleep(5000);
-
+		log.error("SETUP SUCCESS");
 		// Zoom out
 		js.executeScript("document.body.style.zoom='30%'");
 		Thread.sleep(2000);
-
+		log.error("ZOOMOUT SUCESS");
 		// Click the "expand" button to expand
 		List<WebElement> expandButton = driver.findElements(By.cssSelector("tp-yt-paper-button#expand"));
 		for (WebElement button : expandButton) {
@@ -310,13 +311,14 @@ public class CrawlingServiceImpl implements CrawlingService {
 			}
 		}
 		Thread.sleep(3000);
-
+		log.error("CLICK EXPAND");
 		// Locate and click the "Show transcript" button
 		WebElement transcriptButton = wait.until(
 			ExpectedConditions.elementToBeClickable(
 				By.xpath("//yt-button-shape//button[@aria-label='Show transcript']")));
 		transcriptButton.click();
 		Thread.sleep(5000);
+		log.error("CLICK TRANSCRIPTION");
 	}
 /*
 	private String translateTextWithPython(String text) {
