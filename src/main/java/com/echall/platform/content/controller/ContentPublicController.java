@@ -2,9 +2,7 @@ package com.echall.platform.content.controller;
 
 import static com.echall.platform.message.response.ContentResponseCode.*;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -72,7 +70,7 @@ public class ContentPublicController {
 		return ResponseEntityFactory.toResponseEntity(CONTENT_VIEW_SUCCESS, pageContentList);
 	}
 
-	@GetMapping("/preview/leading")
+	@GetMapping("/preview/reading")
 	@Operation(summary = "리딩 컨텐츠 프리뷰 조회", description = "리딩 컨텐츠 프리뷰 목록을 조회합니다.")
 	@ApiResponses(value = {
 		@ApiResponse(responseCode = "200", description = "요청에 성공하였습니다.", content = {
@@ -87,7 +85,7 @@ public class ContentPublicController {
 		@RequestParam(defaultValue = "8") int num
 	) {
 		List<ContentResponseDto.ContentPreviewResponseDto> leadingPreview
-			= contentService.getPreviewContents(ContentType.LEADING, sortBy, num);
+			= contentService.getPreviewContents(ContentType.READING, sortBy, num);
 		return ResponseEntityFactory.toResponseEntity(CONTENT_VIEW_SUCCESS, leadingPreview);
 	}
 

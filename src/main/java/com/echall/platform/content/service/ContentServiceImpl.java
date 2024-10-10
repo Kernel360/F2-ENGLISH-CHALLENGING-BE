@@ -55,7 +55,7 @@ public class ContentServiceImpl implements ContentService {
 				contentCreateRequestDto.url(), String.valueOf(authentication.getCredentials())
 			);
 		}
-		if (contentCreateRequestDto.contentType().equals(ContentType.LEADING)) {
+		if (contentCreateRequestDto.contentType().equals(ContentType.READING)) {
 			crawlingContentResponseDto = crawlingService.getCNNInfo(
 				contentCreateRequestDto.url(), String.valueOf(authentication.getCredentials())
 			);
