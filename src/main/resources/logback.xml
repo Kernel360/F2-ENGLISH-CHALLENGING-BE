@@ -4,8 +4,11 @@
     <property name="INFO_LOG_PATH" value="info/%d{yyyy-MM}/infoLog"/>
     <property name="WARN_LOG_PATH" value="warn/%d{yyyy-MM}/warnLog"/>
     <property name="ERROR_LOG_PATH" value="error/%d{yyyy-MM}/errorLog"/>
-    <property name="CONSOLE_LOG_PATTERN" value="%green([%d{yyyy-MM-dd HH:mm:ss}]) %magenta([%thread]) %highlight([%level]) - %msg%n"/>
-    <property name="LOG_PATTERN" value="[%d{yyyy-MM-dd HH:mm:ss}] [%thread] [%level] - %msg%n"/>
+
+    <timestamp key="LOG_TIMESTAMP" datePattern="yyyy-MM-dd HH:mm:ss" timeZone="Asia/Seoul"/>
+
+    <property name="CONSOLE_LOG_PATTERN" value="%green([${LOG_TIMESTAMP}]) %magenta([%thread]) %highlight([%level]) - %msg%n"/>
+    <property name="LOG_PATTERN" value="[${LOG_TIMESTAMP}] [%thread] [%level] - %msg%n"/>
 
 
     <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
