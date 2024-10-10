@@ -125,7 +125,8 @@ public class CrawlingServiceImpl implements CrawlingService {
 		WebDriverManager.chromedriver().setup();
 
 		ChromeOptions options = new ChromeOptions();
-		options.addArguments("--remote-allow-origins=*");
+		options.addArguments("--headless");
+		options.addArguments("--disable-gpu");
 		options.addArguments("--lang=en-US");
 		WebDriver driver = new ChromeDriver(options);
 		List<Script> transcriptLines;
