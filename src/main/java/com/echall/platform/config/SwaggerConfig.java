@@ -51,7 +51,7 @@ public class SwaggerConfig {
 			return "https://dev.biengual.store";
 		}
 		if (activeProfile.equals("prod")) {
-			return "https://prod.biengual.store";
+			return "https://api.biengual.store";
 		}
 
 		return null;
