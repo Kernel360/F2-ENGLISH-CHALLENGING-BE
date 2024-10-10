@@ -29,7 +29,7 @@ import lombok.RequiredArgsConstructor;
  */
 @RequiredArgsConstructor
 @RestController
-@RequestMapping("/api/c1/contents")
+@RequestMapping("/api/contents")
 @Tag(name = "Content - private API", description = "컨텐츠 회원전용 API")
 public class ContentApiController {
 	private final ContentService contentService;
@@ -37,7 +37,6 @@ public class ContentApiController {
 	/**
 	 * 컨텐츠 등록
 	 */
-	//TODO : ADMIN 회원만 가능하도록 권한 관리가 필요합니다.
 	@PostMapping("/create")
 	@Operation(summary = "어드민 - 컨텐츠 등록", description = "어드민 회원이 컨텐츠를 새로 등록합니다.")
 	@ApiResponses(value = {

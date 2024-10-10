@@ -16,7 +16,5 @@ public interface BookmarkService {
 		String email, BookmarkRequestDto.BookmarkCreateRequest bookmarkRequestDto, Long contentId
 	);
 
-	BookmarkResponseDto.BookmarkDeleteResponse deleteBookmark(
-		String email, Long bookmarkId
-	);
+	BookmarkResponseDto.BookmarkDeleteResponse deleteBookmark(Long bookmarkId);
 }

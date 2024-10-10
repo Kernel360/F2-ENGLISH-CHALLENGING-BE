@@ -2,7 +2,9 @@ package com.echall.platform.content.controller;
 
 import static com.echall.platform.message.response.ContentResponseCode.*;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -36,7 +38,7 @@ import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
 @RestController
-@RequestMapping("/api/p1/contents")
+@RequestMapping("/api/contents")
 @Tag(name = "Content - public API", description = "컨텐츠 공통 API")
 public class ContentPublicController {
 

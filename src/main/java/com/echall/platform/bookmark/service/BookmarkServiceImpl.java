@@ -47,6 +47,7 @@ public class BookmarkServiceImpl implements BookmarkService {
 	public BookmarkResponseDto.BookmarkCreateResponse createBookmark(
 		String email, BookmarkRequestDto.BookmarkCreateRequest bookmarkRequestDto, Long contentId
 	) {
+		// TODO: 스크립 기능 생기면 word, sentence 모두 null인 경우 예외 처리 해야 함
 		if (bookmarkRequestDto.wordIndex() != null && bookmarkRequestDto.sentenceIndex() == null) {
 			throw new CommonException(BOOKMARK_WORD_NEED_SENTENCE);
 		} // TODO: DTO 커스텀 해서 DTO 에서 검증 가능
@@ -61,7 +62,9 @@ public class BookmarkServiceImpl implements BookmarkService {
 			.description(null)
 			.build();
 
-		if (bookmarkRepository.existsBySentenceIndexOrWordIndex(bookmark.getSentenceIndex(), bookmark.getWordIndex())) {
+		if (bookmarkRepository.existsByScriptIndexAndScriptIndexAndWordIndex(
+			bookmark.getScriptIndex(), bookmark.getSentenceIndex(), bookmark.getWordIndex())
+		) {
 			throw new CommonException(BOOKMARK_ALREADY_EXISTS);
 		}
 
@@ -87,18 +90,10 @@ public class BookmarkServiceImpl implements BookmarkService {
 
 	@Override
 	@Transactional
-	public BookmarkResponseDto.BookmarkDeleteResponse deleteBookmark(
-		String email, Long bookmarkId
-	) {
-		UserEntity user = userRepository.findUserWithBookmarks(bookmarkId)
-			.orElseThrow(() -> new CommonException(USER_NOT_FOUND));
-		BookmarkEntity bookmark = user.getBookmarks()
-			.stream()
-			.filter(bookmarkEntity -> bookmarkEntity.getId().equals(bookmarkId))
-			.findFirst()
+	public BookmarkResponseDto.BookmarkDeleteResponse deleteBookmark(Long bookmarkId) {
+		BookmarkEntity bookmark = bookmarkRepository.findById(bookmarkId)
 			.orElseThrow(() -> new CommonException(BOOKMARK_NOT_FOUND));
 
-		user.getBookmarks().remove(bookmark);
 		bookmarkRepository.delete(bookmark);
 
 		return new BookmarkResponseDto.BookmarkDeleteResponse(bookmarkId);

@@ -83,7 +83,9 @@ public class ContentServiceImpl implements ContentService {
 		contentRepository.save(content);
 
 		ContentDocument contentDocument
-			= contentScriptRepository.findContentDocumentById(new ObjectId(content.getMongoContentId()));
+			= contentScriptRepository.findContentDocumentById(new ObjectId(content.getMongoContentId()))
+				.orElseThrow(() -> new CommonException(CONTENT_NOT_FOUND));
+
 		contentDocument.updateScript(contentUpdateRequest.script());
 		contentScriptRepository.save(contentDocument);
 

@@ -6,5 +6,5 @@ import com.echall.platform.bookmark.domain.entity.BookmarkEntity;
 
 public interface BookmarkRepository extends JpaRepository<BookmarkEntity, Long> {
 
-	boolean existsBySentenceIndexOrWordIndex(Long sentenceIndex, Long wordIndex);
+	boolean existsByScriptIndexAndScriptIndexAndWordIndex(Long sentenceIndex, Long scriptIndex, Long wordIndex);
 }

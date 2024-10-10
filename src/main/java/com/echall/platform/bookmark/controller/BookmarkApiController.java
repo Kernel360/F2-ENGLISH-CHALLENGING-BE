@@ -28,7 +28,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 
-@RequestMapping("/api/b1/bookmark")
+@RequestMapping("/api/bookmark")
 @RequiredArgsConstructor
 @RestController
 @Tag(name = "Bookmark - private API", description = "북마크 회원전용 API")
@@ -100,7 +100,7 @@ public class BookmarkApiController {
 	) {
 
 		return ResponseEntityFactory.toResponseEntity(
-			BOOKMARK_DELETE_SUCCESS, bookmarkService.deleteBookmark(authentication.getName(), bookmarkId)
+			BOOKMARK_DELETE_SUCCESS, bookmarkService.deleteBookmark(bookmarkId)
 		);
 	}
 

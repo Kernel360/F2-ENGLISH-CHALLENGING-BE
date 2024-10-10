@@ -13,6 +13,9 @@ import com.echall.platform.content.domain.entity.ContentDocument;
 public interface ContentScriptRepository extends MongoRepository<ContentDocument, ObjectId> {
 
 	Optional<ContentDocument> findById(ObjectId id);
+
 	Optional<ContentDocument> findByScripts(List<String> script);
-	ContentDocument findContentDocumentById(ObjectId mongoContentId);
+
+	Optional<ContentDocument> findContentDocumentById(ObjectId mongoContentId);
+
 }

@@ -28,7 +28,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 
 @RestController
-@RequestMapping("/api/u1/user")
+@RequestMapping("/api/user")
 @RequiredArgsConstructor
 @CrossOrigin(originPatterns = "*", methods = RequestMethod.GET)
 @Tag(name = "User Private API", description = "가입된 유저 공통 API")
