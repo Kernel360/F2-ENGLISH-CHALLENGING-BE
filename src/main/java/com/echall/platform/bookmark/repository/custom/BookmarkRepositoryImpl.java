@@ -4,8 +4,6 @@ import static com.echall.platform.bookmark.domain.entity.QBookmarkEntity.*;
 import static com.echall.platform.message.error.code.BookmarkErrorCode.*;
 import static com.echall.platform.user.domain.entity.QUserEntity.*;
 
-import java.util.Optional;
-
 import org.springframework.data.jpa.repository.support.QuerydslRepositorySupport;
 
 import com.echall.platform.bookmark.domain.entity.BookmarkEntity;
@@ -19,19 +17,22 @@ public class BookmarkRepositoryImpl extends QuerydslRepositorySupport implements
 
 	@Override
 	public Long deleteBookmark(Long userId, Long bookmarkId) {
-		return Optional.ofNullable(from(userEntity)
-				.join(userEntity.bookmarks, bookmarkEntity)
-				.select(bookmarkEntity)
-				.where(userEntity.id.eq(userId))
-				.where(bookmarkEntity.id.eq(bookmarkId))
-				.fetchOne())
-			.map(bookmark -> {
-				delete(bookmarkEntity)
-					.where(bookmarkEntity.id.eq(bookmarkId))
-					.execute();
-				return bookmarkId;
-			})
-			.orElseThrow(() -> new CommonException(BOOKMARK_NOT_FOUND));
+		BookmarkEntity bookmark = from(userEntity)
+			.join(userEntity.bookmarks, bookmarkEntity)
+			.select(bookmarkEntity)
+			.where(userEntity.id.eq(userId))
+			.where(bookmarkEntity.id.eq(bookmarkId))
+			.fetchOne();
 
+		if (bookmark == null) {
+			throw new CommonException(BOOKMARK_NOT_FOUND);
+		}
+
+		delete(bookmarkEntity)
+			.where(bookmarkEntity.id.eq(bookmarkId))
+			.execute();
+
+		return bookmarkId;
 	}
+
 }
