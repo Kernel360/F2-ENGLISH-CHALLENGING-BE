@@ -300,7 +300,7 @@ public class CrawlingServiceImpl implements CrawlingService {
 		log.error("SETUP SUCCESS");
 		// Zoom out
 		js.executeScript("document.body.style.zoom='30%'");
-		Thread.sleep(2000);
+		Thread.sleep(5000);
 		log.error("ZOOMOUT SUCESS");
 		// Click the "expand" button to expand
 		List<WebElement> expandButton = driver.findElements(By.cssSelector("tp-yt-paper-button#expand"));
