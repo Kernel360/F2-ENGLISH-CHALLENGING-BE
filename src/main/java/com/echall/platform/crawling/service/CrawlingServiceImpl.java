@@ -123,11 +123,31 @@ public class CrawlingServiceImpl implements CrawlingService {
 	@Override
 	public List<Script> getYoutubeScript(String youtubeInfo, double seconds) {
 		WebDriverManager.chromedriver().setup();
+		// 운영체제 감지
+		String os = System.getProperty("os.name").toLowerCase();
+		System.out.println("Operating System: " + os);
 
+		// 공통 옵션 설정
 		ChromeOptions options = new ChromeOptions();
-		options.addArguments("--headless");
 		options.addArguments("--disable-gpu");
 		options.addArguments("--lang=en-US");
+
+		// 운영체제별 ChromeDriver 설정
+		if (os.contains("win")) {
+			// Windows의 경우
+			WebDriverManager.chromedriver().setup();
+		} else if (os.contains("linux")) {
+			// Ubuntu의 경우
+			WebDriverManager.chromedriver().setup();
+			options.addArguments("--headless");
+			options.addArguments("--no-sandbox");
+			options.addArguments("--disable-dev-shm-usage");
+			// Xvfb를 사용하는 경우
+			if (System.getenv("DISPLAY") == null) {
+				System.setProperty("DISPLAY", ":99");
+			}
+		}
+
 		WebDriver driver = new ChromeDriver(options);
 		List<Script> transcriptLines;
 
