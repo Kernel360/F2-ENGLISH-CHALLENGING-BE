@@ -35,8 +35,8 @@ public class QuestionServiceImpl implements QuestionService {
 	private final ContentRepository contentRepository;
 	private final ContentScriptRepository contentScriptRepository;
 
-	@Transactional
 	@Override
+	@Transactional
 	public QuestionResponseDto.QuestionCreateResponseDto createQuestion(
 		Long contentId, QuestionRequestDto.QuestionCreateRequestDto requestDto
 	) {
@@ -70,8 +70,8 @@ public class QuestionServiceImpl implements QuestionService {
 		return new QuestionResponseDto.QuestionCreateResponseDto(questionIds);
 	}
 
-	@Transactional(readOnly = true)
 	@Override
+	@Transactional(readOnly = true)
 	public List<QuestionResponseDto.QuestionViewResponseDto> getQuestions(Long contentId) {
 		ContentDocument contentDocument = getContentDocument(contentId);
 		List<String> questionDocumentIds = contentDocument.getQuestionIds();

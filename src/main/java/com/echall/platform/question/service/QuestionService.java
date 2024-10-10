@@ -7,7 +7,8 @@ import com.echall.platform.question.domain.dto.QuestionResponseDto;
 
 public interface QuestionService {
 	QuestionResponseDto.QuestionCreateResponseDto createQuestion(
-		Long contentId,		QuestionRequestDto.QuestionCreateRequestDto requestDto
+		Long contentId, QuestionRequestDto.QuestionCreateRequestDto requestDto
 	);
+
 	List<QuestionResponseDto.QuestionViewResponseDto> getQuestions(Long contentId);
 }
