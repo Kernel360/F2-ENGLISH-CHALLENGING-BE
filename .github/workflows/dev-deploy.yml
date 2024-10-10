@@ -74,8 +74,8 @@ jobs:
             sudo docker pull ${{ secrets.DOCKERHUB_USERNAME }}/english-challenge-dev:latest
             
             echo "기존 컨테이너가 있을 경우 중지 및 제거"
-            sudo docker ps -q -f name=${{ secrets.DOCKERHUB_CONTAINERNAME }} | xargs -r sudo docker stop
-            sudo docker ps -a -q -f name=${{ secrets.DOCKERHUB_CONTAINERNAME }} | xargs -r sudo docker rm
+            sudo docker stop ${{ secrets.DOCKERHUB_CONTAINERNAME }} || true
+            sudo docker rm ${{ secrets.DOCKERHUB_CONTAINERNAME }} || true
             
             sudo docker run -d \
               -v ./biengual/logs:/biengual/logs \
