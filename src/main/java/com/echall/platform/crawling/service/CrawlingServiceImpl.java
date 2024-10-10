@@ -38,11 +38,14 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import groovy.util.logging.Slf4j;
 import io.github.bonigarcia.wdm.WebDriverManager;
 import lombok.RequiredArgsConstructor;
 
-@RequiredArgsConstructor
+@lombok.extern.slf4j.Slf4j
+@Slf4j
 @Service
+@RequiredArgsConstructor
 public class CrawlingServiceImpl implements CrawlingService {
 	private final TranslateService translateService;
 	@Value("${YOUTUBE_API_KEY}")
@@ -129,6 +132,7 @@ public class CrawlingServiceImpl implements CrawlingService {
 		ChromeOptions options = new ChromeOptions();
 		options.addArguments("--disable-gpu");
 		options.addArguments("--remote-allow-origins=*");
+		options.addArguments("--disable-popup-blocking");
 		options.addArguments("--lang=en-US");
 
 		WebDriverManager.chromedriver().setup();
@@ -137,7 +141,7 @@ public class CrawlingServiceImpl implements CrawlingService {
 			// Ubuntu의 경우
 			options.addArguments("--headless");
 			options.addArguments("--no-sandbox");
-			options.addArguments("--disable-dev-shm-usage");
+			// options.addArguments("--disable-dev-shm-usage");
 			options.addArguments("--ignore-ssl-errors=yes");
 			options.addArguments("--ignore-certificate-errors");
 			// Xvfb를 사용하는 경우
@@ -150,6 +154,7 @@ public class CrawlingServiceImpl implements CrawlingService {
 		List<Script> transcriptLines;
 
 		try {
+			log.error("SELENIUM DRIVER SET SUCCESS");
 			transcriptLines = runSelenium(driver, youtubeInfo, seconds);
 		} catch (Exception e) {
 			throw new CommonException(SELENIUM_RUNTIME_ERROR);
@@ -166,11 +171,14 @@ public class CrawlingServiceImpl implements CrawlingService {
 
 		driver.get(youtubeInfo);
 		setUpSelenium(driver);
+		log.error("SELENIUM DRIVER SET SUCCESS2");
 
 		// Use XPath to find all elements containing the transcript text
 		List<WebElement> segmentElements = driver.findElements(
 			By.xpath("//ytd-transcript-segment-renderer"));
 		for (int i = 0; i < segmentElements.size(); ++i) {
+			log.error("START CRAWLING");
+
 			String time = segmentElements.get(i)
 				.findElement(By.xpath(".//div[contains(@class, 'timestamp')]"))
 				.getText();
@@ -188,7 +196,7 @@ public class CrawlingServiceImpl implements CrawlingService {
 			String text = segmentElements.get(i)
 				.findElement(By.xpath(".//yt-formatted-string[contains(@class, 'segment-text')]"))
 				.getText();
-
+			log.error("FIND TEXT");
 			if (text != null && !text.isEmpty()) {
 				scripts.add(
 					Script.builder()
