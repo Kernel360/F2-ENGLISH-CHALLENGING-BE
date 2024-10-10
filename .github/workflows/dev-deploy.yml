@@ -78,6 +78,7 @@ jobs:
             sudo docker ps -a -q -f name=${{ secrets.DOCKERHUB_CONTAINERNAME }} | xargs -r sudo docker rm
             
             sudo docker run -d \
+              -v ./biengual/logs:/biengual/logs \
               -e PROFILES=dev \
               -p 8080:8080 \
               --name ${{ secrets.DOCKERHUB_CONTAINERNAME }} \
