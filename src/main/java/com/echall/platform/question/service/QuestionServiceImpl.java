@@ -2,6 +2,7 @@ package com.echall.platform.question.service;
 
 import static com.echall.platform.message.error.code.ContentErrorCode.*;
 import static com.echall.platform.message.error.code.QuestionErrorCode.*;
+import static com.echall.platform.question.domain.entity.QuestionDocument.*;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -111,7 +112,7 @@ public class QuestionServiceImpl implements QuestionService {
 						question.append(" ");
 					}
 				}
-				questionIds.add(saveToMongo(question.toString(), words[blankIndex]));
+				questionIds.add(saveToMongo(questionRepository, question.toString(), words[blankIndex]));
 			}
 		}
 		return questionIds;
@@ -129,20 +130,10 @@ public class QuestionServiceImpl implements QuestionService {
 				Collections.shuffle(shuffledWords, random);
 				String question = String.join(" ", shuffledWords);
 
-				questionIds.add(saveToMongo(question, script));
+				questionIds.add(saveToMongo(questionRepository, question, script));
 			}
 		}
 		return questionIds;
-	}
-
-	private String saveToMongo(String question, String answer) {
-		QuestionDocument questionDocument = QuestionDocument.builder()
-			.question(question)
-			.answer(answer)
-			.build();
-		questionRepository.save(questionDocument);
-
-		return questionDocument.getId().toString();
 	}
 
 	private ContentDocument getContentDocument(Long contentId) {
