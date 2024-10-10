@@ -15,6 +15,7 @@ import java.util.Map;
 @Getter
 @Builder
 public class OAuth2UserPrincipal implements OAuth2User {
+    private Long id;
     private String email;
     private String username;
     private String provider;
@@ -48,6 +49,7 @@ public class OAuth2UserPrincipal implements OAuth2User {
 
     public static OAuth2UserPrincipal from(UserEntity user) {
         return OAuth2UserPrincipal.builder()
+            .id(user.getId())
             .email(user.getEmail())
             .username(user.getUsername())
             .provider(user.getProvider())

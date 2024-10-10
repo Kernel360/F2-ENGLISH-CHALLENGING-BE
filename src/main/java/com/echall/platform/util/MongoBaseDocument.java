@@ -1,4 +1,4 @@
-package com.echall.platform.content.domain.entity;
+package com.echall.platform.util;
 
 import java.time.LocalDateTime;
 
@@ -13,7 +13,7 @@ import lombok.NoArgsConstructor;
 
 @Getter
 @NoArgsConstructor
-public class MongoBaseEntity {
+public class MongoBaseDocument {
 
 	@Id
 	protected ObjectId id;
@@ -25,7 +25,7 @@ public class MongoBaseEntity {
 	protected LocalDateTime updatedAt = LocalDateTime.now();
 
 	@PersistenceConstructor
-	public MongoBaseEntity(ObjectId id, LocalDateTime createdAt, LocalDateTime updatedAt) {
+	public MongoBaseDocument(ObjectId id, LocalDateTime createdAt, LocalDateTime updatedAt) {
 		this.id = id;
 		this.createdAt = createdAt != null ? createdAt : LocalDateTime.now();
 		this.updatedAt = updatedAt != null ? updatedAt : LocalDateTime.now();

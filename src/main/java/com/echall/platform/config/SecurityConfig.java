@@ -63,14 +63,14 @@ public class SecurityConfig {
 			.authorizeHttpRequests(authorize -> {
 				authorize
 					// Can access from USER
-					.requestMatchers("/api/b1/**").hasAnyRole("USER", "DEVELOPER")
-					.requestMatchers("/api/u1/**").hasAnyRole("USER", "DEVELOPER")
-					.requestMatchers("/api/p1/**").hasAnyRole("USER", "DEVELOPER")
-					.requestMatchers("/api/t1/**").hasAnyRole("USER", "DEVELOPER")
+					.requestMatchers("/api/bookmark/**").hasAnyRole("USER", "DEVELOPER")
+					.requestMatchers("/api/user/**").hasAnyRole("USER", "DEVELOPER")
+					.requestMatchers("/api/contents/**").hasAnyRole("USER", "DEVELOPER")
+					.requestMatchers("/api/questions/**").hasAnyRole("USER", "DEVELOPER")
+					.requestMatchers("/api/categories/**").hasAnyRole("USER", "DEVELOPER")
 
 					// Can access from ADMIN
-					.requestMatchers("/api/a1/**").hasAnyRole("ADMIN", "DEVELOPER")
-					.requestMatchers("/api/c1/**").hasAnyRole("ADMIN", "DEVELOPER")
+					.requestMatchers("/api/admin/**").hasAnyRole("ADMIN", "DEVELOPER")
 
 					/**
 					 * Need To Activate DEVELOPER on DEPLOY SETTING

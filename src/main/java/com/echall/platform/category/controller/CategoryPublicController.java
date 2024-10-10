@@ -25,7 +25,7 @@ import lombok.RequiredArgsConstructor;
  */
 @RequiredArgsConstructor
 @RestController
-@RequestMapping("/api/p1/categories")
+@RequestMapping("/api/categories")
 @Tag(name = "Category - public API", description = "카테고리 공통 API")
 public class CategoryPublicController {
 

@@ -74,6 +74,7 @@ public class ContentRepositoryImpl extends QuerydslRepositorySupport implements 
 					// Fetch MongoDB document
 					scriptSentences
 						= contentScriptRepository.findContentDocumentById(new ObjectId(entity.getMongoContentId()))
+						.orElseThrow(() -> new CommonException(CONTENT_NOT_FOUND))
 						.getScripts().subList(0, 5)
 						.stream()
 						.map(Script::getEnScript)
