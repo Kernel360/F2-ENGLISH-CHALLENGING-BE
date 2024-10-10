@@ -122,7 +122,6 @@ public class CrawlingServiceImpl implements CrawlingService {
 
 	@Override
 	public List<Script> getYoutubeScript(String youtubeInfo, double seconds) {
-		WebDriverManager.chromedriver().setup();
 		// 운영체제 감지
 		String os = System.getProperty("os.name").toLowerCase();
 		System.out.println("Operating System: " + os);
@@ -132,13 +131,10 @@ public class CrawlingServiceImpl implements CrawlingService {
 		options.addArguments("--disable-gpu");
 		options.addArguments("--lang=en-US");
 
-		// 운영체제별 ChromeDriver 설정
-		if (os.contains("win")) {
-			// Windows의 경우
-			WebDriverManager.chromedriver().setup();
-		} else if (os.contains("linux")) {
+		WebDriverManager.chromedriver().setup();
+
+		 if (os.contains("linux")) {
 			// Ubuntu의 경우
-			WebDriverManager.chromedriver().setup();
 			options.addArguments("--headless");
 			options.addArguments("--no-sandbox");
 			options.addArguments("--disable-dev-shm-usage");

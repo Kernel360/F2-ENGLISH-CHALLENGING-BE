@@ -4,5 +4,5 @@ public enum ContentType {
 	// YouTube
 	LISTENING,
 	// CNN
-	LEADING
+	READING
 }
