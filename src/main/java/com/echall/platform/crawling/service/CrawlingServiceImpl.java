@@ -126,8 +126,6 @@ public class CrawlingServiceImpl implements CrawlingService {
 
 		ChromeOptions options = new ChromeOptions();
 		options.addArguments("--remote-allow-origins=*");
-		options.addArguments(
-			"user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/123.0.0.0 Safari/537.36");
 		options.addArguments("--lang=en-US");
 		WebDriver driver = new ChromeDriver(options);
 		List<Script> transcriptLines;
