@@ -1,5 +1,6 @@
 package com.echall.platform.oauth2;
 
+import com.echall.platform.annotation.LoginLogging;
 import com.echall.platform.message.error.exception.CommonException;
 import com.echall.platform.oauth2.domain.info.OAuth2UserPrincipal;
 import com.echall.platform.oauth2.service.RefreshTokenService;
@@ -31,6 +32,7 @@ public class OAuth2SuccessHandler implements AuthenticationSuccessHandler {
 	public String oAuth2SuccessRedirectUri;
 
 	@Override
+	@LoginLogging
 	public void onAuthenticationSuccess(
 		HttpServletRequest request, HttpServletResponse response, Authentication authentication
 	) throws IOException {
