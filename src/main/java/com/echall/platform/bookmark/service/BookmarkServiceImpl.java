@@ -90,9 +90,8 @@ public class BookmarkServiceImpl implements BookmarkService {
 
 	@Override
 	@Transactional
-	public BookmarkResponseDto.BookmarkDeleteResponse deleteBookmark(Long bookmarkId) {
-		BookmarkEntity bookmark = bookmarkRepository.findById(bookmarkId)
-			.orElseThrow(() -> new CommonException(BOOKMARK_NOT_FOUND));
+	public BookmarkResponseDto.BookmarkDeleteResponse deleteBookmark(Long userId, Long bookmarkId) {
+		BookmarkEntity bookmark = bookmarkRepository.findBookmark(userId, bookmarkId);
 
 		bookmarkRepository.delete(bookmark);
 

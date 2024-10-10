@@ -6,6 +6,7 @@ import java.util.List;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -20,6 +21,7 @@ import com.echall.platform.bookmark.domain.dto.BookmarkResponseDto;
 import com.echall.platform.bookmark.service.BookmarkService;
 import com.echall.platform.message.ApiCustomResponse;
 import com.echall.platform.message.ResponseEntityFactory;
+import com.echall.platform.oauth2.domain.info.OAuth2UserPrincipal;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -95,11 +97,12 @@ public class BookmarkApiController {
 		@ApiResponse(responseCode = "500", description = "서버 에러가 발생하였습니다.", content = @Content)
 	})
 	public ResponseEntity<ApiCustomResponse<BookmarkResponseDto.BookmarkDeleteResponse>> deleteBookmark(
+		@AuthenticationPrincipal OAuth2UserPrincipal oAuth2UserPrincipal,
 		@PathVariable Long bookmarkId
 	) {
 
 		return ResponseEntityFactory.toResponseEntity(
-			BOOKMARK_DELETE_SUCCESS, bookmarkService.deleteBookmark(bookmarkId)
+			BOOKMARK_DELETE_SUCCESS, bookmarkService.deleteBookmark(oAuth2UserPrincipal.getId(), bookmarkId)
 		);
 	}
 
