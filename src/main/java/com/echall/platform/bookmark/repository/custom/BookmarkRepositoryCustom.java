@@ -5,5 +5,5 @@ import java.util.List;
 import com.echall.platform.bookmark.domain.entity.BookmarkEntity;
 
 public interface BookmarkRepositoryCustom {
-	BookmarkEntity findBookmark(Long userId, Long bookmarkId);
+	Long deleteBookmark(Long userId, Long bookmarkId);
 }

@@ -91,10 +91,7 @@ public class BookmarkServiceImpl implements BookmarkService {
 	@Override
 	@Transactional
 	public BookmarkResponseDto.BookmarkDeleteResponse deleteBookmark(Long userId, Long bookmarkId) {
-		BookmarkEntity bookmark = bookmarkRepository.findBookmark(userId, bookmarkId);
 
-		bookmarkRepository.delete(bookmark);
-
-		return new BookmarkResponseDto.BookmarkDeleteResponse(bookmarkId);
+		return new BookmarkResponseDto.BookmarkDeleteResponse(bookmarkRepository.deleteBookmark(userId, bookmarkId));
 	}
 }

@@ -24,13 +24,13 @@ public class QuestionDocument extends MongoBaseDocument {
 		this.answer = answer;
 	}
 
-	public static String saveToMongo(QuestionRepository questionRepository, String question, String answer) {
-		QuestionDocument questionDocument = QuestionDocument.builder()
+
+	public static QuestionDocument findQuestionDocument(
+		QuestionRepository questionRepository, String question, String answer
+	) {
+		return  QuestionDocument.builder()
 			.question(question)
 			.answer(answer)
 			.build();
-		questionRepository.save(questionDocument);
-
-		return questionDocument.getId().toString();
 	}
 }

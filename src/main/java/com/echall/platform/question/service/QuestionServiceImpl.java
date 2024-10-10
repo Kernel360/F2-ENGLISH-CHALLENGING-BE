@@ -136,6 +136,14 @@ public class QuestionServiceImpl implements QuestionService {
 		return questionIds;
 	}
 
+	private String saveToMongo(QuestionRepository questionRepository, String string, String word) {
+
+			QuestionDocument questionDocument = findQuestionDocument(questionRepository, string, word);
+			questionRepository.save(questionDocument);
+
+			return questionDocument.getId().toString();
+	}
+
 	private ContentDocument getContentDocument(Long contentId) {
 		ContentEntity content = contentRepository.findById(contentId)
 			.orElseThrow(() -> new CommonException(CONTENT_NOT_FOUND));
