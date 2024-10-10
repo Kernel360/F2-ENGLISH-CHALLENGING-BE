@@ -11,6 +11,4 @@ public interface UserRepository extends JpaRepository<UserEntity, Long> {
 
 	Optional<UserEntity> findByEmail(String email);
 
-	@Query("SELECT u FROM UserEntity u JOIN FETCH u.bookmarks WHERE u.id = :id")
-	Optional<UserEntity> findUserWithBookmarks(Long id);
 }
