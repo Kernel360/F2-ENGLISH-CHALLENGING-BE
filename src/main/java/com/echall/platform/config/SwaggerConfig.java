@@ -47,7 +47,6 @@ public class SwaggerConfig {
 		if (activeProfile.equals("local")) {
 			return "http://localhost:8080";
 		}
-
 		if (activeProfile.equals("dev")) {
 			return "https://dev.biengual.store";
 		}
