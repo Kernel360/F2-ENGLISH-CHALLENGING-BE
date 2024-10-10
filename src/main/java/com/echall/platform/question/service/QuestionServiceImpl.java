@@ -138,7 +138,7 @@ public class QuestionServiceImpl implements QuestionService {
 
 	private String saveToMongo(QuestionRepository questionRepository, String string, String word) {
 
-			QuestionDocument questionDocument = findQuestionDocument(questionRepository, string, word);
+			QuestionDocument questionDocument = of(string, word);
 			questionRepository.save(questionDocument);
 
 			return questionDocument.getId().toString();

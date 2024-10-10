@@ -2,7 +2,6 @@ package com.echall.platform.question.domain.entity;
 
 import org.springframework.data.mongodb.core.mapping.Document;
 
-import com.echall.platform.question.repository.QuestionRepository;
 import com.echall.platform.util.MongoBaseDocument;
 
 import lombok.AccessLevel;
@@ -24,11 +23,8 @@ public class QuestionDocument extends MongoBaseDocument {
 		this.answer = answer;
 	}
 
-
-	public static QuestionDocument findQuestionDocument(
-		QuestionRepository questionRepository, String question, String answer
-	) {
-		return  QuestionDocument.builder()
+	public static QuestionDocument of(String question, String answer) {
+		return QuestionDocument.builder()
 			.question(question)
 			.answer(answer)
 			.build();
