@@ -2,7 +2,9 @@ package com.echall.platform.content.controller;
 
 import static com.echall.platform.message.response.ContentResponseCode.*;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -79,14 +81,15 @@ public class ContentPublicController {
 		@ApiResponse(responseCode = "204", description = "컨텐츠가 없습니다.", content = @Content),
 		@ApiResponse(responseCode = "500", description = "서버 에러가 발생하였습니다.", content = @Content)
 	})
-	public ResponseEntity<ApiCustomResponse<List<ContentResponseDto.ContentPreviewResponseDto>>>
+	public ResponseEntity<ApiCustomResponse<Map<String, List<ContentResponseDto.ContentPreviewResponseDto>>>>
 	getPreviewLeadingContents(
 		@RequestParam(defaultValue = "hits") String sortBy,
 		@RequestParam(defaultValue = "8") int num
 	) {
-		List<ContentResponseDto.ContentPreviewResponseDto> readingPreview
-			= contentService.getPreviewContents(ContentType.READING, sortBy, num);
-		return ResponseEntityFactory.toResponseEntity(CONTENT_VIEW_SUCCESS, readingPreview);
+		Map<String, List<ContentResponseDto.ContentPreviewResponseDto>> data = new HashMap<>();
+		data.put("readingPreview", contentService.getPreviewContents(ContentType.READING, sortBy, num));
+
+		return ResponseEntityFactory.toResponseEntity(CONTENT_VIEW_SUCCESS, data);
 	}
 
 	@GetMapping("/preview/listening")
@@ -98,15 +101,16 @@ public class ContentPublicController {
 		@ApiResponse(responseCode = "204", description = "컨텐츠가 없습니다.", content = @Content),
 		@ApiResponse(responseCode = "500", description = "서버 에러가 발생하였습니다.", content = @Content)
 	})
-	public ResponseEntity<ApiCustomResponse<List<ContentResponseDto.ContentPreviewResponseDto>>>
+	public ResponseEntity<ApiCustomResponse<Map<String, List<ContentResponseDto.ContentPreviewResponseDto>>>>
 	getPreviewListeningContents(
 		@RequestParam(defaultValue = "hits") String sortBy,
 		@RequestParam(defaultValue = "8") int num
 	) {
-		List<ContentResponseDto.ContentPreviewResponseDto> listeningPreviews
-			= contentService.getPreviewContents(ContentType.LISTENING, sortBy, num);
+		Map<String, List<ContentResponseDto.ContentPreviewResponseDto>> data = new HashMap<>();
+		data.put("listeningPreview", contentService.getPreviewContents(ContentType.LISTENING, sortBy, num));
 
-		return ResponseEntityFactory.toResponseEntity(CONTENT_VIEW_SUCCESS, listeningPreviews);
+
+		return ResponseEntityFactory.toResponseEntity(CONTENT_VIEW_SUCCESS, data);
 	}
 
 	/**
