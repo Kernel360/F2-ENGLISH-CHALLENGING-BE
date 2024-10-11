@@ -133,7 +133,7 @@ public class ContentRepositoryImpl extends QuerydslRepositorySupport implements 
 				content.getThumbnailUrl(),
 				content.getContentType(),
 				content.getPreScripts(),
-				content.getCategory(),
+				content.getCategory().getName(),
 				content.getHits()
 			)).toList();
 	}
