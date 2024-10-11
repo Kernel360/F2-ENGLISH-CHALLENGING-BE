@@ -30,8 +30,6 @@ RUN apt-get install -y xvfb
 RUN Xvfb :99 -ac &
 ENV DISPLAY=:99
 
-
-
 COPY ./build/libs/platform-0.0.1-SNAPSHOT.jar biengual/app.jar
 COPY ./src/main/resources/.env biengual/.env
 
