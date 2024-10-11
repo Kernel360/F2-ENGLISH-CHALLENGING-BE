@@ -134,28 +134,31 @@ public class CrawlingServiceImpl implements CrawlingService {
 		options.addArguments("--remote-allow-origins=*");
 		options.addArguments("--disable-popup-blocking");
 		options.addArguments("--lang=en-US");
-		options.addArguments("--window-size=1920,1080");
+		options.addArguments("--start-maximized");
+		// options.addArguments("--window-size=1920,1080");
 
 		WebDriverManager.chromedriver().setup();
 
 		if (os.contains("linux")) {
 			log.error("LINUX");
 			// Ubuntu의 경우
-			options.addArguments("--headless");
+			// options.addArguments("--headless");
 			options.addArguments("--no-sandbox");
 			options.addArguments("--disable-dev-shm-usage");
 			options.addArguments("--ignore-ssl-errors=yes");
 			options.addArguments("--ignore-certificate-errors");
 			// Xvfb를 사용하는 경우
 			try {
+				log.error("XVFB CHECK");
 				if (System.getenv("DISPLAY") == null) {
-					log.error("XVFB");
+					log.error("XVFB NEED TO START");
 					System.setProperty("DISPLAY", ":99");
 					// Xvfb를 실행
 					Process xvfbProcess = Runtime.getRuntime().exec("Xvfb :99 -ac &");
 					xvfbProcess.waitFor();
 					log.error("XVFB START");
 				}
+				log.error("XVFB RUN");
 			} catch (IOException | InterruptedException e) {
 				throw new CommonException(SELENIUM_RUNTIME_ERROR);
 			}
@@ -302,6 +305,7 @@ public class CrawlingServiceImpl implements CrawlingService {
 	private void setUpSelenium(WebDriver driver)
 		throws InterruptedException {
 		log.error("SETUP SELENIUM START");
+
 		// Initial setting
 		driver.manage().window().maximize();
 		WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
@@ -309,10 +313,12 @@ public class CrawlingServiceImpl implements CrawlingService {
 		wait.until(webDriver -> js.executeScript("return document.readyState").equals("complete"));
 		Thread.sleep(5000);
 		log.error("SETUP SUCCESS");
+
 		// Zoom out
 		js.executeScript("document.body.style.zoom='30%'");
 		Thread.sleep(5000);
 		log.error("ZOOMOUT SUCESS");
+
 		// Click the "expand" button to expand
 		List<WebElement> expandButton = driver.findElements(By.xpath("//tp-yt-paper-button[@id='expand']"));
 		log.error("FIND EXPAND BUTTON : {} ", expandButton);
