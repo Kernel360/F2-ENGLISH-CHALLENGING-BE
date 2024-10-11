@@ -13,6 +13,11 @@ ENV LANG=en_US.UTF-8
 ENV LANGUAGE=en_US:en
 ENV LC_ALL=en_US.UTF-8
 
+# Update locale settings
+RUN sed -i '/en_US.UTF-8/s/^# //g' /etc/locale.gen
+RUN locale-gen en_US.UTF-8
+RUN echo "LANG=en_US.UTF-8" > /etc/default/locale
+
 # google chrome 설치
 RUN wget https://chrome-versions.com/google-chrome-stable-114.0.5735.106-1.deb
 #RUN wget https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb
