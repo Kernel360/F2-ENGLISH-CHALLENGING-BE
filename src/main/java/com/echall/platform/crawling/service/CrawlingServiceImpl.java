@@ -136,7 +136,6 @@ public class CrawlingServiceImpl implements CrawlingService {
 		options.addArguments("--lang=en-US");
 		options.addArguments("--start-maximized");
 		// options.addArguments("--window-size=1920,1080");
-		options.addArguments("--headless");
 
 		WebDriverManager.chromedriver().setup();
 
@@ -333,8 +332,9 @@ public class CrawlingServiceImpl implements CrawlingService {
 				break;
 			}
 		}
-		Thread.sleep(3000);
+		Thread.sleep(5000);
 		// Locate and click the "Show transcript" button
+		log.error("WAITING TRANSCRIPTION BUTTON FIND");
 		WebElement transcriptButton = wait.until(
 			ExpectedConditions.elementToBeClickable(
 				By.xpath("//yt-button-shape//button[@aria-label='Show transcript']")));
