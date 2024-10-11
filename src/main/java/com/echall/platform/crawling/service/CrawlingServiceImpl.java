@@ -21,7 +21,6 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
-import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
@@ -136,6 +135,7 @@ public class CrawlingServiceImpl implements CrawlingService {
 		options.addArguments("--lang=en-US");
 		options.addArguments("--start-maximized");
 		// options.addArguments("--window-size=1920,1080");
+		options.addArguments("--headless");
 
 		WebDriverManager.chromedriver().setup();
 
@@ -332,14 +332,17 @@ public class CrawlingServiceImpl implements CrawlingService {
 				break;
 			}
 		}
+
 		Thread.sleep(5000);
 		// Locate and click the "Show transcript" button
 		log.error("WAITING TRANSCRIPTION BUTTON FIND");
-		WebElement transcriptButton = wait.until(
-			ExpectedConditions.elementToBeClickable(
-				By.xpath("//yt-button-shape//button[@aria-label='Show transcript']")));
+
+		WebElement transcriptButton = driver.findElement(
+			By.xpath("//yt-button-shape//button[@aria-label='Show transcript']")
+		);
+
 		log.error("FIND TRANSCRIPT BUTTON");
-		transcriptButton.click();
+		js.executeScript("arguments[0].click();", transcriptButton);
 		log.error("CLICK TRANSCRIPTION");
 		Thread.sleep(5000);
 	}
