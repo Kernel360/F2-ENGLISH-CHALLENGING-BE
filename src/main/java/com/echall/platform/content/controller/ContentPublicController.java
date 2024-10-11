@@ -17,6 +17,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
@@ -52,13 +53,18 @@ public class ContentPublicController {
 		@Parameter(name = "page", description = "페이지 번호 (0부터 시작) / default: 0", in = ParameterIn.QUERY, schema = @Schema(type = "integer", defaultValue = "0")),
 		@Parameter(name = "size", description = "페이지당 데이터 수 / default: 10", in = ParameterIn.QUERY, schema = @Schema(type = "integer", defaultValue = "10")),
 		@Parameter(name = "sort", description = "정렬 기준 (createdAt, hits) / default: createdAt", in = ParameterIn.QUERY, schema = @Schema(type = "string")),
-		@Parameter(name = "direction", description = "정렬 방법 / default: desc", in = ParameterIn.QUERY, schema = @Schema(type = "string"))
+		@Parameter(name = "direction", description = "정렬 방법 / default: DESC / 대문자로 입력", in = ParameterIn.QUERY, schema = @Schema(type = "string")),
+		@Parameter(name = "categoryId", description = "category Id (값이 없으면 전체 카테고리)", in = ParameterIn.QUERY, schema = @Schema(type = "integer"))
 	})
 	public ResponseEntity<ApiCustomResponse<PaginationDto<ContentResponseDto.ContentPreviewResponseDto>>> getReadingContents(
-		@Parameter(hidden = true) @PageableDefault(page = 0, size = 10, sort = "createdAt", direction = Sort.Direction.DESC) Pageable pageable
+		@RequestParam(required = false, defaultValue = "createdAt") String sort,
+		@RequestParam(required = false, defaultValue = "DESC") Sort.Direction direction,
+		@Parameter(hidden = true) @PageableDefault(page = 0, size = 10) Pageable pageable,
+		@RequestParam(required = false) Long categoryId
 	) {
+		Pageable pageRequest = PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(), direction, sort);
 		PaginationDto<ContentResponseDto.ContentPreviewResponseDto> pageContentList
-			= contentService.getAllContents(ContentType.READING, pageable);
+			= contentService.getAllContents(ContentType.READING, pageRequest, categoryId);
 
 		return ResponseEntityFactory.toResponseEntity(CONTENT_VIEW_SUCCESS, pageContentList);
 	}
@@ -76,13 +82,18 @@ public class ContentPublicController {
 		@Parameter(name = "page", description = "페이지 번호 (0부터 시작) / default: 0", in = ParameterIn.QUERY, schema = @Schema(type = "integer", defaultValue = "0")),
 		@Parameter(name = "size", description = "페이지당 데이터 수 / default: 10", in = ParameterIn.QUERY, schema = @Schema(type = "integer", defaultValue = "10")),
 		@Parameter(name = "sort", description = "정렬 기준 (createdAt, hits) / default: createdAt", in = ParameterIn.QUERY, schema = @Schema(type = "string")),
-		@Parameter(name = "direction", description = "정렬 방법 / default: desc", in = ParameterIn.QUERY, schema = @Schema(type = "string"))
+		@Parameter(name = "direction", description = "정렬 방법 / default: DESC / 대문자로 입력", in = ParameterIn.QUERY, schema = @Schema(type = "string")),
+		@Parameter(name = "categoryId", description = "category Id (값이 없으면 전체 카테고리)", in = ParameterIn.QUERY, schema = @Schema(type = "integer"))
 	})
 	public ResponseEntity<ApiCustomResponse<PaginationDto<ContentResponseDto.ContentPreviewResponseDto>>> getListeningContents(
-		@Parameter(hidden = true) @PageableDefault(page = 0, size = 10, sort = "createdAt", direction = Sort.Direction.DESC) Pageable pageable
+		@RequestParam(required = false, defaultValue = "createdAt") String sort,
+		@RequestParam(required = false, defaultValue = "DESC") Sort.Direction direction,
+		@Parameter(hidden = true) @PageableDefault(page = 0, size = 10) Pageable pageable,
+		@RequestParam(required = false) Long categoryId
 	) {
+		Pageable pageRequest = PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(), direction, sort);
 		PaginationDto<ContentResponseDto.ContentPreviewResponseDto> pageContentList
-			= contentService.getAllContents(ContentType.LISTENING, pageable);
+			= contentService.getAllContents(ContentType.LISTENING, pageRequest, categoryId);
 
 		return ResponseEntityFactory.toResponseEntity(CONTENT_VIEW_SUCCESS, pageContentList);
 	}
