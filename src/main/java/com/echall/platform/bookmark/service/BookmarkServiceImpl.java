@@ -47,10 +47,7 @@ public class BookmarkServiceImpl implements BookmarkService {
 	public BookmarkResponseDto.BookmarkCreateResponse createBookmark(
 		String email, BookmarkRequestDto.BookmarkCreateRequest bookmarkRequestDto, Long contentId
 	) {
-		// TODO: 스크립 기능 생기면 word, sentence 모두 null인 경우 예외 처리 해야 함
-		if (bookmarkRequestDto.wordIndex() != null && bookmarkRequestDto.sentenceIndex() == null) {
-			throw new CommonException(BOOKMARK_WORD_NEED_SENTENCE);
-		} // TODO: DTO 커스텀 해서 DTO 에서 검증 가능
+		bookmarkRequestDto.validate();
 
 		UserEntity user = userRepository.findByEmail(email)
 			.orElseThrow(() -> new CommonException(USER_NOT_FOUND));
