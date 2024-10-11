@@ -134,7 +134,6 @@ public class CrawlingServiceImpl implements CrawlingService {
 		options.addArguments("--disable-popup-blocking");
 		options.addArguments("--lang=en-US");
 		options.addArguments("--start-maximized");
-		// options.addArguments("--window-size=1920,1080");
 		options.addArguments("--headless");
 
 		WebDriverManager.chromedriver().setup();
@@ -142,8 +141,6 @@ public class CrawlingServiceImpl implements CrawlingService {
 		if (os.contains("linux")) {
 			log.error("LINUX");
 			// Ubuntu의 경우
-			options.addArguments("--start-maximized");
-			options.addArguments("--headless");
 			options.addArguments("--no-sandbox");
 			options.addArguments("--disable-dev-shm-usage");
 			options.addArguments("--ignore-ssl-errors=yes");
