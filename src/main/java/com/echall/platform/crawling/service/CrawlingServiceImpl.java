@@ -134,13 +134,14 @@ public class CrawlingServiceImpl implements CrawlingService {
 		options.addArguments("--remote-allow-origins=*");
 		options.addArguments("--disable-popup-blocking");
 		options.addArguments("--lang=en-US");
+		options.addArguments("--window-size=1920,1080");
 
 		WebDriverManager.chromedriver().setup();
 
 		if (os.contains("linux")) {
 			log.error("LINUX");
 			// Ubuntu의 경우
-			options.addArguments("--headless");
+			// options.addArguments("--headless");
 			options.addArguments("--no-sandbox");
 			options.addArguments("--disable-dev-shm-usage");
 			options.addArguments("--ignore-ssl-errors=yes");
