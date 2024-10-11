@@ -325,9 +325,11 @@ public class CrawlingServiceImpl implements CrawlingService {
 		log.error("FIND EXPAND BUTTON : {} ", expandButton);
 		for (WebElement button : expandButton) {
 			log.error("FIND BUTTON : {} ", button.getText());
-			button.click();
-			log.error("EXPAND BUTTON CLICK");
-			break;
+			if(button.getText().equals("...more")){
+				button.click();
+				log.error("EXPAND BUTTON CLICK");
+				break;
+			}
 		}
 		Thread.sleep(3000);
 		// Locate and click the "Show transcript" button
