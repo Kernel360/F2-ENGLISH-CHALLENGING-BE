@@ -149,18 +149,19 @@ public class CrawlingServiceImpl implements CrawlingService {
 			try {
 				if (System.getenv("DISPLAY") == null) {
 					log.error("XVFB");
-					// Xvfb가 설치되어 있는지 확인
+					/*// Xvfb가 설치되어 있는지 확인
 					Process process = Runtime.getRuntime().exec("which xvfb");
 					int exitCode = process.waitFor();
 					if (exitCode != 0) {
 						// Xvfb가 설치되어 있지 않으면 설치
 						Process installProcess = Runtime.getRuntime().exec("sudo apt-get install -y xvfb");
 						installProcess.waitFor();
-					}
+					}*/
 					System.setProperty("DISPLAY", ":99");
 					// Xvfb를 실행
 					Process xvfbProcess = Runtime.getRuntime().exec("Xvfb :99 -ac &");
 					xvfbProcess.waitFor();
+					log.error("XVFB START");
 				}
 			}catch (IOException | InterruptedException e){
 				throw new CommonException(SELENIUM_RUNTIME_ERROR);
