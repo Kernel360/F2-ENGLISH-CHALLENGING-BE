@@ -150,21 +150,13 @@ public class CrawlingServiceImpl implements CrawlingService {
 			try {
 				if (System.getenv("DISPLAY") == null) {
 					log.error("XVFB");
-					// // Xvfb가 설치되어 있는지 확인
-					// Process process = Runtime.getRuntime().exec("which xvfb");
-					// int exitCode = process.waitFor();
-					// if (exitCode != 0) {
-					// 	// Xvfb가 설치되어 있지 않으면 설치
-					// 	Process installProcess = Runtime.getRuntime().exec("sudo apt-get install -y xvfb");
-					// 	installProcess.waitFor();
-					// }
 					System.setProperty("DISPLAY", ":99");
 					// Xvfb를 실행
 					Process xvfbProcess = Runtime.getRuntime().exec("Xvfb :99 -ac &");
 					xvfbProcess.waitFor();
 					log.error("XVFB START");
 				}
-			}catch (IOException | InterruptedException e){
+			} catch (IOException | InterruptedException e) {
 				throw new CommonException(SELENIUM_RUNTIME_ERROR);
 			}
 		}
@@ -322,13 +314,13 @@ public class CrawlingServiceImpl implements CrawlingService {
 		Thread.sleep(5000);
 		log.error("ZOOMOUT SUCESS");
 		// Click the "expand" button to expand
-		List<WebElement> expandButton = driver.findElements(By.cssSelector("tp-yt-paper-button#expand"));
+		List<WebElement> expandButton = driver.findElements(By.xpath("//tp-yt-paper-button[@id='expand']"));
 		log.error("FIND EXPAND BUTTON : {} ", expandButton);
 		for (WebElement button : expandButton) {
 			log.error("FIND BUTTON : {} ", button.getText());
 			if (button.getText().contains("more")) {
 				log.error("FIND SUCCESS MORE BUTTON : {}", button.getText());
-				button.click();
+				js.executeScript("arguments[0].click();", button);
 				log.error("EXPAND BUTTON CLICK");
 				break;
 			}
