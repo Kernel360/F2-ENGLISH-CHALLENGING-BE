@@ -56,7 +56,7 @@ public class BookmarkServiceImpl implements BookmarkService {
 			.scriptIndex(contentId)
 			.sentenceIndex(bookmarkRequestDto.sentenceIndex())
 			.wordIndex(bookmarkRequestDto.wordIndex())
-			.description(null)
+			.description(bookmarkRequestDto.description())
 			.build();
 
 		if (bookmarkRepository.existsByScriptIndexAndScriptIndexAndWordIndex(

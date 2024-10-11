@@ -9,7 +9,8 @@ import jakarta.validation.constraints.NotNull;
 public class BookmarkRequestDto {
 	public record BookmarkCreateRequest(
 		@NotNull Long sentenceIndex,
-		Long wordIndex
+		Long wordIndex,
+		String description
 	) {
 		public void validate() {
 			if (wordIndex == null) {
