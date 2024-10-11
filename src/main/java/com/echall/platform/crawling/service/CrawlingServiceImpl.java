@@ -322,8 +322,9 @@ public class CrawlingServiceImpl implements CrawlingService {
 		log.error("ZOOMOUT SUCESS");
 		// Click the "expand" button to expand
 		List<WebElement> expandButton = driver.findElements(By.cssSelector("tp-yt-paper-button#expand"));
-		log.error("FIND EXPAND BUTTON");
+		log.error("FIND EXPAND BUTTON : {} ", expandButton);
 		for (WebElement button : expandButton) {
+			log.error("FIND BUTTON : {} ", button.getText());
 			if (button.isDisplayed() && button.isEnabled()) {
 				button.click();
 				log.error("EXPAND BUTTON CLICK");
