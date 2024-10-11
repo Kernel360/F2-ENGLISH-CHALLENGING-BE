@@ -9,8 +9,9 @@ RUN apt -y install curl
 RUN apt-get -y install xvfb
 
 # 영어로 언어 설정 - 셀레니움을 위해서
-RUN locale-gen en_US.UTF-8
-RUN update-locale LANG=en_US.UTF-8
+ENV LANG=en_US.UTF-8
+ENV LANGUAGE=en_US:en
+ENV LC_ALL=en_US.UTF-8
 
 # google chrome 설치
 RUN wget https://chrome-versions.com/google-chrome-stable-114.0.5735.106-1.deb
