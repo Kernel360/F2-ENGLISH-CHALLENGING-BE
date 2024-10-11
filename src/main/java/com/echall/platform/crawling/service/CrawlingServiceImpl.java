@@ -139,7 +139,7 @@ public class CrawlingServiceImpl implements CrawlingService {
 		WebDriverManager.chromedriver().setup();
 
 		if (os.contains("linux")) {
-			log.error("LINUX");
+			log.info("LINUX");
 			// Ubuntu의 경우
 			options.addArguments("--no-sandbox");
 			options.addArguments("--disable-dev-shm-usage");
@@ -147,16 +147,16 @@ public class CrawlingServiceImpl implements CrawlingService {
 			options.addArguments("--ignore-certificate-errors");
 			// Xvfb를 사용하는 경우
 			try {
-				log.error("XVFB CHECK");
+				log.info("XVFB CHECK");
 				if (System.getenv("DISPLAY") == null) {
-					log.error("XVFB NEED TO START");
+					log.info("XVFB NEED TO START");
 					System.setProperty("DISPLAY", ":99");
 					// Xvfb를 실행
 					Process xvfbProcess = Runtime.getRuntime().exec("Xvfb :99 -ac &");
 					xvfbProcess.waitFor();
-					log.error("XVFB START");
+					log.info("XVFB START");
 				}
-				log.error("XVFB RUN");
+				log.info("XVFB RUN");
 			} catch (IOException | InterruptedException e) {
 				throw new CommonException(SELENIUM_RUNTIME_ERROR);
 			}
@@ -166,14 +166,14 @@ public class CrawlingServiceImpl implements CrawlingService {
 		List<Script> transcriptLines;
 
 		try {
-			log.error("SELENIUM DRIVER SET SUCCESS");
+			log.info("SELENIUM DRIVER SET SUCCESS");
 			transcriptLines = runSelenium(driver, youtubeInfo, seconds);
-			log.error("SELENIUM END");
+			log.info("SELENIUM END");
 		} catch (Exception e) {
 			throw new CommonException(SELENIUM_RUNTIME_ERROR);
 		} finally {
 			driver.quit();
-			log.error("DRIVER QUIT");
+			log.info("DRIVER QUIT");
 		}
 
 		return transcriptLines;
@@ -185,13 +185,13 @@ public class CrawlingServiceImpl implements CrawlingService {
 
 		driver.get(youtubeInfo);
 		setUpSelenium(driver);
-		log.error("SELENIUM DRIVER SET SUCCESS2");
+		log.info("SELENIUM DRIVER SET UP COMPLETE");
 
 		// Use XPath to find all elements containing the transcript text
 		List<WebElement> segmentElements = driver.findElements(
 			By.xpath("//ytd-transcript-segment-renderer"));
+		log.info("START CRAWLING");
 		for (int i = 0; i < segmentElements.size(); ++i) {
-			log.error("START CRAWLING");
 
 			String time = segmentElements.get(i)
 				.findElement(By.xpath(".//div[contains(@class, 'timestamp')]"))
@@ -210,7 +210,6 @@ public class CrawlingServiceImpl implements CrawlingService {
 			String text = segmentElements.get(i)
 				.findElement(By.xpath(".//yt-formatted-string[contains(@class, 'segment-text')]"))
 				.getText();
-			log.error("FIND TEXT");
 			if (text != null && !text.isEmpty()) {
 				scripts.add(
 					Script.builder()
@@ -223,6 +222,7 @@ public class CrawlingServiceImpl implements CrawlingService {
 
 			}
 		}
+		log.info("FINISH CRAWLING");
 		return scripts;
 	}
 
@@ -304,7 +304,7 @@ public class CrawlingServiceImpl implements CrawlingService {
 	// Private Methods -------------------------------------------------------------------------------------------------
 	private void setUpSelenium(WebDriver driver)
 		throws InterruptedException {
-		log.error("SETUP SELENIUM START");
+		log.info("SETUP SELENIUM START");
 
 		// Initial setting
 		driver.manage().window().maximize();
@@ -312,37 +312,37 @@ public class CrawlingServiceImpl implements CrawlingService {
 		JavascriptExecutor js = (JavascriptExecutor)driver;
 		wait.until(webDriver -> js.executeScript("return document.readyState").equals("complete"));
 		Thread.sleep(5000);
-		log.error("SETUP SUCCESS");
+		log.info("SETUP SUCCESS");
 
 		// Zoom out
 		js.executeScript("document.body.style.zoom='30%'");
 		Thread.sleep(5000);
-		log.error("ZOOMOUT SUCESS");
+		log.info("ZOOMOUT SUCESS");
 
 		// Click the "expand" button to expand
 		List<WebElement> expandButton = driver.findElements(By.xpath("//tp-yt-paper-button[@id='expand']"));
-		log.error("FIND EXPAND BUTTON : {} ", expandButton);
+		log.info("FIND EXPAND BUTTON : {} ", expandButton);
 		for (WebElement button : expandButton) {
-			log.error("FIND BUTTON : {} ", button.getText());
+			log.info("FIND BUTTON : {} ", button.getText());
 			if (button.getText().contains("more")) {
-				log.error("FIND SUCCESS MORE BUTTON : {}", button.getText());
+				log.info("FIND SUCCESS MORE BUTTON : {}", button.getText());
 				js.executeScript("arguments[0].click();", button);
-				log.error("EXPAND BUTTON CLICK");
+				log.info("EXPAND BUTTON CLICK");
 				break;
 			}
 		}
 
 		Thread.sleep(5000);
 		// Locate and click the "Show transcript" button
-		log.error("WAITING TRANSCRIPTION BUTTON FIND");
+		log.info("WAITING TRANSCRIPTION BUTTON FIND");
 
 		WebElement transcriptButton = driver.findElement(
 			By.xpath("//yt-button-shape//button[@aria-label='Show transcript']")
 		);
 
-		log.error("FIND TRANSCRIPT BUTTON");
+		log.info("FIND TRANSCRIPT BUTTON");
 		js.executeScript("arguments[0].click();", transcriptButton);
-		log.error("CLICK TRANSCRIPTION");
+		log.info("CLICK TRANSCRIPTION");
 		Thread.sleep(5000);
 	}
 
