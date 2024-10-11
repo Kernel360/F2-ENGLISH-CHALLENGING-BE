@@ -112,9 +112,9 @@ public class ContentPublicController {
 		@RequestParam(defaultValue = "hits") String sortBy,
 		@RequestParam(defaultValue = "8") int num
 	) {
-		List<ContentResponseDto.ContentPreviewResponseDto> leadingPreview
+		List<ContentResponseDto.ContentPreviewResponseDto> readingPreview
 			= contentService.getPreviewContents(ContentType.READING, sortBy, num);
-		return ResponseEntityFactory.toResponseEntity(CONTENT_VIEW_SUCCESS, leadingPreview);
+		return ResponseEntityFactory.toResponseEntity(CONTENT_VIEW_SUCCESS, readingPreview);
 	}
 
 	@GetMapping("/preview/listening")
