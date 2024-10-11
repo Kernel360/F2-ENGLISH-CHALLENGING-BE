@@ -20,6 +20,7 @@ RUN wget -O /tmp/chromedriver.zip https://chromedriver.storage.googleapis.com/` 
 RUN unzip /tmp/chromedriver.zip chromedriver -d .
 
 # Xvfb 설정
+RUN apt-get install -y xvfb
 RUN Xvfb :99 -ac &
 ENV DISPLAY=:99
 

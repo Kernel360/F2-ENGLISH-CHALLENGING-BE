@@ -130,6 +130,7 @@ public class SecurityConfig {
 			if ("dev".equals(activeProfile)) {
 				originPatterns.add("https://local.biengual.store:3000");
 				originPatterns.add("https://dev.biengual.store");
+				originPatterns.add("http://54.66.49.200:8080");
 			}
 
 			if ("prod".equals(activeProfile)) {
