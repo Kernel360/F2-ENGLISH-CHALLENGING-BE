@@ -17,9 +17,6 @@ RUN apt -y install ./google-chrome-stable-114.0.5735.106-1.deb
 # chromedriver 설치
 RUN wget -O /tmp/chromedriver.zip https://chromedriver.storage.googleapis.com/` curl -sS chromedriver.storage.googleapis.com/LATEST_RELEASE_114`/chromedriver_linux64.zip
 RUN unzip /tmp/chromedriver.zip chromedriver -d .
-RUN chmod +x /usr/local/bin/chromedriver
-
-ENV PATH=$PATH:/usr/local/bin/
 
 COPY ./build/libs/platform-0.0.1-SNAPSHOT.jar biengual/app.jar
 COPY ./src/main/resources/.env biengual/.env
