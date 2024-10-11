@@ -1,13 +1,15 @@
 package com.echall.platform.content.domain.dto;
 
-import java.time.LocalDateTime;
-import java.util.List;
-
+import com.echall.platform.content.domain.entity.ContentEntity;
 import com.echall.platform.content.domain.entity.Script;
 import com.echall.platform.content.domain.enums.ContentType;
 
+import java.time.LocalDateTime;
+import java.util.List;
+
 public class ContentResponseDto {
 
+	// ContentRepositoryImpl의 search 메서드에서 사용하는 Dto
 	public record ContentViewResponseDto(
 		Long contentId,
 		String scriptId,
@@ -54,5 +56,16 @@ public class ContentResponseDto {
 		String category,
 		int hits
 	) {
+		public static ContentPreviewResponseDto from(ContentEntity content) {
+			return new ContentPreviewResponseDto(
+				content.getId(),
+				content.getTitle(),
+				content.getThumbnailUrl(),
+				content.getContentType(),
+				content.getPreScripts(),
+				content.getCategory(),
+				content.getHits()
+			);
+		}
 	}
 }
