@@ -8,6 +8,10 @@ RUN apt -y install unzip
 RUN apt -y install curl
 RUN apt-get -y install xvfb
 
+# 영어로 언어 설정 - 셀레니움을 위해서
+RUN locale-gen en_US.UTF-8
+RUN update-locale LANG=en_US.UTF-8
+
 # google chrome 설치
 RUN wget https://chrome-versions.com/google-chrome-stable-114.0.5735.106-1.deb
 #RUN wget https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb
@@ -23,6 +27,8 @@ RUN unzip /tmp/chromedriver.zip chromedriver -d .
 RUN apt-get install -y xvfb
 RUN Xvfb :99 -ac &
 ENV DISPLAY=:99
+
+
 
 COPY ./build/libs/platform-0.0.1-SNAPSHOT.jar biengual/app.jar
 COPY ./src/main/resources/.env biengual/.env

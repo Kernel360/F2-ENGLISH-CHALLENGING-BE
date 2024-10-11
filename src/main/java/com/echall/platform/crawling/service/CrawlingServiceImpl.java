@@ -322,21 +322,23 @@ public class CrawlingServiceImpl implements CrawlingService {
 		log.error("ZOOMOUT SUCESS");
 		// Click the "expand" button to expand
 		List<WebElement> expandButton = driver.findElements(By.cssSelector("tp-yt-paper-button#expand"));
+		log.error("FIND EXPAND BUTTON");
 		for (WebElement button : expandButton) {
 			if (button.isDisplayed() && button.isEnabled()) {
 				button.click();
+				log.error("EXPAND BUTTON CLICK");
 				break;
 			}
 		}
 		Thread.sleep(3000);
-		log.error("CLICK EXPAND");
 		// Locate and click the "Show transcript" button
 		WebElement transcriptButton = wait.until(
 			ExpectedConditions.elementToBeClickable(
 				By.xpath("//yt-button-shape//button[@aria-label='Show transcript']")));
+		log.error("FIND TRANSCRIPT BUTTON");
 		transcriptButton.click();
-		Thread.sleep(5000);
 		log.error("CLICK TRANSCRIPTION");
+		Thread.sleep(5000);
 	}
 /*
 	private String translateTextWithPython(String text) {
