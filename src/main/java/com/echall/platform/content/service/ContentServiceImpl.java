@@ -39,9 +39,9 @@ public class ContentServiceImpl implements ContentService {
 	@Override
 	@Transactional(readOnly = true)
 	public PaginationDto<ContentResponseDto.ContentPreviewResponseDto> getAllContents(
-		ContentType contentType, Pageable pageable
+		ContentType contentType, Pageable pageable, Long categoryId
 	) {
-		Page<ContentEntity> page = contentRepository.findByContentType(contentType, pageable);
+		Page<ContentEntity> page = contentRepository.findAllByContentTypeAndCategory(contentType, pageable, categoryId);
 
 		List<ContentResponseDto.ContentPreviewResponseDto> contents = page.getContent().stream()
 			.map(ContentResponseDto.ContentPreviewResponseDto::from)

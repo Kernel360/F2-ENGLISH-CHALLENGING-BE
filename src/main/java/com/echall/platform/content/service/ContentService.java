@@ -10,7 +10,9 @@ import org.springframework.security.core.Authentication;
 import java.util.List;
 
 public interface ContentService {
-	PaginationDto<ContentResponseDto.ContentPreviewResponseDto> getAllContents(ContentType contentType, Pageable pageable);
+	PaginationDto<ContentResponseDto.ContentPreviewResponseDto> getAllContents(
+		ContentType contentType, Pageable pageable, Long categoryId
+	);
 
 	ContentResponseDto.ContentDetailResponseDto getScriptsOfContent(Long id);
 
