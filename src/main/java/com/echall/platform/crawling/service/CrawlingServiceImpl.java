@@ -325,7 +325,8 @@ public class CrawlingServiceImpl implements CrawlingService {
 		log.error("FIND EXPAND BUTTON : {} ", expandButton);
 		for (WebElement button : expandButton) {
 			log.error("FIND BUTTON : {} ", button.getText());
-			if(button.getText().equals("...more")){
+			if (button.getText().contains("more")) {
+				log.error("FIND SUCCESS MORE BUTTON : {}", button.getText());
 				button.click();
 				log.error("EXPAND BUTTON CLICK");
 				break;
