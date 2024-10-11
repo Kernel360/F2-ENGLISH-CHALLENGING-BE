@@ -141,7 +141,7 @@ public class CrawlingServiceImpl implements CrawlingService {
 		if (os.contains("linux")) {
 			log.error("LINUX");
 			// Ubuntu의 경우
-			// options.addArguments("--headless");
+			options.addArguments("--headless");
 			options.addArguments("--no-sandbox");
 			options.addArguments("--disable-dev-shm-usage");
 			options.addArguments("--ignore-ssl-errors=yes");
