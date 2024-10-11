@@ -168,10 +168,12 @@ public class CrawlingServiceImpl implements CrawlingService {
 		try {
 			log.error("SELENIUM DRIVER SET SUCCESS");
 			transcriptLines = runSelenium(driver, youtubeInfo, seconds);
+			log.error("SELENIUM END");
 		} catch (Exception e) {
 			throw new CommonException(SELENIUM_RUNTIME_ERROR);
 		} finally {
 			driver.quit();
+			log.error("DRIVER QUIT");
 		}
 
 		return transcriptLines;
@@ -343,28 +345,6 @@ public class CrawlingServiceImpl implements CrawlingService {
 		log.error("CLICK TRANSCRIPTION");
 		Thread.sleep(5000);
 	}
-/*
-	private String translateTextWithPython(String text) {
-		String pythonPath = "src\\main\\java\\com\\echall\\platform\\crawling\\bot\\Translator.py";
-
-		try {
-			ProcessBuilder processBuilder = new ProcessBuilder(Arrays.asList("python", pythonPath));
-			Process process = processBuilder.start();
-
-			// Write input to Python process
-			BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(process.getOutputStream()));
-			writer.write(text);
-			writer.newLine();
-			writer.flush();
-
-			// Read output from Python process
-			BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()));
-
-			return reader.readLine();
-		} catch (IOException e) {
-			throw new CommonException(CRAWLING_TRANSLATE_FAILURE);
-		}
-	}*/
 
 	private List<String> splitIntoSentences(String text) {
 		List<String> sentences = new ArrayList<>();
