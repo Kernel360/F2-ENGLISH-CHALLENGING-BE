@@ -1,0 +1,55 @@
+HELP.md
+.gradle
+build/
+!gradle/wrapper/gradle-wrapper.jar
+!**/src/main/**/build/
+!**/src/test/**/build/
+
+### STS ###
+.apt_generated
+.classpath
+.factorypath
+.project
+.settings
+.springBeans
+.sts4-cache
+bin/
+!**/src/main/**/bin/
+!**/src/test/**/bin/
+
+### IntelliJ IDEA ###
+.idea
+*.iws
+*.iml
+*.ipr
+out/
+!**/src/main/**/out/
+!**/src/test/**/out/
+
+### NetBeans ###
+/nbproject/private/
+/nbbuild/
+/dist/
+/nbdist/
+/.nb-gradle/
+
+### VS Code ###
+.vscode/
+!/mongodb/
+
+!/data/**
+!/data/mysql-data/**
+
+!/.env
+/src/main/resources/yml/application-prod.yml
+/src/main/resources/yml/logging/**
+/data/*
+/gradle/wrapper/*
+/gradlew
+/gradlew.bat
+/.env
+/mongodb/*
+docker-compose.yml
+/biengual/*
+/src/main/resources/google_cloud_api_key.json
+/logs/*

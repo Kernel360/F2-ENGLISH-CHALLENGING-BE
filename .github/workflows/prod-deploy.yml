@@ -1,0 +1,91 @@
+name: PROD CD
+run-name: PROD DEPLOY Running
+
+on:
+  pull_request:
+    types:
+      - closed
+
+jobs:
+  if-main-merge:
+    if: github.event.pull_request.merged == true && github.event.pull_request.base.ref == 'main'
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v3
+        with:
+          java-version: '17'
+          distribution: 'corretto'
+
+      - name: Set environment values
+        run: |
+          mkdir -p ./src/main/resources
+          echo "${{ secrets.ENV }}" > ./src/main/resources/.env
+        shell: bash
+
+      - name: Build with Gradle
+        run: gradle clean build bootjar -x test
+
+      - name: Login to DockerHub
+        uses: docker/login-action@v1
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_PASSWORD }}
+
+      - name: Build and push Docker image
+        run: |
+          # Build the Docker image with the 'latest' tag
+          docker build --build-arg PROFILES=prod -t ${{ secrets.DOCKERHUB_USERNAME }}/english-challenge-prod .
+
+          # Push the Docker image to Docker Hub
+          docker push ${{ secrets.DOCKERHUB_USERNAME }}/english-challenge-prod:latest
+
+  prod-deploy:
+    needs: if-main-merge
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Test SSH connection
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.PROD_PUBLIC_DNS }}
+          username: ${{ secrets.EC2_USER }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          port: 22
+          script: |
+            echo "Testing SSH connection"
+            uptime
+
+      - name: Deploy to EC2 Server
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.PROD_PUBLIC_DNS }}
+          username: ${{ secrets.EC2_USER }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          port: 22
+          script: |
+            echo "Docker Hub에 로그인"
+            echo "${{ secrets.DOCKERHUB_PASSWORD }}" | sudo docker login -u ${{ secrets.DOCKERHUB_USERNAME }} --password-stdin
+            
+            echo "최신 Docker 이미지 Pull"
+            sudo docker pull ${{ secrets.DOCKERHUB_USERNAME }}/english-challenge-prod:latest
+            
+            echo "기존 컨테이너가 있을 경우 중지 및 제거"
+            sudo docker stop ${{ secrets.DOCKERHUB_CONTAINERNAME }} || true
+            sudo docker rm ${{ secrets.DOCKERHUB_CONTAINERNAME }} || true
+            
+            sudo docker run -d \
+              -v ./biengual/logs:/biengual/logs \
+              -e PROFILES=prod \
+              -p 8080:8080 \
+              --name ${{ secrets.DOCKERHUB_CONTAINERNAME }} \
+              ${{ secrets.DOCKERHUB_USERNAME }}/english-challenge-prod:latest
+            
+            echo "오래된 Docker 이미지 정리"
+            sudo docker image prune -f
