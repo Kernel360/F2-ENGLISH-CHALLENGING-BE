@@ -1,18 +1,18 @@
 package com.echall.platform.content.service;
 
-import java.util.List;
-
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
-import org.springframework.security.core.Authentication;
-
 import com.echall.platform.content.domain.dto.ContentRequestDto;
 import com.echall.platform.content.domain.dto.ContentResponseDto;
 import com.echall.platform.content.domain.enums.ContentType;
-import com.echall.platform.content.domain.enums.SearchCondition;
+import com.echall.platform.util.PaginationDto;
+import org.springframework.data.domain.Pageable;
+import org.springframework.security.core.Authentication;
+
+import java.util.List;
 
 public interface ContentService {
-	Page<ContentResponseDto.ContentViewResponseDto> getAllContents(Pageable pageable, SearchCondition searchCondition);
+	PaginationDto<ContentResponseDto.ContentPreviewResponseDto> getAllContents(
+		ContentType contentType, Pageable pageable, Long categoryId
+	);
 
 	ContentResponseDto.ContentDetailResponseDto getScriptsOfContent(Long id);
 
