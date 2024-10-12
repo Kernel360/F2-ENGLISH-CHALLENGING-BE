@@ -3,7 +3,6 @@ package com.echall.platform.scrap.service;
 import static com.echall.platform.message.error.code.ScrapErrorCode.*;
 import static com.echall.platform.message.error.code.UserErrorCode.*;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.stereotype.Service;

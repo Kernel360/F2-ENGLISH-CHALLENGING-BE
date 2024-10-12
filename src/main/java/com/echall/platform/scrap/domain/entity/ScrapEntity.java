@@ -2,7 +2,6 @@ package com.echall.platform.scrap.domain.entity;
 
 import com.echall.platform.user.domain.entity.BaseEntity;
 
-import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;

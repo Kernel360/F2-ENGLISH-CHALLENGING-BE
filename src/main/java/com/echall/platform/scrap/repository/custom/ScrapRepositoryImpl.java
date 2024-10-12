@@ -36,8 +36,8 @@ public class ScrapRepositoryImpl extends QuerydslRepositorySupport implements Sc
 	}
 
 	@Override
-	public Long deleteScrap(Long userId, Long scrapId) {
-		ScrapEntity scrap = Optional.ofNullable(from(userEntity)
+	public void deleteScrap(Long userId, Long scrapId) {
+		Optional.ofNullable(from(userEntity)
 				.join(userEntity.scraps, scrapEntity)
 				.select(scrapEntity)
 				.where(userEntity.id.eq(userId))
@@ -48,6 +48,5 @@ public class ScrapRepositoryImpl extends QuerydslRepositorySupport implements Sc
 			.where(scrapEntity.id.eq(scrapId))
 			.execute();
 
-		return scrap.getId();
 	}
 }

@@ -9,5 +9,5 @@ public interface ScrapRepositoryCustom {
 
 	boolean findAlreadyExists(Long userId, Long contentId);
 
-	Long deleteScrap(Long userId, Long scrapId);
+	void deleteScrap(Long userId, Long scrapId);
 }
