@@ -5,7 +5,7 @@ import java.util.List;
 import com.echall.platform.scrap.domain.entity.ScrapEntity;
 
 public interface ScrapRepositoryCustom {
-	List<ScrapEntity> findByUserId(Long userId);
+	List<ScrapEntity> findAllByUserId(Long userId);
 
 	boolean findAlreadyExists(Long userId, Long contentId);
 

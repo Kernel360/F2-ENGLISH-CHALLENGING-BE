@@ -28,17 +28,15 @@ public class ScrapServiceImpl implements ScrapService {
 	@Override
 	@Transactional(readOnly = true)
 	public List<ScrapResponseDto.ScrapViewResponseDto> getAllScraps(Long userId) {
-		List<ScrapEntity> scrap = scrapRepository.findByUserId(userId);
+		List<ScrapEntity> scrap = scrapRepository.findAllByUserId(userId);
 		if (scrap.isEmpty()) {
 			throw new CommonException(SCRAP_NOT_FOUND);
 		}
 
-		List<ScrapResponseDto.ScrapViewResponseDto> scrapDtos = new ArrayList<>();
-		for (ScrapEntity scrapEntity : scrap) {
-			scrapDtos.add(ScrapResponseDto.ScrapViewResponseDto.of(scrapEntity));
-		}
-
-		return scrapDtos;
+		return scrap
+			.stream()
+			.map(ScrapResponseDto.ScrapViewResponseDto::from)
+			.toList();
 	}
 
 	@Override
@@ -49,25 +47,23 @@ public class ScrapServiceImpl implements ScrapService {
 		UserEntity user = userRepository.findByEmail(email)
 			.orElseThrow(() -> new CommonException(USER_NOT_FOUND));
 
-		if(scrapRepository.findAlreadyExists(user.getId(), requestDto.contentId())){
+		if (scrapRepository.findAlreadyExists(user.getId(), requestDto.contentId())) {
 			throw new CommonException(SCRAP_ALREADY_EXISTS);
 		}
 
-		ScrapEntity scrap = ScrapEntity.builder()
-			.contentId(requestDto.contentId())
-			.build();
+		ScrapEntity scrap = requestDto.toEntity();
 
 		scrapRepository.save(scrap);
 		user.updateUserScrap(scrap);
 
-		return ScrapResponseDto.ScrapCreateResponseDto.of(scrap.getContentId());
+		return ScrapResponseDto.ScrapCreateResponseDto.from(scrap.getContentId());
 	}
 
 	@Override
 	@Transactional
-	public ScrapResponseDto.ScrapDeleteResponseDto deleteScrap(
+	public void deleteScrap(
 		Long userId, ScrapRequestDto.ScrapDeleteRequestDto requestDto
 	) {
-		return new ScrapResponseDto.ScrapDeleteResponseDto(scrapRepository.deleteScrap(userId, requestDto.scrapId()));
+		scrapRepository.deleteScrap(userId, requestDto.scrapId());
 	}
 }

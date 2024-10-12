@@ -12,18 +12,15 @@ import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.ToString;
 
 @Entity
 @Table(name = "scrap")
 @Getter
-@ToString
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class ScrapEntity extends BaseEntity {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	@Column(name = "id", nullable = false)
 	private Long id;
 
 	private Long contentId;
@@ -34,4 +31,8 @@ public class ScrapEntity extends BaseEntity {
 		this.contentId = contentId;
 	}
 
+	@Builder
+	public ScrapEntity(Long contentId) {
+		this.contentId = contentId;
+	}
 }

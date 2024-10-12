@@ -18,13 +18,12 @@ public class ScrapRepositoryImpl extends QuerydslRepositorySupport implements Sc
 	}
 
 	@Override
-	public List<ScrapEntity> findByUserId(Long userId) {
-		return Optional.ofNullable(from(userEntity)
+	public List<ScrapEntity> findAllByUserId(Long userId) {
+		return from(userEntity)
 				.join(userEntity.scraps, scrapEntity)
 				.select(scrapEntity)
 				.where(userEntity.id.eq(userId))
-				.fetch())
-			.orElseThrow(() -> new CommonException(SCRAP_NOT_FOUND));
+				.fetch();
 	}
 
 	@Override

@@ -14,5 +14,5 @@ public interface ScrapService{
 
 	ScrapResponseDto.ScrapCreateResponseDto createScrap(String email, ScrapRequestDto.ScrapCreateRequestDto requestDto);
 
-	ScrapResponseDto.ScrapDeleteResponseDto deleteScrap(Long userId, ScrapRequestDto.ScrapDeleteRequestDto requestDto);
+	void deleteScrap(Long userId, ScrapRequestDto.ScrapDeleteRequestDto requestDto);
 }

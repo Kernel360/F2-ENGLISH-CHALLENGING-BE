@@ -8,7 +8,7 @@ public class ScrapResponseDto {
 		Long scrapId,
 		Long contentId
 	) {
-		public static ScrapViewResponseDto of(ScrapEntity scrap) {
+		public static ScrapViewResponseDto from(ScrapEntity scrap) {
 			return new ScrapViewResponseDto(
 				scrap.getId(),
 				scrap.getContentId()
@@ -19,7 +19,7 @@ public class ScrapResponseDto {
 	public record ScrapCreateResponseDto(
 		Long contentId
 	) {
-		public static ScrapCreateResponseDto of(Long contentId) {
+		public static ScrapCreateResponseDto from(Long contentId) {
 			return new ScrapCreateResponseDto(
 				contentId
 			);
