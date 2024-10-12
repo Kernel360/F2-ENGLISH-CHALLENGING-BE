@@ -1,9 +1,20 @@
 package com.echall.platform.content.service;
 
-import static com.echall.platform.message.error.code.ContentErrorCode.*;
-
-import java.util.List;
-
+import com.echall.platform.category.domain.entity.CategoryEntity;
+import com.echall.platform.category.repository.CategoryRepository;
+import com.echall.platform.content.domain.dto.ContentRequestDto;
+import com.echall.platform.content.domain.dto.ContentResponseDto;
+import com.echall.platform.content.domain.entity.ContentDocument;
+import com.echall.platform.content.domain.entity.ContentEntity;
+import com.echall.platform.content.domain.enums.ContentStatus;
+import com.echall.platform.content.domain.enums.ContentType;
+import com.echall.platform.content.repository.ContentRepository;
+import com.echall.platform.content.repository.ContentScriptRepository;
+import com.echall.platform.crawling.domain.dto.CrawlingResponseDto;
+import com.echall.platform.crawling.service.CrawlingServiceImpl;
+import com.echall.platform.message.error.exception.CommonException;
+import com.echall.platform.util.PaginationDto;
+import lombok.RequiredArgsConstructor;
 import org.bson.types.ObjectId;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -11,20 +22,10 @@ import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.echall.platform.content.domain.dto.ContentRequestDto;
-import com.echall.platform.content.domain.dto.ContentResponseDto;
-import com.echall.platform.content.domain.entity.ContentDocument;
-import com.echall.platform.content.domain.entity.ContentEntity;
-import com.echall.platform.content.domain.enums.ContentStatus;
-import com.echall.platform.content.domain.enums.ContentType;
-import com.echall.platform.content.domain.enums.SearchCondition;
-import com.echall.platform.content.repository.ContentRepository;
-import com.echall.platform.content.repository.ContentScriptRepository;
-import com.echall.platform.crawling.domain.dto.CrawlingResponseDto;
-import com.echall.platform.crawling.service.CrawlingServiceImpl;
-import com.echall.platform.message.error.exception.CommonException;
+import java.util.List;
 
-import lombok.RequiredArgsConstructor;
+import static com.echall.platform.message.error.code.CategoryErrorCode.CATEGORY_NOT_FOUND;
+import static com.echall.platform.message.error.code.ContentErrorCode.CONTENT_NOT_FOUND;
 
 @Service
 @RequiredArgsConstructor
@@ -33,13 +34,20 @@ public class ContentServiceImpl implements ContentService {
 	private final ContentRepository contentRepository;
 	private final ContentScriptRepository contentScriptRepository;
 	private final CrawlingServiceImpl crawlingService;
+	private final CategoryRepository categoryRepository;
 
 	@Override
 	@Transactional(readOnly = true)
-	public Page<ContentResponseDto.ContentViewResponseDto> getAllContents(
-		Pageable pageable, SearchCondition searchCondition
+	public PaginationDto<ContentResponseDto.ContentPreviewResponseDto> getAllContents(
+		ContentType contentType, Pageable pageable, Long categoryId
 	) {
-		return contentRepository.search(pageable, searchCondition);
+		Page<ContentEntity> page = contentRepository.findAllByContentTypeAndCategory(contentType, pageable, categoryId);
+
+		List<ContentResponseDto.ContentPreviewResponseDto> contents = page.getContent().stream()
+			.map(ContentResponseDto.ContentPreviewResponseDto::from)
+			.toList();
+
+		return PaginationDto.from(page, contents);
 	}
 
 	@Override
@@ -64,9 +72,12 @@ public class ContentServiceImpl implements ContentService {
 		ContentDocument contentDocument = crawlingContentResponseDto.toDocument();
 		contentScriptRepository.save(contentDocument);
 
+		CategoryEntity category = getCategoryEntity(crawlingContentResponseDto);
+
 		ContentEntity content = crawlingContentResponseDto.toEntity(
-			contentDocument.getId(), contentCreateRequestDto.contentType()
+			contentDocument.getId(), contentCreateRequestDto.contentType(), category
 		);
+
 		contentRepository.save(content);
 
 		return new ContentResponseDto.ContentCreateResponseDto(contentDocument.getId().toString(), content.getId());
@@ -123,11 +134,22 @@ public class ContentServiceImpl implements ContentService {
 		return new ContentResponseDto.ContentDetailResponseDto(
 			id,
 			content.getContentType(),
-			content.getCategory(),
+			content.getCategory().getName(),
 			content.getTitle(),
 			content.getThumbnailUrl(),
 			contentDocument.getScripts()
 		);
+	}
+
+	// Internal Methods=================================================================================================
+
+	private CategoryEntity getCategoryEntity(CrawlingResponseDto.CrawlingContentResponseDto dto) {
+		if (categoryRepository.existsByName(dto.category())) {
+			return categoryRepository.findByName(dto.category())
+				.orElseThrow(() -> new CommonException(CATEGORY_NOT_FOUND));
+		}
+
+		return categoryRepository.save(dto.toCategoryEntity());
 	}
 
 }

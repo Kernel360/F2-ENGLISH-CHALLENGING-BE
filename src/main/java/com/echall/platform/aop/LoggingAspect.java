@@ -58,11 +58,14 @@ public class LoggingAspect {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
         if (authentication != null && authentication.getPrincipal() != null) {
-            OAuth2UserPrincipal principal = (OAuth2UserPrincipal) authentication.getPrincipal();
-            return principal.getEmail();
-        } else {
-            return "guest";
+            Object principal = authentication.getPrincipal();
+
+            if (principal instanceof OAuth2UserPrincipal) {
+                return ((OAuth2UserPrincipal) principal).getEmail();
+            }
         }
+
+        return "guest";
     }
 
     @After(value = "login() && args(request, response, authentication)")
