@@ -140,13 +140,10 @@ public class CrawlingServiceImpl implements CrawlingService {
 			imgUrl,
 			category,
 			sentences.stream()
-				.map(
-					sentence -> Script.builder()
-						.startTimeInSecond(0)
-						.durationInSecond(0)
-						.enScript(sentence)
-						.koScript(translateService.translate(sentence, "en", "ko"))
-						.build()
+				.map(sentence -> Script.of(
+						0, 0,
+						sentence, translateService.translate(sentence, "en", "ko")
+					)
 				).toList()
 		);
 	}
@@ -242,12 +239,10 @@ public class CrawlingServiceImpl implements CrawlingService {
 				.getText();
 			if (text != null && !text.isEmpty()) {
 				scripts.add(
-					Script.builder()
-						.startTimeInSecond(startTime)
-						.durationInSecond(endtime - startTime)
-						.enScript(text)
-						.koScript(translateService.translate(text, "en", "ko"))
-						.build()
+					Script.of(
+						startTime, endtime - startTime,
+						text, translateService.translate(text, "en", "ko")
+					)
 				);
 
 			}
