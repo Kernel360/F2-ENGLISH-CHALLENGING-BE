@@ -68,7 +68,7 @@ public class ScrapApiController {
 		);
 	}
 
-	@DeleteMapping("/delete/{contentId}")
+	@DeleteMapping("/delete")
 	@Operation(summary = "스크랩 삭제", description = "스크랩을 삭제합니다.")
 	@ApiResponses(value = {
 		@ApiResponse(responseCode = "200", description = "요청에 성공하였습니다.", content = @Content),
