@@ -36,6 +36,11 @@ public class CrawlingResponseDto {
 				.build();
 
 		}
+		public static CrawlingContentResponseDto of(
+			String url, String title, String imgUrl, String category, List<Script> script
+		) {
+			return new CrawlingContentResponseDto(url, title, imgUrl, category, script);
+		}
 	}
 
 }

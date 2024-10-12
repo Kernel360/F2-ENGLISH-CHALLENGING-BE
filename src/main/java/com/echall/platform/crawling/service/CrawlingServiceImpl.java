@@ -134,8 +134,7 @@ public class CrawlingServiceImpl implements CrawlingService {
 
 		// 본문을 문장 단위로 나누기
 		List<String> sentences = splitIntoSentences(fullText.toString());
-
-		return new CrawlingResponseDto.CrawlingContentResponseDto(
+		return CrawlingResponseDto.CrawlingContentResponseDto.of(
 			url,
 			title,
 			imgUrl,
