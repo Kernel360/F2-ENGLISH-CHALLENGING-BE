@@ -54,7 +54,7 @@ public class ScrapServiceImpl implements ScrapService {
 		ScrapEntity scrap = requestDto.toEntity();
 
 		scrapRepository.save(scrap);
-		user.updateUserScrap(scrap);
+		user.getScraps().add(scrap);
 
 		return ScrapResponseDto.ScrapCreateResponseDto.from(scrap.getContentId());
 	}

@@ -136,10 +136,6 @@ public class UserEntity extends BaseEntity {
 		this.bookmarks.add(bookmark);
 	}
 
-	public void updateUserScrap(ScrapEntity scrap) {
-		this.scraps.add(scrap);
-	}
-
 	public void updateAfterOAuth2Login(OAuth2UserPrincipal oAuthUser) {
 		this.username = oAuthUser.getUsername();
 		this.provider = oAuthUser.getProvider();
