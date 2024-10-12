@@ -109,7 +109,6 @@ public class ContentPublicController {
 		Map<String, List<ContentResponseDto.ContentPreviewResponseDto>> data = new HashMap<>();
 		data.put("listeningPreview", contentService.getPreviewContents(ContentType.LISTENING, sortBy, num));
 
-
 		return ResponseEntityFactory.toResponseEntity(CONTENT_VIEW_SUCCESS, data);
 	}
 

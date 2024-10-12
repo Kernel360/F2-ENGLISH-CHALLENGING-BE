@@ -52,18 +52,18 @@ public class BookmarkServiceImpl implements BookmarkService {
 		UserEntity user = userRepository.findByEmail(email)
 			.orElseThrow(() -> new CommonException(USER_NOT_FOUND));
 
+		if (bookmarkRepository.existsByScriptIndexAndScriptIndexAndWordIndex(
+			contentId, bookmarkRequestDto.sentenceIndex(), bookmarkRequestDto.wordIndex()
+		)) {
+			throw new CommonException(BOOKMARK_ALREADY_EXISTS);
+		}
+
 		BookmarkEntity bookmark = BookmarkEntity.builder()
 			.scriptIndex(contentId)
 			.sentenceIndex(bookmarkRequestDto.sentenceIndex())
 			.wordIndex(bookmarkRequestDto.wordIndex())
 			.description(bookmarkRequestDto.description())
 			.build();
-
-		if (bookmarkRepository.existsByScriptIndexAndScriptIndexAndWordIndex(
-			bookmark.getScriptIndex(), bookmark.getSentenceIndex(), bookmark.getWordIndex())
-		) {
-			throw new CommonException(BOOKMARK_ALREADY_EXISTS);
-		}
 
 		bookmarkRepository.save(bookmark);
 		user.updateUserBookmark(bookmark);
