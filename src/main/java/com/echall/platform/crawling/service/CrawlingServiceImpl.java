@@ -146,7 +146,7 @@ public class CrawlingServiceImpl implements CrawlingService {
 						.startTimeInSecond(0)
 						.durationInSecond(0)
 						.enScript(sentence)
-						// .koScript(translateService.translate(sentence, "en", "ko"))
+						.koScript(translateService.translate(sentence, "en", "ko"))
 						.build()
 				).toList()
 		);
@@ -247,7 +247,7 @@ public class CrawlingServiceImpl implements CrawlingService {
 						.startTimeInSecond(startTime)
 						.durationInSecond(endtime - startTime)
 						.enScript(text)
-						// .koScript(translateService.translate(text, "en", "ko"))
+						.koScript(translateService.translate(text, "en", "ko"))
 						.build()
 				);
 
