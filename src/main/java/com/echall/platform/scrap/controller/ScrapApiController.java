@@ -75,12 +75,12 @@ public class ScrapApiController {
 		@ApiResponse(responseCode = "204", description = "요청한 스크랩이 없습니다.", content = @Content),
 		@ApiResponse(responseCode = "500", description = "서버 에러가 발생하였습니다.", content = @Content)
 	})
-	public ResponseEntity<ApiCustomResponse<Object>> deleteScrap(
+	public ResponseEntity<ApiCustomResponse> deleteScrap(
 		@AuthenticationPrincipal OAuth2UserPrincipal oAuth2UserPrincipal,
 		@RequestBody ScrapRequestDto.ScrapDeleteRequestDto requestDto
 	) {
 		scrapService.deleteScrap(oAuth2UserPrincipal.getId(), requestDto);
-		return ResponseEntityFactory.toResponseEntity(SCRAP_DELETE_SUCCESS, null);
+		return ResponseEntityFactory.toResponseEntity(SCRAP_DELETE_SUCCESS);
 	}
 
 }
