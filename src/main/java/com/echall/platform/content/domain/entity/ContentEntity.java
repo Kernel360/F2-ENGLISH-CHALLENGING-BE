@@ -1,28 +1,15 @@
 package com.echall.platform.content.domain.entity;
 
-import java.util.List;
-
+import com.echall.platform.category.domain.entity.CategoryEntity;
 import com.echall.platform.content.domain.dto.ContentRequestDto;
 import com.echall.platform.content.domain.enums.ContentStatus;
 import com.echall.platform.content.domain.enums.ContentType;
 import com.echall.platform.user.domain.entity.BaseEntity;
-
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
-import jakarta.transaction.Transactional;
-import jakarta.validation.constraints.NotNull;
+import jakarta.persistence.*;
 import jakarta.validation.constraints.Size;
-import lombok.AccessLevel;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.ToString;
+import lombok.*;
+
+import java.util.List;
 
 @Entity
 @Table(name = "content")
@@ -32,42 +19,47 @@ import lombok.ToString;
 public class ContentEntity extends BaseEntity {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	@Column(name = "id", nullable = false)
 	private Long id;
 
-	@NotNull
+	@Column(nullable = false, columnDefinition = "varchar(255)")
 	private String url;
 
-	@NotNull
+	@Column(nullable = false, columnDefinition = "varchar(255)")
 	private String title;
 
-	private String category;
-
-	@Column(columnDefinition = "integer default 0")
+	@Column(nullable = false, columnDefinition = "integer default 0")
 	private int hits;
 
+	@Column(columnDefinition = "varchar(255)")
 	private String thumbnailUrl;
 
 	@Size(max = 255)
+	@Column(nullable = false, columnDefinition = "varchar(255)")
 	private String preScripts;
 
 	@Enumerated(EnumType.STRING)
+	@Column(nullable = false)
 	private ContentType contentType;
 
+	@Column(nullable = false)
 	@Enumerated(EnumType.STRING)
 	private ContentStatus contentStatus = ContentStatus.ACTIVATED;
 
+	@Column(nullable = false, unique = true, columnDefinition = "varchar(255)")
 	private String mongoContentId;
+
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "category_id", columnDefinition = "bigint", foreignKey = @ForeignKey(value = ConstraintMode.NO_CONSTRAINT))
+	private CategoryEntity category;
 
 	@Builder
 	public ContentEntity(
-		String url, String title, String category, String thumbnailUrl,
+		String url, String title, String thumbnailUrl,
 		ContentType contentType, String mongoContentId,
-		List<Script> preScripts
+		List<Script> preScripts, CategoryEntity category
 	) {
 		this.url = url;
 		this.title = title;
-		this.category = category;
 		this.thumbnailUrl = thumbnailUrl;
 		this.contentType = contentType;
 		this.mongoContentId = mongoContentId;
@@ -78,6 +70,7 @@ public class ContentEntity extends BaseEntity {
 				.toList().toString()
 			, 255
 		);
+		this.category = category;
 	}
 
 	public void update(ContentRequestDto.ContentUpdateRequestDto dto) {

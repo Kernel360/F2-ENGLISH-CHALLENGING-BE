@@ -2,6 +2,7 @@ package com.echall.platform.content.repository.custom;
 
 import java.util.List;
 
+import com.echall.platform.content.domain.entity.ContentEntity;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
@@ -20,4 +21,5 @@ public interface ContentRepositoryCustom {
 
 	int updateHit(Long contentId);
 
+	Page<ContentEntity> findAllByContentTypeAndCategory(ContentType contentType, Pageable pageable, Long categoryId);
 }
