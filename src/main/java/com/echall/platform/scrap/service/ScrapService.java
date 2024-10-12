@@ -12,7 +12,7 @@ import com.echall.platform.scrap.repository.custom.ScrapRepositoryCustom;
 public interface ScrapService{
 	List<ScrapResponseDto.ScrapViewResponseDto> getAllScraps(Long userId);
 
-	ScrapResponseDto.ScrapCreateResponseDto createScrap(String email, ScrapRequestDto.ScrapCreateRequestDto requestDto);
+	ScrapResponseDto.ScrapCreateResponseDto createScrap(Long userId, ScrapRequestDto.ScrapCreateRequestDto requestDto);
 
 	void deleteScrap(Long userId, ScrapRequestDto.ScrapDeleteRequestDto requestDto);
 }

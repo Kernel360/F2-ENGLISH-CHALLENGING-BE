@@ -64,7 +64,7 @@ public class ScrapApiController {
 		@RequestBody ScrapRequestDto.ScrapCreateRequestDto requestDto
 	) {
 		return ResponseEntityFactory.toResponseEntity(
-			SCRAP_CREATE_SUCCESS, scrapService.createScrap(oAuth2UserPrincipal.getEmail(), requestDto)
+			SCRAP_CREATE_SUCCESS, scrapService.createScrap(oAuth2UserPrincipal.getId(), requestDto)
 		);
 	}
 

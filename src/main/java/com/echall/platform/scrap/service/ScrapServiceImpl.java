@@ -42,9 +42,9 @@ public class ScrapServiceImpl implements ScrapService {
 	@Override
 	@Transactional
 	public ScrapResponseDto.ScrapCreateResponseDto createScrap(
-		String email, ScrapRequestDto.ScrapCreateRequestDto requestDto
+		Long userId, ScrapRequestDto.ScrapCreateRequestDto requestDto
 	) {
-		UserEntity user = userRepository.findByEmail(email)
+		UserEntity user = userRepository.findById(userId)
 			.orElseThrow(() -> new CommonException(USER_NOT_FOUND));
 
 		if (scrapRepository.findAlreadyExists(user.getId(), requestDto.contentId())) {
