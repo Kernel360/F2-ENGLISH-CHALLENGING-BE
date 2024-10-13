@@ -8,6 +8,7 @@ import org.hibernate.annotations.DynamicUpdate;
 
 import com.echall.platform.bookmark.domain.entity.BookmarkEntity;
 import com.echall.platform.oauth2.domain.info.OAuth2UserPrincipal;
+import com.echall.platform.scrap.domain.entity.ScrapEntity;
 import com.echall.platform.user.domain.dto.UserRequestDto;
 import com.echall.platform.user.domain.enums.Gender;
 import com.echall.platform.user.domain.enums.Role;
@@ -81,6 +82,10 @@ public class UserEntity extends BaseEntity {
 	@JoinColumn(name = "user_id", foreignKey = @ForeignKey(value = ConstraintMode.NO_CONSTRAINT))
 	private List<BookmarkEntity> bookmarks = new ArrayList<>();
 
+	@OneToMany
+	@JoinColumn(name = "user_id", foreignKey = @ForeignKey(value = ConstraintMode.NO_CONSTRAINT))
+	private List<ScrapEntity> scraps = new ArrayList<>();
+
 	// For Spring Security==============================================================================================
 	@Builder
 	public UserEntity(String username, String nickname, String password, String email, String phoneNumber,
@@ -135,5 +140,9 @@ public class UserEntity extends BaseEntity {
 		this.username = oAuthUser.getUsername();
 		this.provider = oAuthUser.getProvider();
 		this.providerId = oAuthUser.getProviderId();
+	}
+
+	public boolean hasContent(Long contentId){
+		return this.scraps.stream().anyMatch(scrap -> scrap.getContentId().equals(contentId));
 	}
 }
