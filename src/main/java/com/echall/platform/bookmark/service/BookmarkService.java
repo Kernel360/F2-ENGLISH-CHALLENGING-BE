@@ -6,11 +6,11 @@ import com.echall.platform.bookmark.domain.dto.BookmarkRequestDto;
 import com.echall.platform.bookmark.domain.dto.BookmarkResponseDto;
 
 public interface BookmarkService {
-	List<BookmarkResponseDto.BookmarkMyListResponse> getBookmarks(String email, Long contentId);
+	List<BookmarkResponseDto.BookmarkListResponseDto> getBookmarks(String email, Long contentId);
 
-	List<BookmarkResponseDto.BookmarkMyListResponse> getAllBookmarks(Long userId);
+	List<BookmarkResponseDto.BookmarkMyListResponseDto> getAllBookmarks(Long userId);
 
-	BookmarkResponseDto.BookmarkMyListResponse updateBookmark(
+	BookmarkResponseDto.BookmarkListResponseDto updateBookmark(
 		BookmarkRequestDto.BookmarkUpdateRequest bookmarkRequestDto, Long contentId
 	);
 
@@ -18,5 +18,5 @@ public interface BookmarkService {
 		String email, BookmarkRequestDto.BookmarkCreateRequest bookmarkRequestDto, Long contentId
 	);
 
-	BookmarkResponseDto.BookmarkDeleteResponse deleteBookmark(Long userId, Long bookmarkId);
+	void deleteBookmark(Long userId, Long bookmarkId);
 }
