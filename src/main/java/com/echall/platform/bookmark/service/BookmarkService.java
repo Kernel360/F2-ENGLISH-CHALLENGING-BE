@@ -8,6 +8,8 @@ import com.echall.platform.bookmark.domain.dto.BookmarkResponseDto;
 public interface BookmarkService {
 	List<BookmarkResponseDto.BookmarkMyListResponse> getBookmarks(String email, Long contentId);
 
+	List<BookmarkResponseDto.BookmarkMyListResponse> getAllBookmarks(Long userId);
+
 	BookmarkResponseDto.BookmarkMyListResponse updateBookmark(
 		BookmarkRequestDto.BookmarkUpdateRequest bookmarkRequestDto, Long contentId
 	);

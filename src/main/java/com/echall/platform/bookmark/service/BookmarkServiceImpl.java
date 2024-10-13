@@ -43,6 +43,14 @@ public class BookmarkServiceImpl implements BookmarkService {
 	}
 
 	@Override
+	public List<BookmarkResponseDto.BookmarkMyListResponse> getAllBookmarks(Long userId) {
+		return bookmarkRepository.getAllBookmarks(userId)
+			.stream()
+			.map(BookmarkResponseDto.BookmarkMyListResponse::of)
+			.toList();
+	}
+
+	@Override
 	@Transactional
 	public BookmarkResponseDto.BookmarkCreateResponse createBookmark(
 		String email, BookmarkRequestDto.BookmarkCreateRequest bookmarkRequestDto, Long contentId
