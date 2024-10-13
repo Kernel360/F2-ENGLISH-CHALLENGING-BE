@@ -27,16 +27,16 @@ public class ScrapRepositoryImpl extends QuerydslRepositorySupport implements Sc
 	}
 
 	@Override
-	public void deleteScrap(Long userId, Long scrapId) {
+	public void deleteScrap(Long userId, Long contentId) {
 		Optional.ofNullable(from(userEntity)
 				.join(userEntity.scraps, scrapEntity)
 				.select(scrapEntity)
 				.where(userEntity.id.eq(userId))
-				.where(scrapEntity.id.eq(scrapId))
+				.where(scrapEntity.contentId.eq(contentId))
 				.fetchOne())
 			.orElseThrow(() -> new CommonException(SCRAP_NOT_FOUND));
 		delete(scrapEntity)
-			.where(scrapEntity.id.eq(scrapId))
+			.where(scrapEntity.contentId.eq(contentId))
 			.execute();
 
 	}

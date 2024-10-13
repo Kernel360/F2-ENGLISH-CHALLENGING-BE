@@ -15,7 +15,7 @@ public class ScrapRequestDto {
 	}
 
 	public record ScrapDeleteRequestDto(
-		Long scrapId
+		Long contentId
 	) {
 
 	}
