@@ -19,4 +19,9 @@ public class ScrapRequestDto {
 	) {
 
 	}
+
+	public record ScrapCheckRequestDto(
+		Long contentId
+	) {
+	}
 }

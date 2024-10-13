@@ -15,4 +15,6 @@ public interface ScrapService{
 	ScrapResponseDto.ScrapCreateResponseDto createScrap(Long userId, ScrapRequestDto.ScrapCreateRequestDto requestDto);
 
 	void deleteScrap(Long userId, ScrapRequestDto.ScrapDeleteRequestDto requestDto);
+
+	boolean checkScrap(Long userId, ScrapRequestDto.ScrapCheckRequestDto requestDto);
 }

@@ -65,4 +65,9 @@ public class ScrapServiceImpl implements ScrapService {
 	) {
 		scrapRepository.deleteScrap(userId, requestDto.contentId());
 	}
+
+	@Override
+	public boolean checkScrap(Long userId, ScrapRequestDto.ScrapCheckRequestDto requestDto) {
+		return scrapRepository.checkScrap(userId, requestDto.contentId());
+	}
 }

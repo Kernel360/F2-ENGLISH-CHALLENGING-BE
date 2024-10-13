@@ -20,10 +20,10 @@ public class ScrapRepositoryImpl extends QuerydslRepositorySupport implements Sc
 	@Override
 	public List<ScrapEntity> findAllByUserId(Long userId) {
 		return from(userEntity)
-				.join(userEntity.scraps, scrapEntity)
-				.select(scrapEntity)
-				.where(userEntity.id.eq(userId))
-				.fetch();
+			.join(userEntity.scraps, scrapEntity)
+			.select(scrapEntity)
+			.where(userEntity.id.eq(userId))
+			.fetch();
 	}
 
 	@Override
@@ -39,5 +39,14 @@ public class ScrapRepositoryImpl extends QuerydslRepositorySupport implements Sc
 			.where(scrapEntity.contentId.eq(contentId))
 			.execute();
 
+	}
+
+	@Override
+	public boolean checkScrap(Long userId, Long contentId) {
+		return from(userEntity)
+			.join(userEntity.scraps, scrapEntity)
+			.select(scrapEntity)
+			.where(scrapEntity.contentId.eq(contentId))
+			.fetchFirst() != null;
 	}
 }
