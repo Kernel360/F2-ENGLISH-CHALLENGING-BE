@@ -59,12 +59,12 @@ public class ScrapApiController {
 		@ApiResponse(responseCode = "204", description = "요청한 스크랩이 없습니다.", content = @Content),
 		@ApiResponse(responseCode = "500", description = "서버 에러가 발생하였습니다.", content = @Content)
 	})
-	public ResponseEntity<ApiCustomResponse<Boolean>> checkScrap(
+	public ResponseEntity<ApiCustomResponse<Boolean>> existsScrap(
 		@AuthenticationPrincipal OAuth2UserPrincipal oAuth2UserPrincipal,
 		@RequestBody ScrapRequestDto.ScrapCheckRequestDto requestDto
 	){
 		return ResponseEntityFactory.toResponseEntity(
-			SCRAP_CHECK_SUCCESS, scrapService.checkScrap(oAuth2UserPrincipal.getId(), requestDto)
+			SCRAP_CHECK_SUCCESS, scrapService.existsScrap(oAuth2UserPrincipal.getId(), requestDto)
 		);
 	}
 

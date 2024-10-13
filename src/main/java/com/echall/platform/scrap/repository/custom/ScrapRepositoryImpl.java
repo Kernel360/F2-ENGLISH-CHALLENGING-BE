@@ -42,7 +42,7 @@ public class ScrapRepositoryImpl extends QuerydslRepositorySupport implements Sc
 	}
 
 	@Override
-	public boolean checkScrap(Long userId, Long contentId) {
+	public boolean existsScrap(Long userId, Long contentId) {
 		return from(userEntity)
 			.join(userEntity.scraps, scrapEntity)
 			.select(scrapEntity)
