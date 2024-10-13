@@ -63,7 +63,7 @@ public class BookmarkApiController {
 	public ResponseEntity<ApiCustomResponse<Map<String, List<BookmarkResponseDto.BookmarkMyListResponseDto>>>>
 	getAllBookmarks(@AuthenticationPrincipal OAuth2UserPrincipal oAuth2UserPrincipal) {
 		Map<String, List<BookmarkResponseDto.BookmarkMyListResponseDto>> data = new HashMap<>();
-		data.put("bookmarkList", bookmarkService.getAllBookmarks(oAuth2UserPrincipal.getId()));
+		data.put("bookmarkMyList", bookmarkService.getAllBookmarks(oAuth2UserPrincipal.getId()));
 
 		return ResponseEntityFactory.toResponseEntity(BOOKMARK_VIEW_SUCCESS, data);
 	}
