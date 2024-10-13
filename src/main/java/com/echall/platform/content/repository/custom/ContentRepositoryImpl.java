@@ -171,11 +171,11 @@ public class ContentRepositoryImpl extends QuerydslRepositorySupport implements 
 	}
 
 	@Override
-	public String findTitleById(Long contentIds) {
+	public String findTitleById(Long contentId) {
 
 		return from(contentEntity)
 			.select(contentEntity.title)
-			.where(contentEntity.id.in(contentIds))
+			.where(contentEntity.id.eq(contentId))
 			.fetchFirst();
 	}
 

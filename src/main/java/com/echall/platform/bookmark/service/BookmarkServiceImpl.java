@@ -50,6 +50,7 @@ public class BookmarkServiceImpl implements BookmarkService {
 	}
 
 	@Override
+	@Transactional(readOnly = true)
 	public List<BookmarkResponseDto.BookmarkMyListResponseDto> getAllBookmarks(Long userId) {
 		List<BookmarkEntity> bookmarks = bookmarkRepository.getAllBookmarks(userId);
 

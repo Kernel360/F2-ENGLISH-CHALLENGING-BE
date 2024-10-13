@@ -23,7 +23,7 @@ public interface ContentRepositoryCustom {
 
 	Page<ContentEntity> findAllByContentTypeAndCategory(ContentType contentType, Pageable pageable, Long categoryId);
 
-	String findTitleById(Long contentIds);
+	String findTitleById(Long contentId);
 
 	String findMongoIdByContentId(Long contentId);
 }
