@@ -22,4 +22,8 @@ public interface ContentRepositoryCustom {
 	int updateHit(Long contentId);
 
 	Page<ContentEntity> findAllByContentTypeAndCategory(ContentType contentType, Pageable pageable, Long categoryId);
+
+	String findTitleById(Long contentId);
+
+	String findMongoIdByContentId(Long contentId);
 }

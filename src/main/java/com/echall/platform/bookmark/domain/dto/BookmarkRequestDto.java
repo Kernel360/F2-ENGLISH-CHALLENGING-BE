@@ -12,11 +12,7 @@ public class BookmarkRequestDto {
 		Long wordIndex,
 		String description
 	) {
-		public void validate() {
-			if (wordIndex == null) {
-				throw new CommonException(BOOKMARK_NEED_ANY_INDEX);
-			}
-		}
+
 	}
 
 	public record BookmarkUpdateRequest(

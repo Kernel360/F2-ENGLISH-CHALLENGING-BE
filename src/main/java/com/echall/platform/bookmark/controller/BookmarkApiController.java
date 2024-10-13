@@ -2,10 +2,11 @@ package com.echall.platform.bookmark.controller;
 
 import static com.echall.platform.message.response.BookmarkResponseCode.*;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.Authentication;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -44,13 +45,27 @@ public class BookmarkApiController {
 		@ApiResponse(responseCode = "204", description = "컨텐츠가 없습니다.", content = @Content),
 		@ApiResponse(responseCode = "500", description = "서버 에러가 발생하였습니다.", content = @Content)
 	})
-	public ResponseEntity<ApiCustomResponse<List<BookmarkResponseDto.BookmarkMyListResponse>>> getBookmarks(
-		Authentication authentication,
-		@PathVariable Long contentId
-	) {
-		return ResponseEntityFactory.toResponseEntity(
-			BOOKMARK_VIEW_SUCCESS, bookmarkService.getBookmarks(authentication.getName(), contentId)
-		);
+	public ResponseEntity<ApiCustomResponse<Map<String, List<BookmarkResponseDto.BookmarkListResponseDto>>>>
+	getBookmarks(@AuthenticationPrincipal OAuth2UserPrincipal oAuth2UserPrincipal, @PathVariable Long contentId) {
+		Map<String, List<BookmarkResponseDto.BookmarkListResponseDto>> data = new HashMap<>();
+		data.put("bookmarkList", bookmarkService.getBookmarks(oAuth2UserPrincipal.getEmail(), contentId));
+
+		return ResponseEntityFactory.toResponseEntity(BOOKMARK_VIEW_SUCCESS, data);
+	}
+
+	@GetMapping("/view")
+	@Operation(summary = "북마크 전체 조회", description = "회원이 등록해 둔 모든 북마크 목록을 조회합니다.")
+	@ApiResponses(value = {
+		@ApiResponse(responseCode = "200", description = "요청에 성공하였습니다.", content = @Content),
+		@ApiResponse(responseCode = "204", description = "컨텐츠가 없습니다.", content = @Content),
+		@ApiResponse(responseCode = "500", description = "서버 에러가 발생하였습니다.", content = @Content)
+	})
+	public ResponseEntity<ApiCustomResponse<Map<String, List<BookmarkResponseDto.BookmarkMyListResponseDto>>>>
+	getAllBookmarks(@AuthenticationPrincipal OAuth2UserPrincipal oAuth2UserPrincipal) {
+		Map<String, List<BookmarkResponseDto.BookmarkMyListResponseDto>> data = new HashMap<>();
+		data.put("bookmarkMyList", bookmarkService.getAllBookmarks(oAuth2UserPrincipal.getId()));
+
+		return ResponseEntityFactory.toResponseEntity(BOOKMARK_VIEW_SUCCESS, data);
 	}
 
 	@PostMapping("/create/{contentId}")
@@ -61,14 +76,14 @@ public class BookmarkApiController {
 		@ApiResponse(responseCode = "500", description = "서버 에러가 발생하였습니다.", content = @Content)
 	})
 	public ResponseEntity<ApiCustomResponse<BookmarkResponseDto.BookmarkCreateResponse>> createBookmark(
-		Authentication authentication,
+		@AuthenticationPrincipal OAuth2UserPrincipal oAuth2UserPrincipal,
 		@PathVariable Long contentId,
 		@RequestBody BookmarkRequestDto.BookmarkCreateRequest bookmarkRequestDto
 	) {
 
 		return ResponseEntityFactory.toResponseEntity(
 			BOOKMARK_CREATE_SUCCESS,
-			bookmarkService.createBookmark(authentication.getName(), bookmarkRequestDto, contentId)
+			bookmarkService.createBookmark(oAuth2UserPrincipal.getEmail(), bookmarkRequestDto, contentId)
 		);
 	}
 
@@ -79,7 +94,7 @@ public class BookmarkApiController {
 		@ApiResponse(responseCode = "204", description = "컨텐츠가 없습니다.", content = @Content),
 		@ApiResponse(responseCode = "500", description = "서버 에러가 발생하였습니다.", content = @Content)
 	})
-	public ResponseEntity<ApiCustomResponse<BookmarkResponseDto.BookmarkMyListResponse>> updateBookmark(
+	public ResponseEntity<ApiCustomResponse<BookmarkResponseDto.BookmarkListResponseDto>> updateBookmark(
 		@PathVariable Long contentId,
 		@RequestBody BookmarkRequestDto.BookmarkUpdateRequest bookmarkRequestDto
 	) {
@@ -96,14 +111,12 @@ public class BookmarkApiController {
 		@ApiResponse(responseCode = "204", description = "컨텐츠가 없습니다.", content = @Content),
 		@ApiResponse(responseCode = "500", description = "서버 에러가 발생하였습니다.", content = @Content)
 	})
-	public ResponseEntity<ApiCustomResponse<BookmarkResponseDto.BookmarkDeleteResponse>> deleteBookmark(
+	public ResponseEntity<ApiCustomResponse> deleteBookmark(
 		@AuthenticationPrincipal OAuth2UserPrincipal oAuth2UserPrincipal,
 		@PathVariable Long bookmarkId
 	) {
-
-		return ResponseEntityFactory.toResponseEntity(
-			BOOKMARK_DELETE_SUCCESS, bookmarkService.deleteBookmark(oAuth2UserPrincipal.getId(), bookmarkId)
-		);
+		bookmarkService.deleteBookmark(oAuth2UserPrincipal.getId(), bookmarkId);
+		return ResponseEntityFactory.toResponseEntity(BOOKMARK_DELETE_SUCCESS);
 	}
 
 }

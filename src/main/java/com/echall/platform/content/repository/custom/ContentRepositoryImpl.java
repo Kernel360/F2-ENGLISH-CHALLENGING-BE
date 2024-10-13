@@ -1,5 +1,23 @@
 package com.echall.platform.content.repository.custom;
 
+import static com.echall.platform.content.domain.entity.QContentEntity.*;
+import static com.echall.platform.message.error.code.ContentErrorCode.*;
+import static com.echall.platform.message.error.code.UserErrorCode.*;
+
+import java.lang.reflect.Field;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
+
+import org.bson.types.ObjectId;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.repository.support.QuerydslRepositorySupport;
+import org.springframework.data.support.PageableExecutionUtils;
+import org.springframework.transaction.annotation.Transactional;
+
 import com.echall.platform.content.domain.dto.ContentResponseDto;
 import com.echall.platform.content.domain.entity.ContentDocument;
 import com.echall.platform.content.domain.entity.ContentEntity;
@@ -13,24 +31,6 @@ import com.querydsl.core.types.OrderSpecifier;
 import com.querydsl.core.types.Path;
 import com.querydsl.core.types.dsl.Expressions;
 import com.querydsl.jpa.JPQLQuery;
-import org.bson.types.ObjectId;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.jpa.repository.support.QuerydslRepositorySupport;
-import org.springframework.data.support.PageableExecutionUtils;
-import org.springframework.transaction.annotation.Transactional;
-
-import java.lang.reflect.Field;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
-
-import static com.echall.platform.content.domain.entity.QContentEntity.contentEntity;
-import static com.echall.platform.message.error.code.ContentErrorCode.CONTENT_NOT_FOUND;
-import static com.echall.platform.message.error.code.ContentErrorCode.CONTENT_SORT_COL_NOT_FOUND;
-import static com.echall.platform.message.error.code.UserErrorCode.USER_NOT_FOUND;
 
 public class ContentRepositoryImpl extends QuerydslRepositorySupport implements ContentRepositoryCustom {
 
@@ -151,7 +151,8 @@ public class ContentRepositoryImpl extends QuerydslRepositorySupport implements 
 	}
 
 	@Override
-	public Page<ContentEntity> findAllByContentTypeAndCategory(ContentType contentType, Pageable pageable, Long categoryId) {
+	public Page<ContentEntity> findAllByContentTypeAndCategory(ContentType contentType, Pageable pageable,
+		Long categoryId) {
 		JPQLQuery<ContentEntity> query = from(contentEntity)
 			.select(contentEntity)
 			.where(contentEntity.contentType.eq(contentType)
@@ -167,6 +168,23 @@ public class ContentRepositoryImpl extends QuerydslRepositorySupport implements 
 				.and(categoryId != null ? contentEntity.category.id.eq(categoryId) : null));
 
 		return PageableExecutionUtils.getPage(contents, pageable, countQuery::fetchOne);
+	}
+
+	@Override
+	public String findTitleById(Long contentId) {
+
+		return from(contentEntity)
+			.select(contentEntity.title)
+			.where(contentEntity.id.eq(contentId))
+			.fetchFirst();
+	}
+
+	@Override
+	public String findMongoIdByContentId(Long contentId) {
+		return from(contentEntity)
+			.select(contentEntity.mongoContentId)
+			.where(contentEntity.id.eq(contentId))
+			.fetchOne();
 	}
 
 }
