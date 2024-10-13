@@ -27,15 +27,6 @@ public class ScrapRepositoryImpl extends QuerydslRepositorySupport implements Sc
 	}
 
 	@Override
-	public boolean findAlreadyExists(Long userId, Long contentId) {
-		return from(userEntity)
-			.join(userEntity.scraps, scrapEntity)
-			.where(userEntity.id.eq(userId))
-			.where(scrapEntity.contentId.eq(contentId))
-			.fetchFirst() != null;
-	}
-
-	@Override
 	public void deleteScrap(Long userId, Long scrapId) {
 		Optional.ofNullable(from(userEntity)
 				.join(userEntity.scraps, scrapEntity)
