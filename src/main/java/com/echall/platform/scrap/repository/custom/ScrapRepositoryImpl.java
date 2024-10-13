@@ -20,24 +20,33 @@ public class ScrapRepositoryImpl extends QuerydslRepositorySupport implements Sc
 	@Override
 	public List<ScrapEntity> findAllByUserId(Long userId) {
 		return from(userEntity)
-				.join(userEntity.scraps, scrapEntity)
-				.select(scrapEntity)
-				.where(userEntity.id.eq(userId))
-				.fetch();
+			.join(userEntity.scraps, scrapEntity)
+			.select(scrapEntity)
+			.where(userEntity.id.eq(userId))
+			.fetch();
 	}
 
 	@Override
-	public void deleteScrap(Long userId, Long scrapId) {
+	public void deleteScrap(Long userId, Long contentId) {
 		Optional.ofNullable(from(userEntity)
 				.join(userEntity.scraps, scrapEntity)
 				.select(scrapEntity)
 				.where(userEntity.id.eq(userId))
-				.where(scrapEntity.id.eq(scrapId))
+				.where(scrapEntity.contentId.eq(contentId))
 				.fetchOne())
 			.orElseThrow(() -> new CommonException(SCRAP_NOT_FOUND));
 		delete(scrapEntity)
-			.where(scrapEntity.id.eq(scrapId))
+			.where(scrapEntity.contentId.eq(contentId))
 			.execute();
 
+	}
+
+	@Override
+	public boolean existsScrap(Long userId, Long contentId) {
+		return from(userEntity)
+			.join(userEntity.scraps, scrapEntity)
+			.select(scrapEntity)
+			.where(scrapEntity.contentId.eq(contentId))
+			.fetchFirst() != null;
 	}
 }

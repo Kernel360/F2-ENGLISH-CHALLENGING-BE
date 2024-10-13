@@ -7,5 +7,7 @@ import com.echall.platform.scrap.domain.entity.ScrapEntity;
 public interface ScrapRepositoryCustom {
 	List<ScrapEntity> findAllByUserId(Long userId);
 
-	void deleteScrap(Long userId, Long scrapId);
+	void deleteScrap(Long userId, Long contentId);
+
+	boolean existsScrap(Long userId, Long contentId);
 }

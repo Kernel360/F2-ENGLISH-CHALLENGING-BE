@@ -52,6 +52,22 @@ public class ScrapApiController {
 		return ResponseEntityFactory.toResponseEntity(SCRAP_VIEW_SUCCESS, data);
 	}
 
+	@GetMapping("/check")
+	@Operation(summary = "스크랩 확인", description = "스크랩 했는지 확인합니다.")
+	@ApiResponses(value = {
+		@ApiResponse(responseCode = "200", description = "요청에 성공하였습니다.", content = @Content),
+		@ApiResponse(responseCode = "204", description = "요청한 스크랩이 없습니다.", content = @Content),
+		@ApiResponse(responseCode = "500", description = "서버 에러가 발생하였습니다.", content = @Content)
+	})
+	public ResponseEntity<ApiCustomResponse<Boolean>> existsScrap(
+		@AuthenticationPrincipal OAuth2UserPrincipal oAuth2UserPrincipal,
+		@RequestBody ScrapRequestDto.ScrapCheckRequestDto requestDto
+	){
+		return ResponseEntityFactory.toResponseEntity(
+			SCRAP_CHECK_SUCCESS, scrapService.existsScrap(oAuth2UserPrincipal.getId(), requestDto)
+		);
+	}
+
 	@PostMapping("/create")
 	@Operation(summary = "스크랩 생성", description = "새로운 스크랩을 생성합니다.")
 	@ApiResponses(value = {
