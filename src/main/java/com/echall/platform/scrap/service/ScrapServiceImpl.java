@@ -46,7 +46,7 @@ public class ScrapServiceImpl implements ScrapService {
 		UserEntity user = userRepository.findById(userId)
 			.orElseThrow(() -> new CommonException(USER_NOT_FOUND));
 
-		if (scrapRepository.findAlreadyExists(user.getId(), requestDto.contentId())) {
+		if (user.hasContent(requestDto.contentId())) {
 			throw new CommonException(SCRAP_ALREADY_EXISTS);
 		}
 
