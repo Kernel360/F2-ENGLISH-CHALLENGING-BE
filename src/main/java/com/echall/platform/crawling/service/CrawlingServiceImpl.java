@@ -5,8 +5,6 @@ import static com.echall.platform.message.error.code.CrawlingErrorCode.*;
 import java.io.IOException;
 import java.time.Duration;
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -79,7 +77,7 @@ public class CrawlingServiceImpl implements CrawlingService {
 		return new CrawlingResponseDto.CrawlingContentResponseDto(
 			youtubeUrl,
 			snippetNode.path("title").asText(),
-			getThumbnailUrl(snippetNode.path("thumbnails"), 0),
+			getThumbnailUrl(snippetNode.path("thumbnails")),
 			getCategoryName(snippetNode.path("categoryId").asText()),
 			getYoutubeScript(youtubeUrl, Double.parseDouble(String.valueOf(duration.getSeconds())))
 		);
@@ -97,27 +95,56 @@ public class CrawlingServiceImpl implements CrawlingService {
 		return cnnResponseDto;
 	}
 
-	// Internal Methods ------------------------------------------------------------------------------------------------
-
 	@Override
-	public JsonNode getSnippetNode(String body) throws JsonProcessingException {
-		ObjectMapper objectMapper = new ObjectMapper();
-		return objectMapper.readTree(body).path("items").get(0);
-	}
+	public CrawlingResponseDto.CrawlingContentResponseDto fetchArticle(String url) throws IOException {
+		Document doc = Jsoup.connect(url).get();
 
-	@Override
-	public String getThumbnailUrl(JsonNode thumbnailNode, int index) {
-		Iterator<Map.Entry<String, JsonNode>> thumbnails = thumbnailNode.fields();
-		HashMap<String, JsonNode> thumbnailHashMap = new HashMap<>();
+		// 제목 추출
+		String title = doc.select("h1.headline__text").text();
 
-		while (thumbnails.hasNext()) {
-			Map.Entry<String, JsonNode> thumbnailMap = thumbnails.next();
-			thumbnailHashMap.put(thumbnailMap.getKey(), thumbnailMap.getValue());
+		// 카테고리 추출
+		Element categoryElement = doc.selectFirst("meta[name=meta-section]");
+		String category = categoryElement != null ? categoryElement.attr("content") : "Unknown Category";
+
+		// 이미지 URL 추출
+		Elements images = doc.select("img.image__dam-img[src]");
+		String imgUrl = "%s.jpg".formatted(
+			images.get(0).attr("src")
+				.split(".jpg")[0]
+		);
+		int preWidth = getWidthOfImage(images.get(0));
+
+		for (Element image : images) {
+			if (preWidth < getWidthOfImage(image)) {
+				imgUrl = "%s.jpg".formatted(
+					image.attr("src")
+						.split(".jpg")[0]
+				);
+				preWidth = getWidthOfImage(image);
+			}
 		}
 
-		List<String> keys = Collections.singletonList(thumbnailHashMap.keySet().stream().toList().get(0));
+		// 본문 추출
+		Elements paragraphs = doc.select("div.article__content p");
+		StringBuilder fullText = new StringBuilder();
+		for (Element paragraph : paragraphs) {
+			fullText.append(paragraph.text()).append(" ");
+		}
 
-		return thumbnailHashMap.get(keys.get(index)).get("url").toString();
+		// 본문을 문장 단위로 나누기
+		List<String> sentences = splitIntoSentences(fullText.toString());
+		return CrawlingResponseDto.CrawlingContentResponseDto.of(
+			url,
+			title,
+			imgUrl,
+			category,
+			sentences.stream()
+				.map(sentence -> Script.of(
+						0, 0,
+						sentence, translateService.translate(sentence, "en", "ko")
+					)
+				).toList()
+		);
 	}
 
 	@Override
@@ -211,12 +238,10 @@ public class CrawlingServiceImpl implements CrawlingService {
 				.getText();
 			if (text != null && !text.isEmpty()) {
 				scripts.add(
-					Script.builder()
-						.startTimeInSecond(startTime)
-						.durationInSecond(endtime - startTime)
-						.enScript(text)
-						.koScript(translateService.translate(text, "en", "ko"))
-						.build()
+					Script.of(
+						startTime, endtime - startTime,
+						text, translateService.translate(text, "en", "ko")
+					)
 				);
 
 			}
@@ -225,15 +250,39 @@ public class CrawlingServiceImpl implements CrawlingService {
 		return scripts;
 	}
 
-	@Override
-	public String extractVideoId(String youtubeUrl) {
+	// Internal Methods ------------------------------------------------------------------------------------------------
+
+	// LISTENING - YOUTUBE
+
+	private JsonNode getSnippetNode(String body) throws JsonProcessingException {
+		ObjectMapper objectMapper = new ObjectMapper();
+		return objectMapper.readTree(body).path("items").get(0);
+	}
+
+	private String getThumbnailUrl(JsonNode thumbnailNode) {
+		Iterator<Map.Entry<String, JsonNode>> thumbnails = thumbnailNode.fields();
+		int prevWidth = 0;
+		JsonNode thumbnailInfo = thumbnails.next().getValue();
+
+		while (thumbnails.hasNext()) {
+			Map.Entry<String, JsonNode> thumbnailMap = thumbnails.next();
+			JsonNode comparator = thumbnailMap.getValue();
+			if (Integer.parseInt(comparator.get("width").asText()) > prevWidth) {
+				thumbnailInfo = comparator;
+				prevWidth = Integer.parseInt(thumbnailMap.getValue().get("width").asText());
+			}
+		}
+
+		return thumbnailInfo.get("url").asText();
+	}
+
+	private String extractVideoId(String youtubeUrl) {
 		// Logic to extract video ID from URL
 		String[] parts = youtubeUrl.split("v=");
 		return parts.length > 1 ? parts[1] : "";
 	}
 
-	@Override
-	public String getCategoryName(String categoryId) throws Exception {
+	private String getCategoryName(String categoryId) throws Exception {
 		String requestUrl =
 			"https://www.googleapis.com/youtube/v3/videoCategories?part=snippet&regionCode=US&key=" + YOUTUBE_API_KEY;
 
@@ -253,54 +302,6 @@ public class CrawlingServiceImpl implements CrawlingService {
 		return "Unknown Category";
 	}
 
-	@Override
-	public CrawlingResponseDto.CrawlingContentResponseDto fetchArticle(String url) throws IOException {
-		Document doc = Jsoup.connect(url).get();
-
-		// 제목 추출
-		String title = doc.select("h1.headline__text").text();
-
-		// 카테고리 추출
-		Element categoryElement = doc.selectFirst("meta[name=meta-section]");
-		String category = categoryElement != null ? categoryElement.attr("content") : "Unknown Category";
-
-		// 이미지 URL 추출
-		Elements images = doc.select("img.image__dam-img[src]");
-		/*List<String> imageUrls = new ArrayList<>();
-		for (Element img : images) {
-			imageUrls.add(img.attr("src"));
-		}
-		String imgUrl = imageUrls.toString();*/
-		String imgUrl = images.get(0).attr("src").toString();
-
-		// 본문 추출
-		Elements paragraphs = doc.select("div.article__content p");
-		StringBuilder fullText = new StringBuilder();
-		for (Element paragraph : paragraphs) {
-			fullText.append(paragraph.text()).append(" ");
-		}
-
-		// 본문을 문장 단위로 나누기
-		List<String> sentences = splitIntoSentences(fullText.toString());
-
-		return new CrawlingResponseDto.CrawlingContentResponseDto(
-			url,
-			title,
-			imgUrl,
-			category,
-			sentences.stream()
-				.map(
-					sentence -> Script.builder()
-						.startTimeInSecond(0)
-						.durationInSecond(0)
-						.enScript(sentence)
-						.koScript(translateService.translate(sentence, "en", "ko"))
-						.build()
-				).toList()
-		);
-	}
-
-	// Private Methods -------------------------------------------------------------------------------------------------
 	private void setUpSelenium(WebDriver driver)
 		throws InterruptedException {
 		log.info("SETUP SELENIUM START");
@@ -345,6 +346,19 @@ public class CrawlingServiceImpl implements CrawlingService {
 		Thread.sleep(5000);
 	}
 
+	private double getSecondsFromString(String time) {
+		return Double.parseDouble(time.split(":")[0]) * 60 + Double.parseDouble(time.split(":")[1]);
+	}
+
+	// READING - CNN
+	private int getWidthOfImage(Element imginfo) {
+		return Integer.parseInt(
+			imginfo.attr("src")
+				.split("w_")[1]
+				.split(",c")[0]
+		);
+	}
+
 	private List<String> splitIntoSentences(String text) {
 		List<String> sentences = new ArrayList<>();
 
@@ -358,7 +372,4 @@ public class CrawlingServiceImpl implements CrawlingService {
 		return sentences;
 	}
 
-	private double getSecondsFromString(String time) {
-		return Double.parseDouble(time.split(":")[0]) * 60 + Double.parseDouble(time.split(":")[1]);
-	}
 }

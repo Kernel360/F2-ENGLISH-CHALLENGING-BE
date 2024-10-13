@@ -37,7 +37,11 @@ public class CrawlingResponseDto {
 				.build();
 
 		}
-
+		public static CrawlingContentResponseDto of(
+			String url, String title, String imgUrl, String category, List<Script> script
+		) {
+			return new CrawlingContentResponseDto(url, title, imgUrl, category, script);
+		}
 		public CategoryEntity toCategoryEntity() {
 			return CategoryEntity.builder()
 				.name(this.category)

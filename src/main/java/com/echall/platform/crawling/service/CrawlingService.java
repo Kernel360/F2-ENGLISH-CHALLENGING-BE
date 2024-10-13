@@ -15,17 +15,9 @@ public interface CrawlingService {
 	CrawlingResponseDto.CrawlingContentResponseDto getYoutubeInfo(String youtubeUrl, String credentials)
 		throws Exception;
 
-	JsonNode getSnippetNode(String body) throws JsonProcessingException;
-
-	String getThumbnailUrl(JsonNode thumbnailNode, int index);
-
 	List<Script> getYoutubeScript(String youtubeInfo, double duration);
 
 	List<Script> runSelenium(WebDriver driver, String youtubeInfo, double duration) throws Exception;
-
-	String extractVideoId(String youtubeUrl);
-
-	String getCategoryName(String categoryId) throws Exception;
 
 
 	// CNN
