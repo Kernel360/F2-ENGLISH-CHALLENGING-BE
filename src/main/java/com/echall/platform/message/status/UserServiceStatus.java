@@ -9,6 +9,7 @@ public enum UserServiceStatus implements ServiceStatus{
 	USER_GET_INFO("U-U-002"),
 	USER_UPDATE_INFO("U-U-003"),
 	USER_LOGIN_SUCCESS("U-U-005"),
+	USER_LOGOUT_SUCCESS("U-U-006"),
 
 	// failure
 	USER_NOT_FOUND("U-U-901"),
