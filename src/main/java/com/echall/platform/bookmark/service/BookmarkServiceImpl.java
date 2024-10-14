@@ -4,6 +4,7 @@ import static com.echall.platform.message.error.code.BookmarkErrorCode.*;
 import static com.echall.platform.message.error.code.ContentErrorCode.*;
 import static com.echall.platform.message.error.code.UserErrorCode.*;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.bson.types.ObjectId;
@@ -40,6 +41,10 @@ public class BookmarkServiceImpl implements BookmarkService {
 			.stream()
 			.filter(bookmarkEntity -> bookmarkEntity.getScriptIndex().equals(contentId))
 			.toList();
+
+		if(bookmarks.isEmpty()){
+			return new ArrayList<>();
+		}
 
 		return bookmarks.stream()
 			.map(BookmarkResponseDto.BookmarkListResponseDto::of)
