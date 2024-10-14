@@ -125,20 +125,14 @@ public class ContentServiceImpl implements ContentService {
 	public ContentResponseDto.ContentDetailResponseDto getScriptsOfContent(Long id) {
 		ContentEntity content = contentRepository.findById(id)
 			.orElseThrow(() -> new CommonException(CONTENT_NOT_FOUND));
+
 		ContentDocument contentDocument = contentScriptRepository.findById(
 			new ObjectId(content.getMongoContentId())
 		).orElseThrow(() -> new CommonException(CONTENT_NOT_FOUND));
 
 		contentRepository.updateHit(id); // TODO: 추후 레디스로 바꿀 예정
 
-		return new ContentResponseDto.ContentDetailResponseDto(
-			id,
-			content.getContentType(),
-			content.getCategory().getName(),
-			content.getTitle(),
-			content.getThumbnailUrl(),
-			contentDocument.getScripts()
-		);
+		return ContentResponseDto.ContentDetailResponseDto.of(content, contentDocument);
 	}
 
 	// Internal Methods=================================================================================================
