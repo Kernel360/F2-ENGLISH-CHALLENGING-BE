@@ -46,6 +46,7 @@ public class QuestionServiceImpl implements QuestionService {
 		Set<Integer> randomIdxes = new HashSet<>();
 		List<String> questionIds = new ArrayList<>();
 		List<String> randomScripts = new ArrayList<>();
+		List<String> randomKoScripts = new ArrayList<>();
 
 		ContentDocument contentDocument = getContentDocument(contentId);
 
@@ -55,15 +56,17 @@ public class QuestionServiceImpl implements QuestionService {
 
 		for (Integer idx : randomIdxes) {
 			randomScripts.add(contentDocument.getScripts().get(idx).getEnScript());
+			randomKoScripts.add(contentDocument.getScripts().get(idx).getKoScript());
 		}
 
 		int start = 0;
 		// make blank question
-		questionIds.addAll(makeBlankQuestion(randomScripts, requestDto.questionNumOfBlank()));
+		questionIds.addAll(makeBlankQuestion(randomScripts, randomKoScripts, requestDto.questionNumOfBlank()));
 		start += requestDto.questionNumOfBlank();
 
 		// make word order question
-		questionIds.addAll(makeWordOrderQuestion(randomScripts, start, requestDto.questionNumOfOrder()));
+		questionIds.addAll(
+			makeWordOrderQuestion(randomScripts, randomKoScripts, start, requestDto.questionNumOfOrder()));
 
 		// update QuestionIds
 		contentDocument.updateQuestionIds(questionIds);
@@ -94,7 +97,9 @@ public class QuestionServiceImpl implements QuestionService {
 	}
 
 	// Internal Methods ------------------------------------------------------------------------------------------------
-	private List<String> makeBlankQuestion(List<String> randomScripts, Integer numOfBlank) {
+	private List<String> makeBlankQuestion(
+		List<String> randomScripts, List<String> randomKoScripts, Integer numOfBlank
+	) {
 		List<String> questionIds = new ArrayList<>();
 		Random random = new Random();
 
@@ -115,14 +120,20 @@ public class QuestionServiceImpl implements QuestionService {
 					}
 				}
 				questionIds.add(
-					saveToMongo(questionRepository, question.toString(), words[blankIndex], QuestionType.BLANK)
+					saveToMongo(
+						questionRepository,
+						question.toString(), randomKoScripts.get(i), words[blankIndex],
+						QuestionType.BLANK
+					)
 				);
 			}
 		}
 		return questionIds;
 	}
 
-	private List<String> makeWordOrderQuestion(List<String> randomScripts, Integer start, Integer numOfOrder) {
+	private List<String> makeWordOrderQuestion(
+		List<String> randomScripts, List<String> randomKoScripts, Integer start, Integer numOfOrder
+	) {
 		List<String> questionIds = new ArrayList<>();
 		Random random = new Random();
 
@@ -134,15 +145,18 @@ public class QuestionServiceImpl implements QuestionService {
 				Collections.shuffle(shuffledWords, random);
 				String question = String.join(" ", shuffledWords);
 
-				questionIds.add(saveToMongo(questionRepository, question, script, QuestionType.ORDER));
+				questionIds.add(
+					saveToMongo(questionRepository, question, randomKoScripts.get(i), script, QuestionType.ORDER)
+				);
 			}
 		}
 		return questionIds;
 	}
 
-	private String saveToMongo(QuestionRepository questionRepository, String string, String word, QuestionType type) {
+	private String saveToMongo(
+		QuestionRepository questionRepository, String question, String questionKo, String word, QuestionType type) {
 
-		QuestionDocument questionDocument = of(string, word, type);
+		QuestionDocument questionDocument = of(question, questionKo, word, type);
 		questionRepository.save(questionDocument);
 
 		return questionDocument.getId().toString();

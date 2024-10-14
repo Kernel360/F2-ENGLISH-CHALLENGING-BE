@@ -16,19 +16,22 @@ import lombok.NoArgsConstructor;
 public class QuestionDocument extends MongoBaseDocument {
 
 	private String question;
+	private String questionKo;
 	private String answer;
 	private QuestionType type;
 
 	@Builder
-	public QuestionDocument(String question, String answer, QuestionType type) {
+	public QuestionDocument(String question, String questionKo, String answer, QuestionType type) {
 		this.question = question;
+		this.questionKo = questionKo;
 		this.answer = answer;
 		this.type = type;
 	}
 
-	public static QuestionDocument of(String question, String answer, QuestionType type) {
+	public static QuestionDocument of(String question, String questionKo, String answer, QuestionType type) {
 		return QuestionDocument.builder()
 			.question(question)
+			.questionKo(questionKo)
 			.answer(answer)
 			.type(type)
 			.build();
