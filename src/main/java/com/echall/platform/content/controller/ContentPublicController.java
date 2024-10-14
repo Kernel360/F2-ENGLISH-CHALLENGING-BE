@@ -22,6 +22,7 @@ import com.echall.platform.content.domain.enums.ContentType;
 import com.echall.platform.content.service.ContentService;
 import com.echall.platform.message.ApiCustomResponse;
 import com.echall.platform.message.ResponseEntityFactory;
+import com.echall.platform.swagger.content.SwaggerContentCountByScrap;
 import com.echall.platform.swagger.content.SwaggerContentDetail;
 import com.echall.platform.swagger.content.SwaggerContentPreview;
 import com.echall.platform.util.PaginationDto;
@@ -53,7 +54,7 @@ public class ContentPublicController {
 	@Operation(summary = "컨텐츠 조회", description = "정렬된 컨텐츠 목록을 조회합니다.")
 	@ApiResponses(value = {
 		@ApiResponse(responseCode = "200", description = "요청에 성공하였습니다.", content = {
-			@Content(mediaType = "application/json", schema = @Schema(implementation = SwaggerContentPreview.class))
+			@Content(mediaType = "application/json", schema = @Schema(implementation = SwaggerContentCountByScrap.class))
 		}),
 		@ApiResponse(responseCode = "204", description = "컨텐츠가 없습니다.", content = @Content),
 		@ApiResponse(responseCode = "500", description = "서버 에러가 발생하였습니다.", content = @Content)
