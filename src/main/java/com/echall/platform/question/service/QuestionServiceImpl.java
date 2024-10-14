@@ -88,6 +88,7 @@ public class QuestionServiceImpl implements QuestionService {
 			questions.add(
 				new QuestionResponseDto.QuestionViewResponseDto(
 					questionDocument.getQuestion(),
+					questionDocument.getQuestionKo(),
 					questionDocument.getAnswer(),
 					questionDocument.getType()
 				)

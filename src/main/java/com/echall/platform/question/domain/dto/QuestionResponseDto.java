@@ -12,6 +12,7 @@ public class QuestionResponseDto {
 
 	public record QuestionViewResponseDto (
 		String question,
+		String questionKo,
 		String answer,
 		QuestionType type
 	){
