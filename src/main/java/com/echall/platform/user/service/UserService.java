@@ -2,11 +2,15 @@ package com.echall.platform.user.service;
 
 import com.echall.platform.message.error.exception.CommonException;
 import com.echall.platform.oauth2.domain.info.OAuth2UserPrincipal;
+import com.echall.platform.oauth2.repository.RefreshTokenRepository;
 import com.echall.platform.user.domain.dto.UserRequestDto;
 import com.echall.platform.user.domain.dto.UserResponseDto;
 import com.echall.platform.user.domain.entity.UserEntity;
 import com.echall.platform.user.domain.enums.UserStatus;
 import com.echall.platform.user.repository.UserRepository;
+import com.echall.platform.util.CookieUtil;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -16,7 +20,9 @@ import static com.echall.platform.message.error.code.UserErrorCode.*;
 @RequiredArgsConstructor
 @Service
 public class UserService {
+	private final CookieUtil cookieUtil;
 	private final UserRepository userRepository;
+	private final RefreshTokenRepository refreshTokenRepository;
 
 	@Transactional
 	public UserResponseDto.UserUpdateResponse updateUserInfo(
@@ -80,6 +86,15 @@ public class UserService {
 		user.updateAfterOAuth2Login(oAuthUser);
 
 		return user;
+	}
+
+	@Transactional
+	public void logout(HttpServletRequest request, HttpServletResponse response, Long userId) {
+		cookieUtil.removeAccessTokenCookie(request, response);
+
+		cookieUtil.removeRefreshTokenCookie(request, response);
+
+		refreshTokenRepository.deleteByUserId(userId);
 	}
 
 	// Internal Methods=================================================================================================
