@@ -11,9 +11,9 @@ import lombok.Getter;
 @Getter
 public class RandomNicknameGenerator {
 	private static final List<String> prefixNicknames
-		= List.of(new String[] {"빠른", "용감한", "친절한", "행복한", "빛나는"});
+		= List.of("빠른", "용감한", "친절한", "행복한", "빛나는");
 	private static final List<String> suffixNicknames
-		= List.of(new String[] {"여우", "강아지", "고양이", "다람쥐", "도마뱀"});
+		= List.of("여우", "강아지", "고양이", "다람쥐", "도마뱀");
 	private static final Random random = new Random();
 
 	public static String setRandomNickname() {
