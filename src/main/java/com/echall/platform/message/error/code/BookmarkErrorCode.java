@@ -17,10 +17,6 @@ public enum BookmarkErrorCode implements ErrorCode {
 	),
 	BOOKMARK_ALREADY_EXISTS(
 		HttpStatus.BAD_REQUEST, BookmarkServiceStatus.BOOKMARK_ALREADY_EXISTS, "이미 존재하는 북마크입니다."
-	),
-	BOOKMARK_NEED_ANY_INDEX(
-		HttpStatus.BAD_REQUEST, BookmarkServiceStatus.BOOKMARK_NEED_ANY_INDEX,
-		"단어 북마크를 지정하려면 문장 혹은 단어 인덱스가 필요합니다."
 	);
 
 	private final HttpStatus httpStatus;

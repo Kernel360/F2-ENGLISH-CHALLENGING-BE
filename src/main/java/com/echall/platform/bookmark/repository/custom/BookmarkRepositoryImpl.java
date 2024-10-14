@@ -4,6 +4,7 @@ import static com.echall.platform.bookmark.domain.entity.QBookmarkEntity.*;
 import static com.echall.platform.message.error.code.BookmarkErrorCode.*;
 import static com.echall.platform.user.domain.entity.QUserEntity.*;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.data.jpa.repository.support.QuerydslRepositorySupport;
@@ -32,5 +33,14 @@ public class BookmarkRepositoryImpl extends QuerydslRepositorySupport implements
 			.execute();
 
 		return bookmark.getId();
+	}
+
+	@Override
+	public List<BookmarkEntity> getAllBookmarks(Long userId) {
+		return from(userEntity)
+			.join(userEntity.bookmarks, bookmarkEntity)
+			.select(bookmarkEntity)
+			.where(userEntity.id.eq(userId))
+			.fetch();
 	}
 }

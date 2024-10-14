@@ -15,7 +15,6 @@ import java.util.List;
 @Entity
 @Table(name = "content")
 @Getter
-@ToString
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class ContentEntity extends BaseEntity {
 	@Id

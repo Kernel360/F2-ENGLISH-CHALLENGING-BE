@@ -8,26 +8,11 @@ import com.echall.platform.script.domain.entity.Script;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Builder;
 
-import java.time.LocalDateTime;
 import java.util.List;
 
 import static com.echall.platform.message.error.code.CategoryErrorCode.CATEGORY_NOT_FOUND;
 
 public class ContentResponseDto {
-
-	// ContentRepositoryImpl의 search 메서드에서 사용하는 Dto
-	public record ContentViewResponseDto(
-		Long contentId,
-		String scriptId,
-		String title,
-		String enScripts,
-		String koScripts,
-		ContentType contentType,
-		LocalDateTime createdAt,
-		LocalDateTime updatedAt
-	) {
-
-	}
 
 	public record ContentCreateResponseDto(
 		String scriptId,

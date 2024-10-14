@@ -80,7 +80,8 @@ public class ContentRepositoryImpl extends QuerydslRepositorySupport implements 
 	}
 
 	@Override
-	public Page<ContentEntity> findAllByContentTypeAndCategory(ContentType contentType, Pageable pageable, Long categoryId) {
+	public Page<ContentEntity> findAllByContentTypeAndCategory(ContentType contentType, Pageable pageable,
+		Long categoryId) {
 		JPQLQuery<ContentEntity> query = from(contentEntity)
 			.select(contentEntity)
 			.where(contentEntity.contentType.eq(contentType)
@@ -96,6 +97,23 @@ public class ContentRepositoryImpl extends QuerydslRepositorySupport implements 
 				.and(categoryId != null ? contentEntity.category.id.eq(categoryId) : null));
 
 		return PageableExecutionUtils.getPage(contents, pageable, countQuery::fetchOne);
+	}
+
+	@Override
+	public String findTitleById(Long contentId) {
+
+		return from(contentEntity)
+			.select(contentEntity.title)
+			.where(contentEntity.id.eq(contentId))
+			.fetchFirst();
+	}
+
+	@Override
+	public String findMongoIdByContentId(Long contentId) {
+		return from(contentEntity)
+			.select(contentEntity.mongoContentId)
+			.where(contentEntity.id.eq(contentId))
+			.fetchOne();
 	}
 
 }

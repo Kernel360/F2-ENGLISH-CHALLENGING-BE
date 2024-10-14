@@ -8,11 +8,11 @@ public enum ScrapServiceStatus implements ServiceStatus {
 	SCRAP_VIEW_SUCCESS("U-S-001"),
 	SCRAP_CREATE_SUCCESS("U-S-002"),
 	SCRAP_DELETE_SUCCESS("U-S-003"),
+	SCRAP_CHECK_SUCCESS("U-S-004"),
 
 	// failure,
 	SCRAP_NOT_FOUND("U-S-901"),
-	SCRAP_ALREADY_EXISTS("U-S-902")
-	;
+	SCRAP_ALREADY_EXISTS("U-S-902");
 
 	private final String code;
 
