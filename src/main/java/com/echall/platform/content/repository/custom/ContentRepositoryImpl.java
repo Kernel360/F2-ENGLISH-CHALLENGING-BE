@@ -113,13 +113,17 @@ public class ContentRepositoryImpl extends QuerydslRepositorySupport implements 
 
 	@Override
 	public List<ContentEntity> contentByScrapCount(int num) {
-		return from(scrapEntity)
-			.select(scrapEntity.content)
-			.groupBy(scrapEntity.content)
+		List<Long> contentIds = from(scrapEntity)
+			.select(scrapEntity.content.id)
+			.groupBy(scrapEntity.content.id)
 			.orderBy(scrapEntity.count().desc())
 			.limit(num)
 			.fetch();
 
+		return from(contentEntity)
+			.select(contentEntity)
+			.where(contentEntity.id.in(contentIds))
+			.fetch();
 	}
 
 }
