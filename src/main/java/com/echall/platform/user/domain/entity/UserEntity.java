@@ -143,6 +143,7 @@ public class UserEntity extends BaseEntity {
 	}
 
 	public boolean hasContent(Long contentId){
-		return this.scraps.stream().anyMatch(scrap -> scrap.getContentId().equals(contentId));
+		return this.scraps.stream()
+			.anyMatch(scrap -> scrap.getContent().getId().equals(contentId));
 	}
 }
