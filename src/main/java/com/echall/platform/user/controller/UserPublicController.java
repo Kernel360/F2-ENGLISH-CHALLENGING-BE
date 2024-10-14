@@ -26,9 +26,9 @@ public class UserPublicController {
 
 	@GetMapping("/logout")
 	public String logout(HttpServletRequest request, HttpServletResponse response) {
-		cookieUtil.removeCookie(request, response, "access_token");
+		cookieUtil.removeAccessTokenCookie(request, response);
 
-		cookieUtil.removeCookie(request, response, "refresh_token");
+		cookieUtil.removeRefreshTokenCookie(request, response);
 
 		new SecurityContextLogoutHandler().logout(request, response
 			, SecurityContextHolder.getContext().getAuthentication());
