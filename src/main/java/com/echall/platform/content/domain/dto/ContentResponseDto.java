@@ -2,9 +2,9 @@ package com.echall.platform.content.domain.dto;
 
 import com.echall.platform.content.domain.entity.ContentDocument;
 import com.echall.platform.content.domain.entity.ContentEntity;
-import com.echall.platform.content.domain.entity.Script;
 import com.echall.platform.content.domain.enums.ContentType;
 import com.echall.platform.message.error.exception.CommonException;
+import com.echall.platform.script.domain.entity.Script;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Builder;
 
@@ -43,32 +43,6 @@ public class ContentResponseDto {
 	}
 
 	@Builder
-	public record ScriptDto(
-		@JsonInclude(JsonInclude.Include.NON_NULL)
-		Double startTimeInSecond,
-		@JsonInclude(JsonInclude.Include.NON_NULL)
-		Double durationInSecond,
-		String enScript,
-		String koScript
-	) {
-		public static ScriptDto fromReadingScript(Script script) {
-			return ScriptDto.builder()
-				.enScript(script.getEnScript())
-				.koScript(script.getKoScript())
-				.build();
-		}
-
-		public static ScriptDto fromListeningScript(Script script) {
-			return ScriptDto.builder()
-				.startTimeInSecond(script.getStartTimeInSecond())
-				.durationInSecond(script.getDurationInSecond())
-				.enScript(script.getEnScript())
-				.koScript(script.getKoScript())
-				.build();
-		}
-	}
-
-	@Builder
 	public record ContentDetailResponseDto(
 		Long contentId,
 		ContentType contentType,
@@ -76,8 +50,8 @@ public class ContentResponseDto {
 		String title,
 		String thumbnailUrl,
 		@JsonInclude(JsonInclude.Include.NON_NULL)
-		String listeningUrl,
-		List<ScriptDto> scriptList
+		String videoUrl,
+		List<Script> scriptList
 	) {
 		public static ContentDetailResponseDto of(ContentEntity content, ContentDocument contentDocument) {
 			return ContentDetailResponseDto.builder()
@@ -86,8 +60,8 @@ public class ContentResponseDto {
 				.category(content.getCategory().getName())
 				.title(content.getTitle())
 				.thumbnailUrl(content.getThumbnailUrl())
-				.listeningUrl(toListeningUrl(content))
-				.scriptList(toScriptDto(content, contentDocument))
+				.videoUrl(toListeningUrl(content))
+				.scriptList(contentDocument.getScripts())
 				.build();
 		}
 
@@ -98,22 +72,6 @@ public class ContentResponseDto {
 				}
 				case READING -> {
 					return null;
-				}
-				default -> throw new CommonException(CATEGORY_NOT_FOUND);
-			}
-		}
-
-		private static List<ScriptDto> toScriptDto(ContentEntity content, ContentDocument contentDocument) {
-			switch (content.getContentType()) {
-				case LISTENING -> {
-					return contentDocument.getScripts().stream()
-						.map(ScriptDto::fromListeningScript)
-						.toList();
-				}
-				case READING -> {
-					return contentDocument.getScripts().stream()
-						.map(ScriptDto::fromReadingScript)
-						.toList();
 				}
 				default -> throw new CommonException(CATEGORY_NOT_FOUND);
 			}
