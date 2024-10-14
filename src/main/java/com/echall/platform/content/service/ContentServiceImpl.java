@@ -25,6 +25,7 @@ import com.echall.platform.content.repository.ContentScriptRepository;
 import com.echall.platform.crawling.domain.dto.CrawlingResponseDto;
 import com.echall.platform.crawling.service.CrawlingServiceImpl;
 import com.echall.platform.message.error.exception.CommonException;
+import com.echall.platform.scrap.repository.ScrapRepository;
 import com.echall.platform.util.PaginationDto;
 
 import lombok.RequiredArgsConstructor;
@@ -37,6 +38,7 @@ public class ContentServiceImpl implements ContentService {
 	private final ContentScriptRepository contentScriptRepository;
 	private final CrawlingServiceImpl crawlingService;
 	private final CategoryRepository categoryRepository;
+	private final ScrapRepository scrapRepository;
 
 	@Override
 	@Transactional(readOnly = true)
@@ -112,8 +114,17 @@ public class ContentServiceImpl implements ContentService {
 	}
 
 	@Override
+	@Transactional(readOnly = true)
 	public List<ContentResponseDto.ContentCountByScrapResponseDto> countContentByScrap(int num) {
-		return contentRepository.countContentByScrap(num);
+		List<ContentEntity> contents = contentRepository.countContentByScrap(num);
+
+		return contents.stream()
+			.map(
+				content -> ContentResponseDto.ContentCountByScrapResponseDto.of(
+					content, scrapRepository.countByContentId(content.getId())
+				)
+			)
+			.toList();
 	}
 
 	@Override

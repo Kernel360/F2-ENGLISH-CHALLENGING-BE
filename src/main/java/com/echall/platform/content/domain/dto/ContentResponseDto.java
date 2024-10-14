@@ -97,7 +97,17 @@ public class ContentResponseDto {
 		String category,
 		Long countScrap
 	) {
-
+		public static ContentCountByScrapResponseDto of(ContentEntity content, Long count){
+			return new ContentCountByScrapResponseDto(
+				content.getId(),
+				content.getTitle(),
+				content.getThumbnailUrl(),
+				content.getContentType(),
+				content.getPreScripts(),
+				content.getCategory().getName(),
+				count
+			);
+		}
 	}
 
 }

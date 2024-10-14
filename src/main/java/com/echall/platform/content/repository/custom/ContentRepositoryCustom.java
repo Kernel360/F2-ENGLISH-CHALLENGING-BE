@@ -23,5 +23,5 @@ public interface ContentRepositoryCustom {
 
 	String findMongoIdByContentId(Long contentId);
 
-	List<ContentResponseDto.ContentCountByScrapResponseDto> countContentByScrap(int num);
+	List<ContentEntity> countContentByScrap(int num);
 }

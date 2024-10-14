@@ -20,7 +20,6 @@ import com.echall.platform.message.error.exception.CommonException;
 import com.querydsl.core.types.Order;
 import com.querydsl.core.types.OrderSpecifier;
 import com.querydsl.core.types.Path;
-import com.querydsl.core.types.Projections;
 import com.querydsl.core.types.dsl.Expressions;
 import com.querydsl.jpa.JPQLQuery;
 
@@ -113,24 +112,14 @@ public class ContentRepositoryImpl extends QuerydslRepositorySupport implements 
 	}
 
 	@Override
-	public List<ContentResponseDto.ContentCountByScrapResponseDto> countContentByScrap(int num) {
+	public List<ContentEntity> countContentByScrap(int num) {
 		return from(scrapEntity)
-			.select(
-				Projections.constructor(
-					ContentResponseDto.ContentCountByScrapResponseDto.class,
-					contentEntity.id,
-					contentEntity.title,
-					contentEntity.thumbnailUrl,
-					contentEntity.contentType,
-					contentEntity.preScripts,
-					contentEntity.category.name,
-					scrapEntity.count()
-				)
-			)
-			.innerJoin(scrapEntity.content, contentEntity)
-			.groupBy(contentEntity)
+			.select(scrapEntity.content)
+			.groupBy(scrapEntity.content)
 			.orderBy(scrapEntity.count().desc())
+			.limit(num)
 			.fetch();
+
 	}
 
 }
