@@ -23,4 +23,12 @@ public class Script {
 		this.koScript = koScript;
 	}
 
+	public static Script of(
+		double startTimeInSecond,
+		double durationInSecond,
+		String enScript,
+		String koScript
+	){
+		return new Script(startTimeInSecond, durationInSecond, enScript, koScript);
+	}
 }

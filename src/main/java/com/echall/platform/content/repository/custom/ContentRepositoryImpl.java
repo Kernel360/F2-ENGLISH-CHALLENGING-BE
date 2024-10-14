@@ -15,6 +15,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.support.QuerydslRepositorySupport;
+import org.springframework.data.support.PageableExecutionUtils;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.echall.platform.content.domain.dto.ContentResponseDto;
@@ -133,7 +134,7 @@ public class ContentRepositoryImpl extends QuerydslRepositorySupport implements 
 				content.getThumbnailUrl(),
 				content.getContentType(),
 				content.getPreScripts(),
-				content.getCategory(),
+				content.getCategory().getName(),
 				content.getHits()
 			)).toList();
 	}
@@ -147,6 +148,43 @@ public class ContentRepositoryImpl extends QuerydslRepositorySupport implements 
 				.where(contentEntity.id.eq(contentId))
 				.execute()
 		);
+	}
+
+	@Override
+	public Page<ContentEntity> findAllByContentTypeAndCategory(ContentType contentType, Pageable pageable,
+		Long categoryId) {
+		JPQLQuery<ContentEntity> query = from(contentEntity)
+			.select(contentEntity)
+			.where(contentEntity.contentType.eq(contentType)
+				.and(categoryId != null ? contentEntity.category.id.eq(categoryId) : null));
+
+		List<ContentEntity> contents = getQuerydsl()
+			.applyPagination(pageable, query)
+			.fetch();
+
+		JPQLQuery<Long> countQuery = from(contentEntity)
+			.select(contentEntity.count())
+			.where(contentEntity.contentType.eq(contentType)
+				.and(categoryId != null ? contentEntity.category.id.eq(categoryId) : null));
+
+		return PageableExecutionUtils.getPage(contents, pageable, countQuery::fetchOne);
+	}
+
+	@Override
+	public String findTitleById(Long contentId) {
+
+		return from(contentEntity)
+			.select(contentEntity.title)
+			.where(contentEntity.id.eq(contentId))
+			.fetchFirst();
+	}
+
+	@Override
+	public String findMongoIdByContentId(Long contentId) {
+		return from(contentEntity)
+			.select(contentEntity.mongoContentId)
+			.where(contentEntity.id.eq(contentId))
+			.fetchOne();
 	}
 
 }

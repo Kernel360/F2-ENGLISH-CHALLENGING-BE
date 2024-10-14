@@ -2,22 +2,16 @@ package com.echall.platform.message.error.code;
 
 import org.springframework.http.HttpStatus;
 
-import com.echall.platform.message.status.BookmarkServiceStatus;
+import com.echall.platform.message.status.ScrapServiceStatus;
 import com.echall.platform.message.status.ServiceStatus;
 
 import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
-public enum BookmarkErrorCode implements ErrorCode {
-	BOOKMARK_NOT_FOUND(
-		HttpStatus.NOT_FOUND, BookmarkServiceStatus.BOOKMARK_NOT_FOUND, "등록된 북마크가 없습니다."
-	),
-	BOOKMARK_DESCRIPTION_SAME(
-		HttpStatus.BAD_REQUEST, BookmarkServiceStatus.BOOKMARK_DESCRIPTION_SAME, "북마크 설명이 기존과 동일합니다."
-	),
-	BOOKMARK_ALREADY_EXISTS(
-		HttpStatus.BAD_REQUEST, BookmarkServiceStatus.BOOKMARK_ALREADY_EXISTS, "이미 존재하는 북마크입니다."
-	);
+public enum ScrapErrorCode implements ErrorCode {
+	SCRAP_NOT_FOUND(HttpStatus.NOT_FOUND, ScrapServiceStatus.SCRAP_NOT_FOUND, "등록된 스크랩 데이터 없음"),
+	SCRAP_ALREADY_EXISTS(HttpStatus.BAD_REQUEST, ScrapServiceStatus.SCRAP_ALREADY_EXISTS, "이미 등록된 스크랩 요청")
+	;
 
 	private final HttpStatus httpStatus;
 	private final ServiceStatus serviceStatus;

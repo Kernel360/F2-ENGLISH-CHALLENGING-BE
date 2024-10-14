@@ -13,8 +13,7 @@ public enum BookmarkServiceStatus implements ServiceStatus {
 	// failure,
 	BOOKMARK_NOT_FOUND("U-B-901"),
 	BOOKMARK_DESCRIPTION_SAME("U-B-902"),
-	BOOKMARK_ALREADY_EXISTS("U-B-903"),
-	BOOKMARK_WORD_NEED_SENTENCE("U-B-904")
+	BOOKMARK_ALREADY_EXISTS("U-B-903")
 	;
 
 	private final String code;

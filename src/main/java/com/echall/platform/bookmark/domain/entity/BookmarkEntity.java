@@ -2,15 +2,12 @@ package com.echall.platform.bookmark.domain.entity;
 
 import com.echall.platform.bookmark.domain.dto.BookmarkRequestDto;
 import com.echall.platform.user.domain.entity.BaseEntity;
-import com.echall.platform.user.domain.entity.UserEntity;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotNull;
 import lombok.AccessLevel;
@@ -39,17 +36,22 @@ public class BookmarkEntity extends BaseEntity {
 	@Column(columnDefinition = "bigint")
 	private Long wordIndex;
 
+	@Column(columnDefinition = "varchar(512)")
+	private String detail;
+
 	@Column(columnDefinition = "varchar(255)")
 	private String description;
 
 	@Builder
 	public BookmarkEntity(
-		@NotNull Long scriptIndex, Long sentenceIndex, Long wordIndex, String description
+		@NotNull Long scriptIndex, Long sentenceIndex, Long wordIndex, String detail, String description
 	) {
 		this.scriptIndex = scriptIndex;
 		this.sentenceIndex = sentenceIndex;
 		this.wordIndex = wordIndex;
-		this.description = description;	}
+		this.detail = detail;
+		this.description = description;
+	}
 
 	public void updateDescription(BookmarkRequestDto.BookmarkUpdateRequest bookmarkRequestDto) {
 		this.description = bookmarkRequestDto.description();
