@@ -122,9 +122,7 @@ public class QuestionServiceImpl implements QuestionService {
 				}
 				questionIds.add(
 					saveToMongo(
-						questionRepository,
-						question.toString(), randomKoScripts.get(i), words[blankIndex],
-						QuestionType.BLANK
+						question.toString(), randomKoScripts.get(i), words[blankIndex], QuestionType.BLANK
 					)
 				);
 			}
@@ -147,15 +145,14 @@ public class QuestionServiceImpl implements QuestionService {
 				String question = String.join(" ", shuffledWords);
 
 				questionIds.add(
-					saveToMongo(questionRepository, question, randomKoScripts.get(i), script, QuestionType.ORDER)
+					saveToMongo(question, randomKoScripts.get(i), script, QuestionType.ORDER)
 				);
 			}
 		}
 		return questionIds;
 	}
 
-	private String saveToMongo(
-		QuestionRepository questionRepository, String question, String questionKo, String word, QuestionType type) {
+	private String saveToMongo(String question, String questionKo, String word, QuestionType type) {
 
 		QuestionDocument questionDocument = of(question, questionKo, word, type);
 		questionRepository.save(questionDocument);
