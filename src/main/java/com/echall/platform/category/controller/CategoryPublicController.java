@@ -4,6 +4,8 @@ import com.echall.platform.category.domain.dto.CategoryResponseDto;
 import com.echall.platform.category.service.CategoryService;
 import com.echall.platform.message.ApiCustomResponse;
 import com.echall.platform.message.ResponseEntityFactory;
+import com.echall.platform.swagger.category.SwaggerCategory;
+
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -37,7 +39,7 @@ public class CategoryPublicController {
 	@Operation(summary = "전체 카테고리 조회", description = "전체 카테고리를 조회합니다.")
 	@ApiResponses(value = {
 		@ApiResponse(responseCode = "200", description = "요청에 성공하였습니다.", content = {
-			@Content(mediaType = "application/json", schema = @Schema(implementation = CategoryResponseDto.class))
+			@Content(mediaType = "application/json", schema = @Schema(implementation = SwaggerCategory.class))
 		}),
 		@ApiResponse(responseCode = "204", description = "카테고리가 없습니다.", content = @Content),
 		@ApiResponse(responseCode = "500", description = "서버 에러가 발생하였습니다.", content = @Content)

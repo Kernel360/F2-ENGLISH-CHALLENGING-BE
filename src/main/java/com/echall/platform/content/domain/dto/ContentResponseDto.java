@@ -1,11 +1,11 @@
 package com.echall.platform.content.domain.dto;
 
+import java.time.LocalDateTime;
+import java.util.List;
+
 import com.echall.platform.content.domain.entity.ContentEntity;
 import com.echall.platform.content.domain.entity.Script;
 import com.echall.platform.content.domain.enums.ContentType;
-
-import java.time.LocalDateTime;
-import java.util.List;
 
 public class ContentResponseDto {
 

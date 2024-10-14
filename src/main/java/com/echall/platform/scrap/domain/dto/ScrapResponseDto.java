@@ -3,6 +3,7 @@ package com.echall.platform.scrap.domain.dto;
 import java.time.LocalDateTime;
 
 import com.echall.platform.content.domain.entity.ContentEntity;
+import com.echall.platform.content.domain.enums.ContentType;
 import com.echall.platform.scrap.domain.entity.ScrapEntity;
 
 public class ScrapResponseDto {
@@ -11,8 +12,9 @@ public class ScrapResponseDto {
 		Long scrapId,
 		Long contentId,
 		String title,
+		ContentType contentType,
 		LocalDateTime createdAt,
-		String preScript,
+		String preScripts,
 		String thumbnailUrl
 	) {
 		public static ScrapViewResponseDto from(ScrapEntity scrap) {
@@ -20,6 +22,7 @@ public class ScrapResponseDto {
 				scrap.getId(),
 				scrap.getContent().getId(),
 				scrap.getContent().getTitle(),
+				scrap.getContent().getContentType(),
 				scrap.getCreatedAt(),
 				scrap.getContent().getPreScripts(),
 				scrap.getContent().getThumbnailUrl()
