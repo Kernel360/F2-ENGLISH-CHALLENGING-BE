@@ -4,6 +4,7 @@ import static com.echall.platform.message.response.UserResponseCode.*;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
@@ -15,7 +16,9 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.echall.platform.message.ApiCustomResponse;
 import com.echall.platform.message.ResponseEntityFactory;
+import com.echall.platform.oauth2.domain.info.OAuth2UserPrincipal;
 import com.echall.platform.swagger.user.SwaggerUserMyPage;
+import com.echall.platform.swagger.user.SwaggerUserMyTime;
 import com.echall.platform.swagger.user.SwaggerUserUpdate;
 import com.echall.platform.user.domain.dto.UserRequestDto;
 import com.echall.platform.user.domain.dto.UserResponseDto;
@@ -89,6 +92,23 @@ public class UserApiController {
 				USER_UPDATE_INFO, userService.updateUserInfo(userUpdateRequest, authentication.getName())
 			);
 	}
+
+	@GetMapping("/time")
+	@Operation(summary = "회원 가입 날짜 조회", description = "유저가 회원 가입 날짜를 조회합니다.")
+	@ApiResponses(value = {
+		@ApiResponse(responseCode = "200", description = "요청에 성공하였습니다.", content = {
+			@Content(mediaType = "application/json", schema = @Schema(implementation = SwaggerUserMyTime.class))}
+		),
+		@ApiResponse(responseCode = "404", description = "데이터베이스 연결에 실패하였습니다.", content = @Content(mediaType = "application/json"))
+	})
+	public ResponseEntity<ApiCustomResponse<UserResponseDto.UserMyTimeResponse>> getMySignUpTime(
+		@AuthenticationPrincipal OAuth2UserPrincipal oAuth2UserPrincipal) {
+
+		return ResponseEntityFactory
+			.toResponseEntity(USER_GET_INFO, userService.getMySignUpTime(oAuth2UserPrincipal.getId()));
+	}
+
+
 /*
 	// TODO: 챌린지 추가 하면 주석 해제 및 스웨거 추가, 이후에도 챌린지 추가되지 않으면 USER_GET_CHALLENGE 삭제 필요
 	@GetMapping("/me/challenge")

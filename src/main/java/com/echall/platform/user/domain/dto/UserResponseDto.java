@@ -1,6 +1,7 @@
 package com.echall.platform.user.domain.dto;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 import com.echall.platform.user.domain.entity.UserEntity;
 import com.echall.platform.user.domain.enums.Gender;
@@ -9,7 +10,7 @@ public class UserResponseDto {
 	public record UserUpdateResponse(
 		Long userId
 	) {
-		public static UserUpdateResponse toDto(UserEntity user) {
+		public static UserUpdateResponse of(UserEntity user) {
 			return new UserUpdateResponse(
 				user.getId()
 			);
@@ -25,7 +26,7 @@ public class UserResponseDto {
 		LocalDate birth,
 		Gender gender
 	) {
-		public static UserMyPageResponse toDto(UserEntity user) {
+		public static UserMyPageResponse of(UserEntity user) {
 			return new UserMyPageResponse(
 				user.getUsername(),
 				user.getNickname(),
@@ -35,6 +36,19 @@ public class UserResponseDto {
 				user.getGender()
 			);
 		}
+	}
+
+	public record UserMyTimeResponse(
+		LocalDateTime createdAt,
+		LocalDateTime updatedAt
+	) {
+		public static UserMyTimeResponse of(UserEntity user) {
+			return new UserMyTimeResponse(
+				user.getCreatedAt(),
+				user.getUpdatedAt()
+			);
+		}
+
 	}
 
 	public record UserChallengeResponse(

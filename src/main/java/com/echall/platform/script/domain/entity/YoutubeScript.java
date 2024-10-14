@@ -26,4 +26,9 @@ public class YoutubeScript implements ListeningScript {
     public String getEnScript() {
         return this.enScript;
     }
+
+    @Override
+    public String getKoScript(){
+        return this.koScript;
+    }
 }

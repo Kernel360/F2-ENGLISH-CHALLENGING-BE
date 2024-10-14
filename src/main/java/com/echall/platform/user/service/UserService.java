@@ -33,7 +33,7 @@ public class UserService {
 		// update user info
 		user.updateUserInfo(userUpdateRequest);
 
-		return UserResponseDto.UserUpdateResponse.toDto(user);
+		return UserResponseDto.UserUpdateResponse.of(user);
 	}
 
 	@Transactional(readOnly = true)
@@ -41,7 +41,14 @@ public class UserService {
 		UserEntity user = this.getUserByEmail(email);
 		AssertThat_UserAccountIsAppropriate(user);
 
-		return UserResponseDto.UserMyPageResponse.toDto(user);
+		return UserResponseDto.UserMyPageResponse.of(user);
+	}
+
+	@Transactional(readOnly = true)
+	public UserResponseDto.UserMyTimeResponse getMySignUpTime(Long id) {
+		UserEntity user = this.getUserById(id);
+
+		return UserResponseDto.UserMyTimeResponse.of(user);
 	}
 
 	@Transactional(readOnly = true)
@@ -89,5 +96,4 @@ public class UserService {
 			throw new CommonException(USER_FAIL_SUSPEND);
 		}
 	}
-
 }
