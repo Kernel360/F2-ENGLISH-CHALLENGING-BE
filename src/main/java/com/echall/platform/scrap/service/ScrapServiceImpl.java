@@ -67,7 +67,7 @@ public class ScrapServiceImpl implements ScrapService {
 	}
 
 	@Override
-	public boolean existsScrap(Long userId, ScrapRequestDto.ScrapCheckRequestDto requestDto) {
-		return scrapRepository.existsScrap(userId, requestDto.contentId());
+	public boolean existsScrap(Long userId, Long contentId) {
+		return scrapRepository.existsScrap(userId, contentId);
 	}
 }
