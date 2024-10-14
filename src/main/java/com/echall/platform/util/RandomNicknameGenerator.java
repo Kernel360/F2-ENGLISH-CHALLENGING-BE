@@ -10,14 +10,16 @@ import lombok.Getter;
 @Component
 @Getter
 public class RandomNicknameGenerator {
-	private static final List<String> prefixNicknames = List.of(new String[] {"pre1", "pre2", "pre3"});
-	private static final List<String> suffixNicknames = List.of(new String[] {"suf1", "suf2", "suf3"});
+	private static final List<String> prefixNicknames
+		= List.of(new String[] {"빠른", "용감한", "친절한", "행복한", "빛나는"});
+	private static final List<String> suffixNicknames
+		= List.of(new String[] {"여우", "강아지", "고양이", "다람쥐", "도마뱀"});
 	private static final Random random = new Random();
 
 	public static String setRandomNickname() {
-		return prefixNicknames.get((int)(Math.random() % 3)) +
-			suffixNicknames.get((int)(Math.random() % 3)) +
-			String.format("%04d", random.nextInt(10000));
+		return prefixNicknames.get((int)(Math.random() % 5)) +
+			" " + suffixNicknames.get((int)(Math.random() % 5)) +
+			" " + String.format("%04d", random.nextInt(10000));
 	}
 
 }
