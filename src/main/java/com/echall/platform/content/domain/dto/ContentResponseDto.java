@@ -36,6 +36,7 @@ public class ContentResponseDto {
 		String thumbnailUrl,
 		@JsonInclude(JsonInclude.Include.NON_NULL)
 		String videoUrl,
+		Integer hits,
 		List<Script> scriptList
 	) {
 		public static ContentDetailResponseDto of(ContentEntity content, ContentDocument contentDocument) {
@@ -46,6 +47,7 @@ public class ContentResponseDto {
 				.title(content.getTitle())
 				.thumbnailUrl(content.getThumbnailUrl())
 				.videoUrl(toListeningUrl(content))
+				.hits(content.getHits())
 				.scriptList(contentDocument.getScripts())
 				.build();
 		}
