@@ -12,5 +12,5 @@ public interface ScrapService{
 
 	void deleteScrap(Long userId, ScrapRequestDto.ScrapDeleteRequestDto requestDto);
 
-	boolean existsScrap(Long userId, ScrapRequestDto.ScrapCheckRequestDto requestDto);
+	boolean existsScrap(Long userId, Long contentId);
 }
