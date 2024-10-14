@@ -37,14 +37,12 @@ public class BookmarkServiceImpl implements BookmarkService {
 	public List<BookmarkResponseDto.BookmarkListResponseDto> getBookmarks(String email, Long contentId) {
 		UserEntity user = userRepository.findByEmail(email)
 			.orElseThrow(() -> new CommonException(USER_NOT_FOUND));
+
 		List<BookmarkEntity> bookmarks = user.getBookmarks()
 			.stream()
 			.filter(bookmarkEntity -> bookmarkEntity.getScriptIndex().equals(contentId))
 			.toList();
 
-		if(bookmarks.isEmpty()){
-			return new ArrayList<>();
-		}
 
 		return bookmarks.stream()
 			.map(BookmarkResponseDto.BookmarkListResponseDto::of)
