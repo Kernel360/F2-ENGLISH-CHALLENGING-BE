@@ -1,11 +1,17 @@
 package com.echall.platform.scrap.domain.entity;
 
+import com.echall.platform.content.domain.entity.ContentEntity;
 import com.echall.platform.user.domain.entity.BaseEntity;
 
+import jakarta.persistence.ConstraintMode;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.ForeignKey;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -22,16 +28,18 @@ public class ScrapEntity extends BaseEntity {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 
-	private Long contentId;
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "content_id", foreignKey = @ForeignKey(value = ConstraintMode.NO_CONSTRAINT))
+	private ContentEntity content;
 
 	@Builder
-	public ScrapEntity(Long id, Long contentId) {
+	public ScrapEntity(Long id, ContentEntity content) {
 		this.id = id;
-		this.contentId = contentId;
+		this.content = content;
 	}
 
 	@Builder
-	public ScrapEntity(Long contentId) {
-		this.contentId = contentId;
+	public ScrapEntity(ContentEntity content) {
+		this.content = content;
 	}
 }
