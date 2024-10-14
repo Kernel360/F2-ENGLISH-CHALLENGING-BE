@@ -37,8 +37,8 @@ import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
 @RestController
-@RequestMapping("/api/admin/scrap")
-@Tag(name = "Scrap - private API", description = "스크랩 회원전용 API")
+@RequestMapping("/api/scrap")
+@Tag(name = "Scrap - public API", description = "스크랩 회원전용 API")
 public class ScrapApiController {
 	private final ScrapService scrapService;
 
