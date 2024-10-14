@@ -40,9 +40,6 @@ public class BookmarkServiceImpl implements BookmarkService {
 			.stream()
 			.filter(bookmarkEntity -> bookmarkEntity.getScriptIndex().equals(contentId))
 			.toList();
-		if (bookmarks.isEmpty()) {
-			throw new CommonException(BOOKMARK_NOT_FOUND);
-		}
 
 		return bookmarks.stream()
 			.map(BookmarkResponseDto.BookmarkListResponseDto::of)
