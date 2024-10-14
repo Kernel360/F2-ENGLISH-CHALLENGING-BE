@@ -36,7 +36,7 @@ public class BookmarkEntity extends BaseEntity {
 	@Column(columnDefinition = "bigint")
 	private Long wordIndex;
 
-	@Column(columnDefinition = "varchar(255)")
+	@Column(columnDefinition = "varchar(512)")
 	private String detail;
 
 	@Column(columnDefinition = "varchar(255)")
