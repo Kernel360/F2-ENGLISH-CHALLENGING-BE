@@ -90,6 +90,12 @@ public class ContentEntity extends BaseEntity {
 	}
 
 	private String truncate(String content, int maxLength) {
-		return content.length() > maxLength ? content.substring(0, maxLength) : content;
+		if(content.startsWith("[")){
+			content = content.substring(1);
+		}
+		if(content.endsWith("]")){
+			content = content.substring(0, content.length()-1);
+		}
+		return (content.length() > maxLength) ? content.substring(0, maxLength) : content;
 	}
 }

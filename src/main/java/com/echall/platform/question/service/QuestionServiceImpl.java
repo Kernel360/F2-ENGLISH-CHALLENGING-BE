@@ -25,6 +25,7 @@ import com.echall.platform.message.error.exception.CommonException;
 import com.echall.platform.question.domain.dto.QuestionRequestDto;
 import com.echall.platform.question.domain.dto.QuestionResponseDto;
 import com.echall.platform.question.domain.entity.QuestionDocument;
+import com.echall.platform.question.domain.enums.QuestionType;
 import com.echall.platform.question.repository.QuestionRepository;
 
 import lombok.RequiredArgsConstructor;
@@ -84,7 +85,8 @@ public class QuestionServiceImpl implements QuestionService {
 			questions.add(
 				new QuestionResponseDto.QuestionViewResponseDto(
 					questionDocument.getQuestion(),
-					questionDocument.getAnswer()
+					questionDocument.getAnswer(),
+					questionDocument.getType()
 				)
 			);
 		}
@@ -112,7 +114,9 @@ public class QuestionServiceImpl implements QuestionService {
 						question.append(" ");
 					}
 				}
-				questionIds.add(saveToMongo(questionRepository, question.toString(), words[blankIndex]));
+				questionIds.add(
+					saveToMongo(questionRepository, question.toString(), words[blankIndex], QuestionType.BLANK)
+				);
 			}
 		}
 		return questionIds;
@@ -130,18 +134,18 @@ public class QuestionServiceImpl implements QuestionService {
 				Collections.shuffle(shuffledWords, random);
 				String question = String.join(" ", shuffledWords);
 
-				questionIds.add(saveToMongo(questionRepository, question, script));
+				questionIds.add(saveToMongo(questionRepository, question, script, QuestionType.ORDER));
 			}
 		}
 		return questionIds;
 	}
 
-	private String saveToMongo(QuestionRepository questionRepository, String string, String word) {
+	private String saveToMongo(QuestionRepository questionRepository, String string, String word, QuestionType type) {
 
-			QuestionDocument questionDocument = of(string, word);
-			questionRepository.save(questionDocument);
+		QuestionDocument questionDocument = of(string, word, type);
+		questionRepository.save(questionDocument);
 
-			return questionDocument.getId().toString();
+		return questionDocument.getId().toString();
 	}
 
 	private ContentDocument getContentDocument(Long contentId) {
