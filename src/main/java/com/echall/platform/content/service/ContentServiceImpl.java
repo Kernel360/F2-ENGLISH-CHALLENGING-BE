@@ -107,6 +107,8 @@ public class ContentServiceImpl implements ContentService {
 		return new ContentResponseDto.ContentUpdateResponseDto(content.getId());
 	}
 
+	@Override
+	@Transactional(readOnly = true)
 	public List<ContentResponseDto.ContentPreviewResponseDto> findPreviewContents(
 		ContentType contentType, String sortBy, int num
 	) {
