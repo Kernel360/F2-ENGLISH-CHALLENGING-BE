@@ -31,9 +31,7 @@ public class ScrapServiceImpl implements ScrapService {
 	@Transactional(readOnly = true)
 	public List<ScrapResponseDto.ScrapViewResponseDto> getAllScraps(Long userId) {
 		List<ScrapEntity> scraps = scrapRepository.findAllByUserId(userId);
-		if (scraps.isEmpty()) {
-			throw new CommonException(SCRAP_NOT_FOUND);
-		}
+
 		return scraps
 			.stream()
 			.map(ScrapResponseDto.ScrapViewResponseDto::from)
