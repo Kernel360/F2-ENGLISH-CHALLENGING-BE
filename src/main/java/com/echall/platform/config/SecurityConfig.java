@@ -8,6 +8,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -62,6 +63,11 @@ public class SecurityConfig {
 				UsernamePasswordAuthenticationFilter.class)
 			.authorizeHttpRequests(authorize -> {
 				authorize
+					// Can access form ANONYMOUS
+					.requestMatchers(HttpMethod.GET, "/api/contents/view/**").permitAll()
+					.requestMatchers(HttpMethod.GET, "/api/contents/preview/**").permitAll()
+					.requestMatchers(HttpMethod.GET, "/api/categories/all").permitAll()
+
 					// Can access from USER
 					.requestMatchers("/api/bookmark/**").hasAnyRole("USER", "DEVELOPER")
 					.requestMatchers("/api/user/**").hasAnyRole("USER", "DEVELOPER")
