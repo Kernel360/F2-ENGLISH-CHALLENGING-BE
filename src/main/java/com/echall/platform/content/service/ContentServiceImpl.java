@@ -1,5 +1,17 @@
 package com.echall.platform.content.service;
 
+import static com.echall.platform.message.error.code.CategoryErrorCode.*;
+import static com.echall.platform.message.error.code.ContentErrorCode.*;
+
+import java.util.List;
+
+import org.bson.types.ObjectId;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.security.core.Authentication;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
 import com.echall.platform.category.domain.entity.CategoryEntity;
 import com.echall.platform.category.repository.CategoryRepository;
 import com.echall.platform.content.domain.dto.ContentRequestDto;
@@ -14,18 +26,8 @@ import com.echall.platform.crawling.domain.dto.CrawlingResponseDto;
 import com.echall.platform.crawling.service.CrawlingServiceImpl;
 import com.echall.platform.message.error.exception.CommonException;
 import com.echall.platform.util.PaginationDto;
+
 import lombok.RequiredArgsConstructor;
-import org.bson.types.ObjectId;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
-import org.springframework.security.core.Authentication;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
-import java.util.List;
-
-import static com.echall.platform.message.error.code.CategoryErrorCode.CATEGORY_NOT_FOUND;
-import static com.echall.platform.message.error.code.ContentErrorCode.CONTENT_NOT_FOUND;
 
 @Service
 @RequiredArgsConstructor
@@ -44,7 +46,7 @@ public class ContentServiceImpl implements ContentService {
 		Page<ContentEntity> page = contentRepository.findAllByContentTypeAndCategory(contentType, pageable, categoryId);
 
 		List<ContentResponseDto.ContentPreviewResponseDto> contents = page.getContent().stream()
-			.map(ContentResponseDto.ContentPreviewResponseDto::from)
+			.map(ContentResponseDto.ContentPreviewResponseDto::of)
 			.toList();
 
 		return PaginationDto.from(page, contents);
@@ -95,7 +97,7 @@ public class ContentServiceImpl implements ContentService {
 
 		ContentDocument contentDocument
 			= contentScriptRepository.findContentDocumentById(new ObjectId(content.getMongoContentId()))
-				.orElseThrow(() -> new CommonException(CONTENT_NOT_FOUND));
+			.orElseThrow(() -> new CommonException(CONTENT_NOT_FOUND));
 
 		contentDocument.updateScript(contentUpdateRequest.script());
 		contentScriptRepository.save(contentDocument);
@@ -103,10 +105,15 @@ public class ContentServiceImpl implements ContentService {
 		return new ContentResponseDto.ContentUpdateResponseDto(content.getId());
 	}
 
-	public List<ContentResponseDto.ContentPreviewResponseDto> getPreviewContents(
+	public List<ContentResponseDto.ContentPreviewResponseDto> findPreviewContents(
 		ContentType contentType, String sortBy, int num
 	) {
-		return contentRepository.getPreviewContents(contentType, sortBy, num);
+		return contentRepository.findPreviewContents(contentType, sortBy, num);
+	}
+
+	@Override
+	public List<ContentResponseDto.ContentCountByScrapResponseDto> countContentByScrap(int num) {
+		return contentRepository.countContentByScrap(num);
 	}
 
 	@Override
@@ -121,7 +128,7 @@ public class ContentServiceImpl implements ContentService {
 	}
 
 	@Override
-	@Transactional	// hit 증가 로직 있어서 readOnly 생략
+	@Transactional    // hit 증가 로직 있어서 readOnly 생략
 	public ContentResponseDto.ContentDetailResponseDto getScriptsOfContent(Long id) {
 		ContentEntity content = contentRepository.findById(id)
 			.orElseThrow(() -> new CommonException(CONTENT_NOT_FOUND));

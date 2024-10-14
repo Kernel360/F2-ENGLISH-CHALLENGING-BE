@@ -49,6 +49,24 @@ public class ContentPublicController {
 	 * 컨텐츠 조회
 	 * (pageable)
 	 */
+	@GetMapping("/view")
+	@Operation(summary = "컨텐츠 조회", description = "정렬된 컨텐츠 목록을 조회합니다.")
+	@ApiResponses(value = {
+		@ApiResponse(responseCode = "200", description = "요청에 성공하였습니다.", content = {
+			@Content(mediaType = "application/json", schema = @Schema(implementation = SwaggerContentPreview.class))
+		}),
+		@ApiResponse(responseCode = "204", description = "컨텐츠가 없습니다.", content = @Content),
+		@ApiResponse(responseCode = "500", description = "서버 에러가 발생하였습니다.", content = @Content)
+	})
+	public ResponseEntity<ApiCustomResponse<List<ContentResponseDto.ContentCountByScrapResponseDto>>> getContents(
+		@RequestParam(defaultValue = "8") int num
+	) {
+		List<ContentResponseDto.ContentCountByScrapResponseDto> pageContentList
+			= contentService.countContentByScrap(num);
+
+		return ResponseEntityFactory.toResponseEntity(CONTENT_VIEW_SUCCESS, pageContentList);
+	}
+
 	@GetMapping("/view/reading")
 	@Operation(summary = "리딩 컨텐츠 조회", description = "페이지네이션을 적용하여 리딩 컨텐츠 목록을 조회합니다.")
 	@ApiResponses(value = {
@@ -123,7 +141,7 @@ public class ContentPublicController {
 		@RequestParam(defaultValue = "8") int num
 	) {
 		Map<String, List<ContentResponseDto.ContentPreviewResponseDto>> data = new HashMap<>();
-		data.put("readingPreview", contentService.getPreviewContents(ContentType.READING, sortBy, num));
+		data.put("readingPreview", contentService.findPreviewContents(ContentType.READING, sortBy, num));
 
 		return ResponseEntityFactory.toResponseEntity(CONTENT_VIEW_SUCCESS, data);
 	}
@@ -143,7 +161,7 @@ public class ContentPublicController {
 		@RequestParam(defaultValue = "8") int num
 	) {
 		Map<String, List<ContentResponseDto.ContentPreviewResponseDto>> data = new HashMap<>();
-		data.put("listeningPreview", contentService.getPreviewContents(ContentType.LISTENING, sortBy, num));
+		data.put("listeningPreview", contentService.findPreviewContents(ContentType.LISTENING, sortBy, num));
 
 		return ResponseEntityFactory.toResponseEntity(CONTENT_VIEW_SUCCESS, data);
 	}

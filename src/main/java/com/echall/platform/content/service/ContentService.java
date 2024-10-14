@@ -1,13 +1,14 @@
 package com.echall.platform.content.service;
 
+import java.util.List;
+
+import org.springframework.data.domain.Pageable;
+import org.springframework.security.core.Authentication;
+
 import com.echall.platform.content.domain.dto.ContentRequestDto;
 import com.echall.platform.content.domain.dto.ContentResponseDto;
 import com.echall.platform.content.domain.enums.ContentType;
 import com.echall.platform.util.PaginationDto;
-import org.springframework.data.domain.Pageable;
-import org.springframework.security.core.Authentication;
-
-import java.util.List;
 
 public interface ContentService {
 	PaginationDto<ContentResponseDto.ContentPreviewResponseDto> getAllContents(
@@ -27,8 +28,9 @@ public interface ContentService {
 
 	ContentResponseDto.ContentUpdateResponseDto deactivateContent(Long id);
 
-	List<ContentResponseDto.ContentPreviewResponseDto> getPreviewContents(
+	List<ContentResponseDto.ContentPreviewResponseDto> findPreviewContents(
 		ContentType contentType, String sortBy, int num
 	);
 
+	List<ContentResponseDto.ContentCountByScrapResponseDto> countContentByScrap(int num);
 }
