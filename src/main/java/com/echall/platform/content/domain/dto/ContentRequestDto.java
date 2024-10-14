@@ -1,14 +1,10 @@
 package com.echall.platform.content.domain.dto;
 
-import java.util.List;
-
-import org.bson.types.ObjectId;
-
-import com.echall.platform.content.domain.entity.ContentDocument;
-import com.echall.platform.content.domain.entity.ContentEntity;
-import com.echall.platform.content.domain.entity.Script;
 import com.echall.platform.content.domain.enums.ContentStatus;
 import com.echall.platform.content.domain.enums.ContentType;
+import com.echall.platform.script.domain.entity.Script;
+
+import java.util.List;
 public class ContentRequestDto {
 
 	public record ContentCreateRequestDto(

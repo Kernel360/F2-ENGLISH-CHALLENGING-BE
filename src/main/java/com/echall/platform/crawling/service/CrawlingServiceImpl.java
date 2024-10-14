@@ -9,6 +9,9 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import com.echall.platform.script.domain.entity.Script;
+import com.echall.platform.script.domain.entity.YoutubeScript;
+import com.echall.platform.script.domain.entity.CNNScript;
 import lombok.extern.slf4j.Slf4j;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -29,7 +32,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
-import com.echall.platform.content.domain.entity.Script;
 import com.echall.platform.crawling.domain.dto.CrawlingResponseDto;
 import com.echall.platform.message.error.exception.CommonException;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -139,8 +141,7 @@ public class CrawlingServiceImpl implements CrawlingService {
 			imgUrl,
 			category,
 			sentences.stream()
-				.map(sentence -> Script.of(
-						0, 0,
+				.map(sentence -> (Script) CNNScript.of(
 						sentence, translateService.translate(sentence, "en", "ko")
 					)
 				).toList()
@@ -238,7 +239,7 @@ public class CrawlingServiceImpl implements CrawlingService {
 				.getText();
 			if (text != null && !text.isEmpty()) {
 				scripts.add(
-					Script.of(
+					YoutubeScript.of(
 						startTime, endtime - startTime,
 						text, translateService.translate(text, "en", "ko")
 					)

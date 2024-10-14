@@ -1,14 +1,13 @@
 package com.echall.platform.crawling.domain.dto;
 
-import java.util.List;
-
 import com.echall.platform.category.domain.entity.CategoryEntity;
-import org.bson.types.ObjectId;
-
 import com.echall.platform.content.domain.entity.ContentDocument;
 import com.echall.platform.content.domain.entity.ContentEntity;
-import com.echall.platform.content.domain.entity.Script;
 import com.echall.platform.content.domain.enums.ContentType;
+import com.echall.platform.script.domain.entity.Script;
+import org.bson.types.ObjectId;
+
+import java.util.List;
 
 public class CrawlingResponseDto {
 

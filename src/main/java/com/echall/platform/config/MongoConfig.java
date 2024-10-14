@@ -11,6 +11,7 @@ import com.mongodb.ConnectionString;
 import com.mongodb.MongoClientSettings;
 import com.mongodb.client.MongoClient;
 import com.mongodb.client.MongoClients;
+import org.springframework.data.mongodb.core.convert.MongoCustomConversions;
 
 @Configuration
 public class MongoConfig extends AbstractMongoClientConfiguration {
@@ -19,6 +20,11 @@ public class MongoConfig extends AbstractMongoClientConfiguration {
 
 	@Value("${spring.data.mongodb.database}")
 	private String database;
+
+    @Override
+    public void configureConverters(MongoCustomConversions.MongoConverterConfigurationAdapter adapter) {
+        adapter.registerConverter(new ScriptConverter());
+    }
 
 	@Override
 	protected String getDatabaseName() {
