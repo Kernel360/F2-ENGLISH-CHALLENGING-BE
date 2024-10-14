@@ -117,8 +117,8 @@ public class ContentServiceImpl implements ContentService {
 
 	@Override
 	@Transactional(readOnly = true)
-	public List<ContentResponseDto.ContentCountByScrapResponseDto> countContentByScrap(int num) {
-		List<ContentEntity> contents = contentRepository.countContentByScrap(num);
+	public List<ContentResponseDto.ContentCountByScrapResponseDto> contentByScrapCount(int num) {
+		List<ContentEntity> contents = contentRepository.contentByScrapCount(num);
 
 		return contents.stream()
 			.map(

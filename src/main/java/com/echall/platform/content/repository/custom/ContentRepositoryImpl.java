@@ -112,7 +112,7 @@ public class ContentRepositoryImpl extends QuerydslRepositorySupport implements 
 	}
 
 	@Override
-	public List<ContentEntity> countContentByScrap(int num) {
+	public List<ContentEntity> contentByScrapCount(int num) {
 		return from(scrapEntity)
 			.select(scrapEntity.content)
 			.groupBy(scrapEntity.content)
