@@ -1,16 +1,17 @@
 package com.echall.platform.content.domain.dto;
 
+import static com.echall.platform.message.error.code.CategoryErrorCode.*;
+
+import java.util.List;
+
 import com.echall.platform.content.domain.entity.ContentDocument;
 import com.echall.platform.content.domain.entity.ContentEntity;
 import com.echall.platform.content.domain.enums.ContentType;
 import com.echall.platform.message.error.exception.CommonException;
 import com.echall.platform.script.domain.entity.Script;
 import com.fasterxml.jackson.annotation.JsonInclude;
+
 import lombok.Builder;
-
-import java.util.List;
-
-import static com.echall.platform.message.error.code.CategoryErrorCode.CATEGORY_NOT_FOUND;
 
 public class ContentResponseDto {
 
@@ -74,7 +75,7 @@ public class ContentResponseDto {
 		String category,
 		int hits
 	) {
-		public static ContentPreviewResponseDto from(ContentEntity content) {
+		public static ContentPreviewResponseDto of(ContentEntity content) {
 			return new ContentPreviewResponseDto(
 				content.getId(),
 				content.getTitle(),
@@ -86,4 +87,27 @@ public class ContentResponseDto {
 			);
 		}
 	}
+
+	public record ContentByScrapCountDto(
+		Long contentId,
+		String title,
+		String thumbnailUrl,
+		ContentType contentType,
+		String preScripts,
+		String category,
+		Long countScrap
+	) {
+		public static ContentByScrapCountDto of(ContentEntity content, Long count){
+			return new ContentByScrapCountDto(
+				content.getId(),
+				content.getTitle(),
+				content.getThumbnailUrl(),
+				content.getContentType(),
+				content.getPreScripts(),
+				content.getCategory().getName(),
+				count
+			);
+		}
+	}
+
 }

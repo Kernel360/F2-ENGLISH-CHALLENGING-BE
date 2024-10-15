@@ -1,40 +1,39 @@
 package com.echall.platform.content.repository.custom;
 
+import static com.echall.platform.content.domain.entity.QContentEntity.*;
+import static com.echall.platform.message.error.code.ContentErrorCode.*;
+import static com.echall.platform.scrap.domain.entity.QScrapEntity.*;
+
+import java.lang.reflect.Field;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.List;
+import java.util.Objects;
+
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.repository.support.QuerydslRepositorySupport;
+import org.springframework.data.support.PageableExecutionUtils;
+
 import com.echall.platform.content.domain.dto.ContentResponseDto;
 import com.echall.platform.content.domain.entity.ContentEntity;
 import com.echall.platform.content.domain.enums.ContentType;
-import com.echall.platform.content.repository.ContentScriptRepository;
 import com.echall.platform.message.error.exception.CommonException;
+import com.querydsl.core.Tuple;
 import com.querydsl.core.types.Order;
 import com.querydsl.core.types.OrderSpecifier;
 import com.querydsl.core.types.Path;
 import com.querydsl.core.types.dsl.Expressions;
 import com.querydsl.jpa.JPQLQuery;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.jpa.repository.support.QuerydslRepositorySupport;
-import org.springframework.data.support.PageableExecutionUtils;
-import org.springframework.transaction.annotation.Transactional;
-
-import java.lang.reflect.Field;
-import java.util.ArrayList;
-import java.util.List;
-
-import static com.echall.platform.content.domain.entity.QContentEntity.contentEntity;
-import static com.echall.platform.message.error.code.ContentErrorCode.CONTENT_SORT_COL_NOT_FOUND;
 
 public class ContentRepositoryImpl extends QuerydslRepositorySupport implements ContentRepositoryCustom {
 
-	private final ContentScriptRepository contentScriptRepository;
-
-	public ContentRepositoryImpl(ContentScriptRepository contentScriptRepository) {
+	public ContentRepositoryImpl() {
 		super(ContentEntity.class);
-		this.contentScriptRepository = contentScriptRepository;
 	}
 
 	@Override
-	@Transactional(readOnly = true)
-	public List<ContentResponseDto.ContentPreviewResponseDto> getPreviewContents(
+	public List<ContentResponseDto.ContentPreviewResponseDto> findPreviewContents(
 		ContentType contentType, String sortBy, int num
 	) {
 		Field field;
@@ -69,7 +68,6 @@ public class ContentRepositoryImpl extends QuerydslRepositorySupport implements 
 	}
 
 	@Override
-	@Transactional
 	public int updateHit(Long contentId) {
 		return Math.toIntExact(
 			update(contentEntity)
@@ -114,6 +112,39 @@ public class ContentRepositoryImpl extends QuerydslRepositorySupport implements 
 			.select(contentEntity.mongoContentId)
 			.where(contentEntity.id.eq(contentId))
 			.fetchOne();
+	}
+
+	@Override
+	public List<ContentResponseDto.ContentByScrapCountDto> contentByScrapCount(int num) {
+		List<Tuple> tuples = from(scrapEntity)
+			.select(scrapEntity.content.id, scrapEntity.count())
+			.groupBy(scrapEntity.content.id)
+			.orderBy(scrapEntity.count().desc())
+			.limit(num)
+			.fetch();
+
+		List<Long> contentIds = tuples.stream()
+			.map(
+				tuple -> tuple.get(scrapEntity.content.id)
+			).toList();
+
+		List<ContentEntity> contents = from(contentEntity)
+			.select(contentEntity)
+			.where(contentEntity.id.in(contentIds))
+			.fetch();
+
+		return contents.stream()
+			.map(content -> {
+				Long count = tuples.stream()
+					.filter(tuple -> Objects.equals(tuple.get(scrapEntity.content.id), content.getId()))
+					.findFirst()
+					.map(tuple -> tuple.get(scrapEntity.count()))
+					.orElse(0L);
+				return ContentResponseDto.ContentByScrapCountDto.of(content, count);
+			}).sorted(Comparator.comparing(ContentResponseDto.ContentByScrapCountDto::countScrap).reversed())
+			.toList();
+
+
 	}
 
 }
