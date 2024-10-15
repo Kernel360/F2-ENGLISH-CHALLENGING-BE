@@ -121,16 +121,7 @@ public class ContentServiceImpl implements ContentService {
 	@Override
 	@Transactional(readOnly = true)
 	public List<ContentResponseDto.ContentByScrapCountDto> contentByScrapCount(int num) {
-		List<Tuple> scrapCountTuples = contentRepository.contentByScrapCount(num);
-
-		return scrapCountTuples.stream()
-			.map(
-				tuple -> ContentResponseDto.ContentByScrapCountDto.of(
-					contentRepository.findById(Objects.requireNonNull(tuple.get(QScrapEntity.scrapEntity.content.id)))
-						.orElseThrow(() -> new CommonException(CONTENT_NOT_FOUND))
-					, tuple.get(QScrapEntity.scrapEntity.count())
-				)
-			).toList();
+		return contentRepository.contentByScrapCount(num);
 	}
 
 	@Override

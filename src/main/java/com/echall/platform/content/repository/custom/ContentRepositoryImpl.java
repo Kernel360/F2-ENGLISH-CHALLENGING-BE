@@ -6,7 +6,9 @@ import static com.echall.platform.scrap.domain.entity.QScrapEntity.*;
 
 import java.lang.reflect.Field;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
+import java.util.Objects;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -113,13 +115,35 @@ public class ContentRepositoryImpl extends QuerydslRepositorySupport implements 
 	}
 
 	@Override
-	public List<Tuple> contentByScrapCount(int num) {
-		return from(scrapEntity)
+	public List<ContentResponseDto.ContentByScrapCountDto> contentByScrapCount(int num) {
+		List<Tuple> tuples = from(scrapEntity)
 			.select(scrapEntity.content.id, scrapEntity.count())
 			.groupBy(scrapEntity.content.id)
 			.orderBy(scrapEntity.count().desc())
 			.limit(num)
 			.fetch();
+
+		List<Long> contentIds = tuples.stream()
+			.map(
+				tuple -> tuple.get(scrapEntity.content.id)
+			).toList();
+
+		List<ContentEntity> contents = from(contentEntity)
+			.select(contentEntity)
+			.where(contentEntity.id.in(contentIds))
+			.fetch();
+
+		return contents.stream()
+			.map(content -> {
+				Long count = tuples.stream()
+					.filter(tuple -> Objects.equals(tuple.get(scrapEntity.content.id), content.getId()))
+					.findFirst()
+					.map(tuple -> tuple.get(scrapEntity.count()))
+					.orElse(0L);
+				return ContentResponseDto.ContentByScrapCountDto.of(content, count);
+			}).sorted(Comparator.comparing(ContentResponseDto.ContentByScrapCountDto::countScrap).reversed())
+			.toList();
+
 
 	}
 
