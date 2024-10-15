@@ -6,6 +6,7 @@ import static com.echall.platform.scrap.domain.entity.QScrapEntity.*;
 
 import java.lang.reflect.Field;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
@@ -15,10 +16,12 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.support.QuerydslRepositorySupport;
 import org.springframework.data.support.PageableExecutionUtils;
 
+import com.echall.platform.content.domain.dto.ContentRequestDto;
 import com.echall.platform.content.domain.dto.ContentResponseDto;
 import com.echall.platform.content.domain.entity.ContentEntity;
 import com.echall.platform.content.domain.enums.ContentType;
 import com.echall.platform.message.error.exception.CommonException;
+import com.querydsl.core.BooleanBuilder;
 import com.querydsl.core.Tuple;
 import com.querydsl.core.types.Order;
 import com.querydsl.core.types.OrderSpecifier;
@@ -30,6 +33,37 @@ public class ContentRepositoryImpl extends QuerydslRepositorySupport implements 
 
 	public ContentRepositoryImpl() {
 		super(ContentEntity.class);
+	}
+
+	@Override
+	public Page<ContentEntity> findAllBySearchCondition(
+		ContentRequestDto.ContentSearchDto searchDto, Pageable pageable
+	) {
+		BooleanBuilder booleanBuilder = new BooleanBuilder();
+
+		List<String> searchWords = splitIntoWords(searchDto.searchWords());
+
+		for (String word : searchWords) {
+			booleanBuilder.or(contentEntity.title.containsIgnoreCase(word)
+				.or(contentEntity.preScripts.containsIgnoreCase(word)));
+		}
+
+		JPQLQuery<ContentEntity> query = Objects.requireNonNull(getQuerydsl()).createQuery(contentEntity)
+			.select(contentEntity)
+			.from(contentEntity)
+			.where(booleanBuilder);
+
+		List<ContentEntity> contents = Objects.requireNonNull(getQuerydsl())
+			.applyPagination(pageable, query)
+			.fetch();
+
+		JPQLQuery<Long> countQuery = getQuerydsl().createQuery(contentEntity)
+			.select(contentEntity.count())
+			.from(contentEntity)
+			.where(booleanBuilder);
+
+		return PageableExecutionUtils.getPage(contents, pageable, countQuery::fetchOne);
+
 	}
 
 	@Override
@@ -144,7 +178,9 @@ public class ContentRepositoryImpl extends QuerydslRepositorySupport implements 
 			}).sorted(Comparator.comparing(ContentResponseDto.ContentByScrapCountDto::countScrap).reversed())
 			.toList();
 
-
 	}
 
+	private List<String> splitIntoWords(String words) {
+		return Arrays.asList(words.replace(',', ' ').split("\\s+"));
+	}
 }

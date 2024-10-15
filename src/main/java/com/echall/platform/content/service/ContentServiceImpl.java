@@ -4,7 +4,6 @@ import static com.echall.platform.message.error.code.CategoryErrorCode.*;
 import static com.echall.platform.message.error.code.ContentErrorCode.*;
 
 import java.util.List;
-import java.util.Objects;
 
 import org.bson.types.ObjectId;
 import org.springframework.data.domain.Page;
@@ -26,10 +25,7 @@ import com.echall.platform.content.repository.ContentScriptRepository;
 import com.echall.platform.crawling.domain.dto.CrawlingResponseDto;
 import com.echall.platform.crawling.service.CrawlingServiceImpl;
 import com.echall.platform.message.error.exception.CommonException;
-import com.echall.platform.scrap.domain.entity.QScrapEntity;
-import com.echall.platform.scrap.repository.ScrapRepository;
 import com.echall.platform.util.PaginationDto;
-import com.querydsl.core.Tuple;
 
 import lombok.RequiredArgsConstructor;
 
@@ -41,7 +37,23 @@ public class ContentServiceImpl implements ContentService {
 	private final ContentScriptRepository contentScriptRepository;
 	private final CrawlingServiceImpl crawlingService;
 	private final CategoryRepository categoryRepository;
-	private final ScrapRepository scrapRepository;
+
+	@Override
+	@Transactional
+	public PaginationDto<ContentResponseDto.ContentPreviewResponseDto> search(
+		ContentRequestDto.ContentSearchDto searchDto, Pageable pageable
+	) {
+		if(searchDto.searchWords().isBlank()) {
+			throw new CommonException(CONTENT_SEARCH_WORD_NOT_FOUND);
+		}
+		Page<ContentEntity> page = contentRepository.findAllBySearchCondition(searchDto, pageable);
+		List<ContentResponseDto.ContentPreviewResponseDto> contents
+			= page.getContent().stream()
+			.map(ContentResponseDto.ContentPreviewResponseDto::of)
+			.toList();
+
+		return PaginationDto.from(page, contents);
+	}
 
 	@Override
 	@Transactional(readOnly = true)

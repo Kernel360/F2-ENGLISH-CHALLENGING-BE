@@ -1,10 +1,11 @@
 package com.echall.platform.content.domain.dto;
 
+import java.util.List;
+
 import com.echall.platform.content.domain.enums.ContentStatus;
 import com.echall.platform.content.domain.enums.ContentType;
 import com.echall.platform.script.domain.entity.Script;
 
-import java.util.List;
 public class ContentRequestDto {
 
 	public record ContentCreateRequestDto(
@@ -20,5 +21,10 @@ public class ContentRequestDto {
 		ContentStatus contentStatus
 	) {
 
+	}
+
+	public record ContentSearchDto(
+		String searchWords
+	) {
 	}
 }
