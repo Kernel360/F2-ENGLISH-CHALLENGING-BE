@@ -18,6 +18,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import static com.echall.platform.message.error.code.UserErrorCode.*;
+import static com.echall.platform.util.CookieUtil.*;
 
 @RequiredArgsConstructor
 @Service
@@ -99,16 +100,8 @@ public class UserService {
 		refreshTokenRepository.deleteByUserId(userId);
 	}
 
-	@Transactional(readOnly = true)
 	public Boolean getUserStatus(HttpServletRequest request) {
-		Cookie[] cookies = request.getCookies();
-
-		for(Cookie cookie : cookies) {
-			if(cookie.getName().equals("access_token")) {
-				return true;
-			}
-		}
-		return false;
+		return verifyAccessTokenCookie(request.getCookies());
 	}
 
 	// Internal Methods=================================================================================================

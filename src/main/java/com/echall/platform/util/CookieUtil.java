@@ -38,6 +38,16 @@ public class CookieUtil {
 		removeCookie(request, response, REFRESH_TOKEN_NAME);
 	}
 
+	public static boolean verifyAccessTokenCookie(Cookie[] cookies) {
+		for(Cookie cookie : cookies) {
+			if(cookie.getName().equals("access_token")) {
+				return true;
+			}
+		}
+		return false;
+	}
+
+
 	// Internal Methods=================================================================================================
 	// TODO: https 연결하고 검토 필요
 	private void addCookie(HttpServletResponse response, String name, String value, int maxAge) {
