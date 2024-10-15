@@ -59,10 +59,11 @@ public class ContentPublicController {
 		@ApiResponse(responseCode = "204", description = "컨텐츠가 없습니다.", content = @Content),
 		@ApiResponse(responseCode = "500", description = "서버 에러가 발생하였습니다.", content = @Content)
 	})
-	public ResponseEntity<ApiCustomResponse<List<ContentResponseDto.ContentByScrapCountDto>>>
+	public ResponseEntity<ApiCustomResponse<Map<String,List<ContentResponseDto.ContentByScrapCountDto>>>>
 	getContentsByScrapCount(@RequestParam(defaultValue = "8") int num) {
-
-		return ResponseEntityFactory.toResponseEntity(CONTENT_VIEW_SUCCESS, contentService.contentByScrapCount(num));
+		Map<String, List<ContentResponseDto.ContentByScrapCountDto>> data = new HashMap<>();
+		data.put("contentByScrapCount", contentService.contentByScrapCount(num));
+		return ResponseEntityFactory.toResponseEntity(CONTENT_VIEW_SUCCESS, data);
 	}
 
 	@GetMapping("/view/reading")
