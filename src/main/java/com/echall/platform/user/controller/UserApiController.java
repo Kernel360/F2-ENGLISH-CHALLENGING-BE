@@ -2,8 +2,6 @@ package com.echall.platform.user.controller;
 
 import static com.echall.platform.message.response.UserResponseCode.*;
 
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -19,6 +17,8 @@ import org.springframework.web.bind.annotation.RestController;
 import com.echall.platform.message.ApiCustomResponse;
 import com.echall.platform.message.ResponseEntityFactory;
 import com.echall.platform.oauth2.domain.info.OAuth2UserPrincipal;
+import com.echall.platform.swagger.SwaggerBooleanReturn;
+import com.echall.platform.swagger.SwaggerVoidReturn;
 import com.echall.platform.swagger.user.SwaggerUserMyPage;
 import com.echall.platform.swagger.user.SwaggerUserMyTime;
 import com.echall.platform.swagger.user.SwaggerUserUpdate;
@@ -32,6 +32,8 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 
 @RestController
@@ -113,7 +115,9 @@ public class UserApiController {
 	@PostMapping("/logout")
 	@Operation(summary = "회원 로그아웃", description = "유저가 로그아웃합니다.")
 	@ApiResponses(value = {
-		@ApiResponse(responseCode = "200", description = "로그아웃에 성공하였습니다.", content = @Content(mediaType = "application/json")),
+		@ApiResponse(responseCode = "200", description = "로그아웃에 성공하였습니다.", content = {
+			@Content(mediaType = "application/json", schema = @Schema(implementation = SwaggerVoidReturn.class))
+		}),
 		@ApiResponse(responseCode = "404", description = "데이터베이스 연결에 실패하였습니다.", content = @Content(mediaType = "application/json"))
 	})
 	public ResponseEntity<ApiCustomResponse<Void>> logout(
@@ -124,6 +128,22 @@ public class UserApiController {
 		userService.logout(request, response, oAuth2UserPrincipal.getId());
 
 		return ResponseEntityFactory.toResponseEntity(USER_LOGOUT_SUCCESS);
+	}
+
+	@GetMapping("/status")
+	@Operation(summary = "회원 로그인 상태 조회", description = "회원 로그인 상태를 조회합니다.")
+	@ApiResponses(value = {
+		@ApiResponse(responseCode = "200", description = "요청에 성공하였습니다.", content = {
+			@Content(mediaType = "application/json", schema = @Schema(implementation = SwaggerBooleanReturn.class))}
+		),
+		@ApiResponse(responseCode = "404", description = "데이터베이스 연결에 실패하였습니다.", content = @Content(mediaType = "application/json"))
+	})
+	public ResponseEntity<ApiCustomResponse<Boolean>> getUserStatus(
+		HttpServletRequest request
+	) {
+
+		return ResponseEntityFactory
+			.toResponseEntity(USER_STATUS_INFO, userService.getUserStatus(request));
 	}
 
 /*

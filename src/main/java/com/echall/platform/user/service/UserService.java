@@ -9,6 +9,8 @@ import com.echall.platform.user.domain.entity.UserEntity;
 import com.echall.platform.user.domain.enums.UserStatus;
 import com.echall.platform.user.repository.UserRepository;
 import com.echall.platform.util.CookieUtil;
+
+import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
@@ -16,6 +18,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import static com.echall.platform.message.error.code.UserErrorCode.*;
+import static com.echall.platform.util.CookieUtil.*;
 
 @RequiredArgsConstructor
 @Service
@@ -97,7 +100,12 @@ public class UserService {
 		refreshTokenRepository.deleteByUserId(userId);
 	}
 
+	public Boolean getUserStatus(HttpServletRequest request) {
+		return verifyAccessTokenCookie(request.getCookies());
+	}
+
 	// Internal Methods=================================================================================================
+
 	public UserEntity getUserByEmail(String email) {
 		return userRepository.findByEmail(email)
 			.orElseThrow(() -> new CommonException(USER_NOT_FOUND));
