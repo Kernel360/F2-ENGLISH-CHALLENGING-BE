@@ -17,6 +17,7 @@ import com.echall.platform.content.domain.dto.ContentResponseDto;
 import com.echall.platform.content.domain.entity.ContentEntity;
 import com.echall.platform.content.domain.enums.ContentType;
 import com.echall.platform.message.error.exception.CommonException;
+import com.querydsl.core.Tuple;
 import com.querydsl.core.types.Order;
 import com.querydsl.core.types.OrderSpecifier;
 import com.querydsl.core.types.Path;
@@ -112,18 +113,14 @@ public class ContentRepositoryImpl extends QuerydslRepositorySupport implements 
 	}
 
 	@Override
-	public List<ContentEntity> contentByScrapCount(int num) {
-		List<Long> contentIds = from(scrapEntity)
-			.select(scrapEntity.content.id)
+	public List<Tuple> contentByScrapCount(int num) {
+		return from(scrapEntity)
+			.select(scrapEntity.content.id, scrapEntity.count())
 			.groupBy(scrapEntity.content.id)
 			.orderBy(scrapEntity.count().desc())
 			.limit(num)
 			.fetch();
 
-		return from(contentEntity)
-			.select(contentEntity)
-			.where(contentEntity.id.in(contentIds))
-			.fetch();
 	}
 
 }

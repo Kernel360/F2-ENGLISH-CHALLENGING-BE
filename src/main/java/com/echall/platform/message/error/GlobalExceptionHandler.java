@@ -11,7 +11,7 @@ import com.echall.platform.message.error.exception.CommonException;
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 	@ExceptionHandler(CommonException.class)
-	public ResponseEntity<ApiCustomResponse> commonException(CommonException e) {
+	public ResponseEntity<ApiCustomResponse<Void>> commonException(CommonException e) {
 		return ResponseEntityFactory.toResponseEntity(e.getErrorCode());
 	}
 

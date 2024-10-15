@@ -28,7 +28,7 @@ public class ScrapEntity extends BaseEntity {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 
-	@ManyToOne
+	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "content_id", foreignKey = @ForeignKey(value = ConstraintMode.NO_CONSTRAINT))
 	private ContentEntity content;
 

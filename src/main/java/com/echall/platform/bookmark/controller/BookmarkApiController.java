@@ -131,7 +131,7 @@ public class BookmarkApiController {
 		@ApiResponse(responseCode = "204", description = "컨텐츠가 없습니다.", content = @Content),
 		@ApiResponse(responseCode = "500", description = "서버 에러가 발생하였습니다.", content = @Content)
 	})
-	public ResponseEntity<ApiCustomResponse> deleteBookmark(
+	public ResponseEntity<ApiCustomResponse<Void>> deleteBookmark(
 		@AuthenticationPrincipal OAuth2UserPrincipal oAuth2UserPrincipal,
 		@PathVariable Long bookmarkId
 	) {

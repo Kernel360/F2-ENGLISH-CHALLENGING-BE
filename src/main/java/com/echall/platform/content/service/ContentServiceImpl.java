@@ -4,6 +4,7 @@ import static com.echall.platform.message.error.code.CategoryErrorCode.*;
 import static com.echall.platform.message.error.code.ContentErrorCode.*;
 
 import java.util.List;
+import java.util.Objects;
 
 import org.bson.types.ObjectId;
 import org.springframework.data.domain.Page;
@@ -25,8 +26,10 @@ import com.echall.platform.content.repository.ContentScriptRepository;
 import com.echall.platform.crawling.domain.dto.CrawlingResponseDto;
 import com.echall.platform.crawling.service.CrawlingServiceImpl;
 import com.echall.platform.message.error.exception.CommonException;
+import com.echall.platform.scrap.domain.entity.QScrapEntity;
 import com.echall.platform.scrap.repository.ScrapRepository;
 import com.echall.platform.util.PaginationDto;
+import com.querydsl.core.Tuple;
 
 import lombok.RequiredArgsConstructor;
 
@@ -55,7 +58,7 @@ public class ContentServiceImpl implements ContentService {
 	}
 
 	@Override
-	@Transactional
+	@Transactional    // 다른 네트워크를 사용하는데 transaction 이 맞나?
 	public ContentResponseDto.ContentCreateResponseDto createContent(
 		Authentication authentication,
 		ContentRequestDto.ContentCreateRequestDto contentCreateRequestDto
@@ -117,16 +120,17 @@ public class ContentServiceImpl implements ContentService {
 
 	@Override
 	@Transactional(readOnly = true)
-	public List<ContentResponseDto.ContentCountByScrapResponseDto> contentByScrapCount(int num) {
-		List<ContentEntity> contents = contentRepository.contentByScrapCount(num);
+	public List<ContentResponseDto.ContentByScrapCountDto> contentByScrapCount(int num) {
+		List<Tuple> scrapCountTuples = contentRepository.contentByScrapCount(num);
 
-		return contents.stream()
+		return scrapCountTuples.stream()
 			.map(
-				content -> ContentResponseDto.ContentCountByScrapResponseDto.of(
-					content, scrapRepository.countByContentId(content.getId())
+				tuple -> ContentResponseDto.ContentByScrapCountDto.of(
+					contentRepository.findById(Objects.requireNonNull(tuple.get(QScrapEntity.scrapEntity.content.id)))
+						.orElseThrow(() -> new CommonException(CONTENT_NOT_FOUND))
+					, tuple.get(QScrapEntity.scrapEntity.count())
 				)
-			)
-			.toList();
+			).toList();
 	}
 
 	@Override

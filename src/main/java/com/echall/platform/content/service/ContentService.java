@@ -32,5 +32,5 @@ public interface ContentService {
 		ContentType contentType, String sortBy, int num
 	);
 
-	List<ContentResponseDto.ContentCountByScrapResponseDto> contentByScrapCount(int num);
+	List<ContentResponseDto.ContentByScrapCountDto> contentByScrapCount(int num);
 }

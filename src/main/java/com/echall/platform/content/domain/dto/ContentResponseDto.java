@@ -88,7 +88,7 @@ public class ContentResponseDto {
 		}
 	}
 
-	public record ContentCountByScrapResponseDto(
+	public record ContentByScrapCountDto(
 		Long contentId,
 		String title,
 		String thumbnailUrl,
@@ -97,8 +97,8 @@ public class ContentResponseDto {
 		String category,
 		Long countScrap
 	) {
-		public static ContentCountByScrapResponseDto of(ContentEntity content, Long count){
-			return new ContentCountByScrapResponseDto(
+		public static ContentByScrapCountDto of(ContentEntity content, Long count){
+			return new ContentByScrapCountDto(
 				content.getId(),
 				content.getTitle(),
 				content.getThumbnailUrl(),

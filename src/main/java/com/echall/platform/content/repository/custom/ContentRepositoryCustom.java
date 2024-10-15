@@ -8,6 +8,7 @@ import org.springframework.data.domain.Pageable;
 import com.echall.platform.content.domain.dto.ContentResponseDto;
 import com.echall.platform.content.domain.entity.ContentEntity;
 import com.echall.platform.content.domain.enums.ContentType;
+import com.querydsl.core.Tuple;
 
 public interface ContentRepositoryCustom {
 
@@ -23,5 +24,5 @@ public interface ContentRepositoryCustom {
 
 	String findMongoIdByContentId(Long contentId);
 
-	List<ContentEntity> contentByScrapCount(int num);
+	List<Tuple> contentByScrapCount(int num);
 }

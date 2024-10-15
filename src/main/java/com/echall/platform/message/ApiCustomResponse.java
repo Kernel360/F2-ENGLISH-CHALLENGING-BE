@@ -6,7 +6,7 @@ public record ApiCustomResponse<T>(
 	String code,
 	String message,
 	@JsonInclude(JsonInclude.Include.NON_NULL)
-	T data
+	T data // T -> Object 하고 선언문만 고쳐도 동작함
 ) {
 	public static <T> ApiCustomResponse<T> of(
 		StatusCode statusCode, T data
