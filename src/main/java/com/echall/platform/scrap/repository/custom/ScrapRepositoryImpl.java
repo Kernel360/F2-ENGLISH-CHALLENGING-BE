@@ -27,6 +27,7 @@ public class ScrapRepositoryImpl extends QuerydslRepositorySupport implements Sc
 			.fetch();
 	}
 
+	
 	@Override
 	public void deleteScrap(Long userId, Long contentId) {
 		Optional.ofNullable(from(userEntity)
