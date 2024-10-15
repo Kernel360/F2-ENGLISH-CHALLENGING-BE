@@ -116,7 +116,7 @@ public class UserApiController {
 		@ApiResponse(responseCode = "200", description = "로그아웃에 성공하였습니다.", content = @Content(mediaType = "application/json")),
 		@ApiResponse(responseCode = "404", description = "데이터베이스 연결에 실패하였습니다.", content = @Content(mediaType = "application/json"))
 	})
-	public ResponseEntity<ApiCustomResponse> logout(
+	public ResponseEntity<ApiCustomResponse<Void>> logout(
 		HttpServletRequest request,
 		HttpServletResponse response,
 		@AuthenticationPrincipal OAuth2UserPrincipal oAuth2UserPrincipal
