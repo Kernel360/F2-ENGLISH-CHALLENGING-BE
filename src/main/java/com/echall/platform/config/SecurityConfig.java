@@ -87,6 +87,9 @@ public class SecurityConfig {
 					.requestMatchers("/swagger-ui/**").hasRole("DEVELOPER")
 					.requestMatchers("/api-info/**").hasRole("DEVELOPER")
 
+					// Can access form Authenticated
+					.requestMatchers(HttpMethod.POST, "/api/user/logout").authenticated()
+
 
 					.requestMatchers(CorsUtils::isPreFlightRequest).permitAll()
 					.anyRequest().permitAll();

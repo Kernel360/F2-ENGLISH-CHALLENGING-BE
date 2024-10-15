@@ -2,6 +2,8 @@ package com.echall.platform.user.controller;
 
 import static com.echall.platform.message.response.UserResponseCode.*;
 
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -108,6 +110,21 @@ public class UserApiController {
 			.toResponseEntity(USER_GET_INFO, userService.getMySignUpTime(oAuth2UserPrincipal.getId()));
 	}
 
+	@PostMapping("/logout")
+	@Operation(summary = "회원 로그아웃", description = "유저가 로그아웃합니다.")
+	@ApiResponses(value = {
+		@ApiResponse(responseCode = "200", description = "로그아웃에 성공하였습니다.", content = @Content(mediaType = "application/json")),
+		@ApiResponse(responseCode = "404", description = "데이터베이스 연결에 실패하였습니다.", content = @Content(mediaType = "application/json"))
+	})
+	public ResponseEntity<ApiCustomResponse<Void>> logout(
+		HttpServletRequest request,
+		HttpServletResponse response,
+		@AuthenticationPrincipal OAuth2UserPrincipal oAuth2UserPrincipal
+	) {
+		userService.logout(request, response, oAuth2UserPrincipal.getId());
+
+		return ResponseEntityFactory.toResponseEntity(USER_LOGOUT_SUCCESS);
+	}
 
 /*
 	// TODO: 챌린지 추가 하면 주석 해제 및 스웨거 추가, 이후에도 챌린지 추가되지 않으면 USER_GET_CHALLENGE 삭제 필요
