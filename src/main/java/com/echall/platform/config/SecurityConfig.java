@@ -67,6 +67,7 @@ public class SecurityConfig {
 					.requestMatchers(HttpMethod.GET, "/api/contents/view/**").permitAll()
 					.requestMatchers(HttpMethod.GET, "/api/contents/preview/**").permitAll()
 					.requestMatchers(HttpMethod.GET, "/api/categories/all").permitAll()
+					.requestMatchers(HttpMethod.GET, "/api/contents/details/**").permitAll()
 					.requestMatchers(HttpMethod.GET, "/api/user/status").permitAll()
 
 					// Can access from USER
