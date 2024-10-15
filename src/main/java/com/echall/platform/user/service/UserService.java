@@ -9,6 +9,8 @@ import com.echall.platform.user.domain.entity.UserEntity;
 import com.echall.platform.user.domain.enums.UserStatus;
 import com.echall.platform.user.repository.UserRepository;
 import com.echall.platform.util.CookieUtil;
+
+import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
@@ -97,7 +99,20 @@ public class UserService {
 		refreshTokenRepository.deleteByUserId(userId);
 	}
 
+	@Transactional(readOnly = true)
+	public Boolean getUserStatus(HttpServletRequest request) {
+		Cookie[] cookies = request.getCookies();
+
+		for(Cookie cookie : cookies) {
+			if(cookie.getName().equals("access_token")) {
+				return true;
+			}
+		}
+		return false;
+	}
+
 	// Internal Methods=================================================================================================
+
 	public UserEntity getUserByEmail(String email) {
 		return userRepository.findByEmail(email)
 			.orElseThrow(() -> new CommonException(USER_NOT_FOUND));
