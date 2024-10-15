@@ -39,7 +39,7 @@ public class ContentServiceImpl implements ContentService {
 	private final CategoryRepository categoryRepository;
 
 	@Override
-	@Transactional
+	@Transactional(readOnly = true)
 	public PaginationDto<ContentResponseDto.ContentPreviewResponseDto> search(
 		ContentRequestDto.ContentSearchDto searchDto, Pageable pageable
 	) {
