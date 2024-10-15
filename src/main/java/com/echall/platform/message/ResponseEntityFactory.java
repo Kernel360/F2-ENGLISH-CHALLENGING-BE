@@ -4,7 +4,7 @@ import org.springframework.http.ResponseEntity;
 
 public class ResponseEntityFactory {
 	// No return Data
-	public static ResponseEntity<ApiCustomResponse> toResponseEntity(StatusCode statusCode) {
+	public static ResponseEntity<ApiCustomResponse<Void>> toResponseEntity(StatusCode statusCode) {
 		return ResponseEntity.status(statusCode.getStatus())
 			.body(ApiCustomResponse.of(statusCode));
 	}

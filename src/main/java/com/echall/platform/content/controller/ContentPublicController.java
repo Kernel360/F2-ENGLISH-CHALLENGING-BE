@@ -22,6 +22,7 @@ import com.echall.platform.content.domain.enums.ContentType;
 import com.echall.platform.content.service.ContentService;
 import com.echall.platform.message.ApiCustomResponse;
 import com.echall.platform.message.ResponseEntityFactory;
+import com.echall.platform.swagger.content.SwaggerContentByScrapCount;
 import com.echall.platform.swagger.content.SwaggerContentDetail;
 import com.echall.platform.swagger.content.SwaggerContentPreview;
 import com.echall.platform.util.PaginationDto;
@@ -49,6 +50,22 @@ public class ContentPublicController {
 	 * 컨텐츠 조회
 	 * (pageable)
 	 */
+	@GetMapping("/view/scrap-count")
+	@Operation(summary = "컨텐츠 조회", description = "정렬된 컨텐츠 목록을 조회합니다.")
+	@ApiResponses(value = {
+		@ApiResponse(responseCode = "200", description = "요청에 성공하였습니다.", content = {
+			@Content(mediaType = "application/json", schema = @Schema(implementation = SwaggerContentByScrapCount.class))
+		}),
+		@ApiResponse(responseCode = "204", description = "컨텐츠가 없습니다.", content = @Content),
+		@ApiResponse(responseCode = "500", description = "서버 에러가 발생하였습니다.", content = @Content)
+	})
+	public ResponseEntity<ApiCustomResponse<Map<String,List<ContentResponseDto.ContentByScrapCountDto>>>>
+	getContentsByScrapCount(@RequestParam(defaultValue = "8") int num) {
+		Map<String, List<ContentResponseDto.ContentByScrapCountDto>> data = new HashMap<>();
+		data.put("contentByScrapCount", contentService.contentByScrapCount(num));
+		return ResponseEntityFactory.toResponseEntity(CONTENT_VIEW_SUCCESS, data);
+	}
+
 	@GetMapping("/view/reading")
 	@Operation(summary = "리딩 컨텐츠 조회", description = "페이지네이션을 적용하여 리딩 컨텐츠 목록을 조회합니다.")
 	@ApiResponses(value = {
@@ -123,7 +140,7 @@ public class ContentPublicController {
 		@RequestParam(defaultValue = "8") int num
 	) {
 		Map<String, List<ContentResponseDto.ContentPreviewResponseDto>> data = new HashMap<>();
-		data.put("readingPreview", contentService.getPreviewContents(ContentType.READING, sortBy, num));
+		data.put("readingPreview", contentService.findPreviewContents(ContentType.READING, sortBy, num));
 
 		return ResponseEntityFactory.toResponseEntity(CONTENT_VIEW_SUCCESS, data);
 	}
@@ -138,12 +155,12 @@ public class ContentPublicController {
 		@ApiResponse(responseCode = "500", description = "서버 에러가 발생하였습니다.", content = @Content)
 	})
 	public ResponseEntity<ApiCustomResponse<Map<String, List<ContentResponseDto.ContentPreviewResponseDto>>>>
-	getPreviewListeningContents(
+	getPreviewListeningContents( // 최소한 list, map은 객체로 만들어야 함
 		@RequestParam(defaultValue = "hits") String sortBy,
 		@RequestParam(defaultValue = "8") int num
 	) {
 		Map<String, List<ContentResponseDto.ContentPreviewResponseDto>> data = new HashMap<>();
-		data.put("listeningPreview", contentService.getPreviewContents(ContentType.LISTENING, sortBy, num));
+		data.put("listeningPreview", contentService.findPreviewContents(ContentType.LISTENING, sortBy, num));
 
 		return ResponseEntityFactory.toResponseEntity(CONTENT_VIEW_SUCCESS, data);
 	}

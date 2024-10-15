@@ -106,7 +106,7 @@ public class ScrapApiController {
 		), @ApiResponse(responseCode = "204", description = "요청한 스크랩이 없습니다.", content = @Content),
 		@ApiResponse(responseCode = "500", description = "서버 에러가 발생하였습니다.", content = @Content)
 	})
-	public ResponseEntity<ApiCustomResponse> deleteScrap(
+	public ResponseEntity<ApiCustomResponse<Void>> deleteScrap(
 		@AuthenticationPrincipal OAuth2UserPrincipal oAuth2UserPrincipal,
 		@RequestBody ScrapRequestDto.ScrapDeleteRequestDto requestDto
 	) {
