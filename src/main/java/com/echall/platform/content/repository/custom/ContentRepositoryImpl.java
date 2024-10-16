@@ -19,6 +19,7 @@ import org.springframework.data.support.PageableExecutionUtils;
 import com.echall.platform.content.domain.dto.ContentRequestDto;
 import com.echall.platform.content.domain.dto.ContentResponseDto;
 import com.echall.platform.content.domain.entity.ContentEntity;
+import com.echall.platform.content.domain.enums.ContentStatus;
 import com.echall.platform.content.domain.enums.ContentType;
 import com.echall.platform.message.error.exception.CommonException;
 import com.querydsl.core.BooleanBuilder;
@@ -42,8 +43,10 @@ public class ContentRepositoryImpl extends QuerydslRepositorySupport implements 
 		BooleanBuilder booleanBuilder = new BooleanBuilder();
 
 		List<String> searchWords = splitIntoWords(searchDto.searchWords());
+		int num = searchWords.size();
+		List<String> selectedSearchWords = searchWords.subList(0, Math.min(num, 10));
 
-		for (String word : searchWords) {
+		for (String word : selectedSearchWords) {
 			booleanBuilder.or(contentEntity.title.containsIgnoreCase(word)
 				.or(contentEntity.preScripts.containsIgnoreCase(word)));
 		}
@@ -51,7 +54,7 @@ public class ContentRepositoryImpl extends QuerydslRepositorySupport implements 
 		JPQLQuery<ContentEntity> query = Objects.requireNonNull(getQuerydsl()).createQuery(contentEntity)
 			.select(contentEntity)
 			.from(contentEntity)
-			.where(booleanBuilder);
+			.where(contentEntity.contentStatus.eq(ContentStatus.ACTIVATED).and(booleanBuilder));
 
 		List<ContentEntity> contents = Objects.requireNonNull(getQuerydsl())
 			.applyPagination(pageable, query)
@@ -84,7 +87,9 @@ public class ContentRepositoryImpl extends QuerydslRepositorySupport implements 
 
 		List<ContentEntity> contents = from(contentEntity)
 			.select(contentEntity)
-			.where(contentEntity.contentType.eq(contentType))
+			.where(
+				contentEntity.contentStatus.eq(ContentStatus.ACTIVATED).and(contentEntity.contentType.eq(contentType))
+			)
 			.orderBy(orderSpecifiers.toArray(new OrderSpecifier[0]))
 			.limit(num)
 			.fetch();
@@ -116,8 +121,10 @@ public class ContentRepositoryImpl extends QuerydslRepositorySupport implements 
 		Long categoryId) {
 		JPQLQuery<ContentEntity> query = from(contentEntity)
 			.select(contentEntity)
-			.where(contentEntity.contentType.eq(contentType)
-				.and(categoryId != null ? contentEntity.category.id.eq(categoryId) : null));
+			.where(contentEntity.contentStatus.eq(ContentStatus.ACTIVATED)
+				.and(contentEntity.contentType.eq(contentType)
+				.and(categoryId != null ? contentEntity.category.id.eq(categoryId) : null))
+			);
 
 		List<ContentEntity> contents = getQuerydsl()
 			.applyPagination(pageable, query)
@@ -136,7 +143,7 @@ public class ContentRepositoryImpl extends QuerydslRepositorySupport implements 
 
 		return from(contentEntity)
 			.select(contentEntity.title)
-			.where(contentEntity.id.eq(contentId))
+			.where(contentEntity.contentStatus.eq(ContentStatus.ACTIVATED).and(contentEntity.id.eq(contentId)))
 			.fetchFirst();
 	}
 
@@ -144,7 +151,7 @@ public class ContentRepositoryImpl extends QuerydslRepositorySupport implements 
 	public String findMongoIdByContentId(Long contentId) {
 		return from(contentEntity)
 			.select(contentEntity.mongoContentId)
-			.where(contentEntity.id.eq(contentId))
+			.where(contentEntity.contentStatus.eq(ContentStatus.ACTIVATED).and(contentEntity.id.eq(contentId)))
 			.fetchOne();
 	}
 
@@ -152,6 +159,7 @@ public class ContentRepositoryImpl extends QuerydslRepositorySupport implements 
 	public List<ContentResponseDto.ContentByScrapCountDto> contentByScrapCount(int num) {
 		List<Tuple> tuples = from(scrapEntity)
 			.select(scrapEntity.content.id, scrapEntity.count())
+			.where(scrapEntity.content.contentStatus.eq(ContentStatus.ACTIVATED))
 			.groupBy(scrapEntity.content.id)
 			.orderBy(scrapEntity.count().desc())
 			.limit(num)
