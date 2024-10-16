@@ -21,7 +21,7 @@ spring:
 
     mongodb:
       uri: ${MONGO_PROD_URI}
-      database: admin
+      database: ${MONGO_PROD_DATABASE}
       username: ${DB_ROOT_USERNAME}
       password: ${DB_MYSQL_PASSWORD}
 
