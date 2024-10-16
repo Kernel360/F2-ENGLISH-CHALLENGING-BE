@@ -50,6 +50,9 @@ public class OAuth2SuccessHandler implements AuthenticationSuccessHandler {
 			cookieUtil.addAccessTokenCookie(request, response, accessToken);
 
 			refreshTokenService.saveRefreshToken(user, refreshToken);
+			oAuth2SuccessRedirectUri += "?" + request.getRequestURI().split("\\?")[1];
+
+			response.sendRedirect(oAuth2SuccessRedirectUri);
 
 		} catch (CommonException e) {
 			log.error(e.getErrorCode().getCode() + " : " + e.getErrorCode().getMessage());
