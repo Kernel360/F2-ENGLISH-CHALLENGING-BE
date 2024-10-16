@@ -2,6 +2,7 @@ package com.echall.platform.content.service;
 
 import static com.echall.platform.message.error.code.CategoryErrorCode.*;
 import static com.echall.platform.message.error.code.ContentErrorCode.*;
+import static com.echall.platform.message.error.code.CrawlingErrorCode.*;
 
 import java.util.List;
 
@@ -43,7 +44,7 @@ public class ContentServiceImpl implements ContentService {
 	public PaginationDto<ContentResponseDto.ContentPreviewResponseDto> search(
 		ContentRequestDto.ContentSearchDto searchDto, Pageable pageable
 	) {
-		if(searchDto.searchWords().isBlank()) {
+		if (searchDto.searchWords().isBlank()) {
 			throw new CommonException(CONTENT_SEARCH_WORD_NOT_FOUND);
 		}
 		Page<ContentEntity> page = contentRepository.findAllBySearchCondition(searchDto, pageable);
@@ -76,6 +77,9 @@ public class ContentServiceImpl implements ContentService {
 		ContentRequestDto.ContentCreateRequestDto contentCreateRequestDto
 	) throws Exception {
 		CrawlingResponseDto.CrawlingContentResponseDto crawlingContentResponseDto = null;
+		if (verifyCrawling(contentCreateRequestDto.url())) {
+			throw new CommonException(CRAWLING_ALREADY_DONE);
+		}
 
 		if (contentCreateRequestDto.contentType().equals(ContentType.LISTENING)) {
 			crawlingContentResponseDto = crawlingService.getYoutubeInfo(
@@ -173,4 +177,7 @@ public class ContentServiceImpl implements ContentService {
 		return categoryRepository.save(dto.toCategoryEntity());
 	}
 
+	private boolean verifyCrawling(String url) {
+		return contentRepository.existsByUrl(url);
+	}
 }
