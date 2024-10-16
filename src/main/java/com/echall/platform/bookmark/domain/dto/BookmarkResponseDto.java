@@ -3,7 +3,6 @@ package com.echall.platform.bookmark.domain.dto;
 import java.time.LocalDateTime;
 
 import com.echall.platform.bookmark.domain.entity.BookmarkEntity;
-import com.echall.platform.content.domain.entity.ContentEntity;
 import com.echall.platform.content.domain.enums.ContentType;
 
 public class BookmarkResponseDto {
@@ -11,14 +10,16 @@ public class BookmarkResponseDto {
 		Long bookmarkId,
 		Long sentenceIndex,
 		Long wordIndex,
-		String description
+		String description,
+		double startTimeInSecond
 	) {
 		public static BookmarkListResponseDto of(BookmarkEntity bookmark) {
 			return new BookmarkListResponseDto(
 				bookmark.getId(),
 				bookmark.getSentenceIndex(),
 				bookmark.getWordIndex(),
-				bookmark.getDescription()
+				bookmark.getDescription(),
+				bookmark.getStartTimeInSecond()
 			);
 		}
 	}

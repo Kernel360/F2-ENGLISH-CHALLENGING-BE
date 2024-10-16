@@ -1,9 +1,5 @@
 package com.echall.platform.bookmark.domain.dto;
 
-import static com.echall.platform.message.error.code.BookmarkErrorCode.*;
-
-import com.echall.platform.message.error.exception.CommonException;
-
 import jakarta.validation.constraints.NotNull;
 
 public class BookmarkRequestDto {
