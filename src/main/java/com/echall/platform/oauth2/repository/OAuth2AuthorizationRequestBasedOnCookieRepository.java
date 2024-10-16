@@ -34,7 +34,7 @@ public class OAuth2AuthorizationRequestBasedOnCookieRepository
 		HttpServletResponse response) {
 
 		if(authorizationRequest == null) {
-			removeAuthorizationRequest(request,response);
+			removeCookies(request,response);
 			return;
 		}
 
@@ -50,7 +50,7 @@ public class OAuth2AuthorizationRequestBasedOnCookieRepository
 		return this.loadAuthorizationRequest(request);
 	}
 
-	public void removeAuthorizationRequestCookies(HttpServletRequest request, HttpServletResponse response) {
+	public void removeCookies(HttpServletRequest request, HttpServletResponse response) {
 
 		cookieUtil.removeOAuth2AuthorizationRequestCookie(request, response);
 
