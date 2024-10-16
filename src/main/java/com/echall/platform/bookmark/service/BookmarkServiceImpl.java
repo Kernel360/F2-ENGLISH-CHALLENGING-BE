@@ -56,7 +56,9 @@ public class BookmarkServiceImpl implements BookmarkService {
 
 		return bookmarks.stream()
 			.map(bookmark -> BookmarkResponseDto.BookmarkMyListResponseDto.of(
-				bookmark, contentRepository.findTitleById(bookmark.getScriptIndex())
+				bookmark,
+				contentRepository.findContentTypeById(bookmark.getScriptIndex()),
+				contentRepository.findTitleById(bookmark.getScriptIndex())
 			)).toList();
 	}
 

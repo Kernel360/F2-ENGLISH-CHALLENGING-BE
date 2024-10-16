@@ -188,6 +188,15 @@ public class ContentRepositoryImpl extends QuerydslRepositorySupport implements 
 
 	}
 
+	@Override
+	public ContentType findContentTypeById(Long contentId) {
+		return from(contentEntity)
+			.select(contentEntity.contentType)
+			.where(contentEntity.id.eq(contentId))
+			.fetchFirst();
+
+	}
+
 	private List<String> splitIntoWords(String words) {
 		return Arrays.asList(words.replace(',', ' ').split("\\s+"));
 	}

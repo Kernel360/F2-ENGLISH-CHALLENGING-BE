@@ -41,6 +41,7 @@ public class BookmarkRepositoryImpl extends QuerydslRepositorySupport implements
 			.join(userEntity.bookmarks, bookmarkEntity)
 			.select(bookmarkEntity)
 			.where(userEntity.id.eq(userId))
+			.orderBy(bookmarkEntity.createdAt.desc())
 			.fetch();
 	}
 }
