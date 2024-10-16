@@ -4,6 +4,7 @@ import java.time.LocalDateTime;
 
 import com.echall.platform.bookmark.domain.entity.BookmarkEntity;
 import com.echall.platform.content.domain.enums.ContentType;
+import com.fasterxml.jackson.annotation.JsonInclude;
 
 public class BookmarkResponseDto {
 	public record BookmarkListResponseDto(
@@ -11,7 +12,8 @@ public class BookmarkResponseDto {
 		Long sentenceIndex,
 		Long wordIndex,
 		String description,
-		double startTimeInSecond
+		@JsonInclude(JsonInclude.Include.NON_NULL)
+		Double startTimeInSecond
 	) {
 		public static BookmarkListResponseDto of(BookmarkEntity bookmark) {
 			return new BookmarkListResponseDto(

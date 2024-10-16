@@ -1,5 +1,11 @@
 package com.echall.platform.user.service;
 
+import static com.echall.platform.message.error.code.UserErrorCode.*;
+import static com.echall.platform.util.CookieUtil.*;
+
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
 import com.echall.platform.message.error.exception.CommonException;
 import com.echall.platform.oauth2.domain.info.OAuth2UserPrincipal;
 import com.echall.platform.oauth2.repository.RefreshTokenRepository;
@@ -10,15 +16,9 @@ import com.echall.platform.user.domain.enums.UserStatus;
 import com.echall.platform.user.repository.UserRepository;
 import com.echall.platform.util.CookieUtil;
 
-import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
-import static com.echall.platform.message.error.code.UserErrorCode.*;
-import static com.echall.platform.util.CookieUtil.*;
 
 @RequiredArgsConstructor
 @Service
@@ -101,6 +101,9 @@ public class UserService {
 	}
 
 	public Boolean getUserStatus(HttpServletRequest request) {
+		if (request.getCookies() == null) {
+			return false;
+		}
 		return verifyAccessTokenCookie(request.getCookies());
 	}
 

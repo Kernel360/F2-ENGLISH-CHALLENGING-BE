@@ -131,12 +131,12 @@ public class BookmarkServiceImpl implements BookmarkService {
 			255);
 	}
 
-	private double extractStartTime(
+	private Double extractStartTime(
 		BookmarkRequestDto.BookmarkCreateRequest bookmarkRequestDto,
 		ContentType contentTypeById, ContentDocument content
 	) {
 		if (contentTypeById.equals(ContentType.READING)) {
-			return 0;
+			return null;
 		}
 
 		return ((YoutubeScript)content.getScripts()
