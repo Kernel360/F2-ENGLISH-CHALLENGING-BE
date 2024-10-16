@@ -3,22 +3,25 @@ package com.echall.platform.bookmark.domain.dto;
 import java.time.LocalDateTime;
 
 import com.echall.platform.bookmark.domain.entity.BookmarkEntity;
-import com.echall.platform.content.domain.entity.ContentEntity;
 import com.echall.platform.content.domain.enums.ContentType;
+import com.fasterxml.jackson.annotation.JsonInclude;
 
 public class BookmarkResponseDto {
 	public record BookmarkListResponseDto(
 		Long bookmarkId,
 		Long sentenceIndex,
 		Long wordIndex,
-		String description
+		String description,
+		@JsonInclude(JsonInclude.Include.NON_NULL)
+		Double startTimeInSecond
 	) {
 		public static BookmarkListResponseDto of(BookmarkEntity bookmark) {
 			return new BookmarkListResponseDto(
 				bookmark.getId(),
 				bookmark.getSentenceIndex(),
 				bookmark.getWordIndex(),
-				bookmark.getDescription()
+				bookmark.getDescription(),
+				bookmark.getStartTimeInSecond()
 			);
 		}
 	}
