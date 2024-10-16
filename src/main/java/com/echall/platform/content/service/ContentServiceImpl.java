@@ -77,9 +77,8 @@ public class ContentServiceImpl implements ContentService {
 		ContentRequestDto.ContentCreateRequestDto contentCreateRequestDto
 	) throws Exception {
 		CrawlingResponseDto.CrawlingContentResponseDto crawlingContentResponseDto = null;
-		if (verifyCrawling(contentCreateRequestDto.url())) {
-			throw new CommonException(CRAWLING_ALREADY_DONE);
-		}
+
+		verifyCrawling(contentCreateRequestDto.url());
 
 		if (contentCreateRequestDto.contentType().equals(ContentType.LISTENING)) {
 			crawlingContentResponseDto = crawlingService.getYoutubeInfo(
@@ -177,7 +176,9 @@ public class ContentServiceImpl implements ContentService {
 		return categoryRepository.save(dto.toCategoryEntity());
 	}
 
-	private boolean verifyCrawling(String url) {
-		return contentRepository.existsByUrl(url);
+	private void verifyCrawling(String url) {
+		if (contentRepository.existsByUrl(url)) {
+			throw new CommonException(CRAWLING_ALREADY_DONE);
+		}
 	}
 }
