@@ -101,7 +101,7 @@ public class UserService {
 	}
 
 	public Boolean getUserStatus(HttpServletRequest request) {
-		return verifyAccessTokenCookie(request.getCookies());
+		return cookieUtil.verifyAccessTokenCookie(request.getCookies());
 	}
 
 	// Internal Methods=================================================================================================

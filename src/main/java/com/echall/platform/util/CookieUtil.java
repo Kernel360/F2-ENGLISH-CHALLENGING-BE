@@ -21,7 +21,7 @@ public class CookieUtil {
 	@Value("${spring.profiles.active}")
 	private String activeProfile;
 
-	public static boolean verifyAccessTokenCookie(Cookie[] cookies) {
+	public boolean verifyAccessTokenCookie(Cookie[] cookies) {
 		return cookies != null && Arrays.stream(cookies).anyMatch(cookie -> cookie.getName().equals(ACCESS_TOKEN_NAME));
 	}
 
