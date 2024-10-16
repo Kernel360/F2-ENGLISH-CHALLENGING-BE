@@ -144,7 +144,14 @@ public class ContentRepositoryImpl extends QuerydslRepositorySupport implements 
 			}).sorted(Comparator.comparing(ContentResponseDto.ContentByScrapCountDto::countScrap).reversed())
 			.toList();
 
+	}
 
+	@Override
+	public ContentType findContentTypeById(Long contentId) {
+		return from(contentEntity)
+			.select(contentEntity.contentType)
+			.where(contentEntity.id.eq(contentId))
+			.fetchFirst();
 	}
 
 }

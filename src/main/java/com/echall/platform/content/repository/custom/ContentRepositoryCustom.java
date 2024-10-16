@@ -25,4 +25,6 @@ public interface ContentRepositoryCustom {
 	String findMongoIdByContentId(Long contentId);
 
 	List<ContentResponseDto.ContentByScrapCountDto> contentByScrapCount(int num);
+
+	ContentType findContentTypeById(Long scriptIndex);
 }
