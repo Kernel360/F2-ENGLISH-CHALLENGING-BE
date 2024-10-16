@@ -1,5 +1,12 @@
 package com.echall.platform.oauth2;
 
+import java.io.IOException;
+
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
+import org.springframework.stereotype.Component;
+
 import com.echall.platform.annotation.LoginLogging;
 import com.echall.platform.message.error.exception.CommonException;
 import com.echall.platform.oauth2.domain.info.OAuth2UserPrincipal;
@@ -8,16 +15,11 @@ import com.echall.platform.user.domain.entity.UserEntity;
 import com.echall.platform.user.service.UserService;
 import com.echall.platform.util.CookieUtil;
 import com.echall.platform.util.HttpServletResponseUtil;
+
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
-import org.springframework.stereotype.Component;
-
-import java.io.IOException;
 
 @Slf4j
 @Component
@@ -37,7 +39,7 @@ public class OAuth2SuccessHandler implements AuthenticationSuccessHandler {
 		HttpServletRequest request, HttpServletResponse response, Authentication authentication
 	) throws IOException {
 		try {
-			OAuth2UserPrincipal oAuth2UserPrincipal = (OAuth2UserPrincipal) authentication.getPrincipal();
+			OAuth2UserPrincipal oAuth2UserPrincipal = (OAuth2UserPrincipal)authentication.getPrincipal();
 
 			UserEntity user = userService.getUserByOAuthUser(oAuth2UserPrincipal);
 
@@ -48,8 +50,6 @@ public class OAuth2SuccessHandler implements AuthenticationSuccessHandler {
 			cookieUtil.addAccessTokenCookie(request, response, accessToken);
 
 			refreshTokenService.saveRefreshToken(user, refreshToken);
-
-			response.sendRedirect(oAuth2SuccessRedirectUri);
 
 		} catch (CommonException e) {
 			log.error(e.getErrorCode().getCode() + " : " + e.getErrorCode().getMessage());
