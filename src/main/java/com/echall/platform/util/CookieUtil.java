@@ -1,14 +1,15 @@
 package com.echall.platform.util;
 
-import jakarta.servlet.http.Cookie;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
+import java.time.Duration;
+import java.util.Arrays;
+
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseCookie;
 import org.springframework.stereotype.Component;
 
-import java.time.Duration;
-
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 
 @Component
 public class CookieUtil {
@@ -20,14 +21,18 @@ public class CookieUtil {
 	@Value("${spring.profiles.active}")
 	private String activeProfile;
 
+	public static boolean verifyAccessTokenCookie(Cookie[] cookies) {
+		return cookies != null && Arrays.stream(cookies).anyMatch(cookie -> cookie.getName().equals(ACCESS_TOKEN_NAME));
+	}
+
 	public void addAccessTokenCookie(HttpServletRequest request, HttpServletResponse response, String accessToken) {
 		removeCookie(request, response, ACCESS_TOKEN_NAME);
-		addCookie(response, ACCESS_TOKEN_NAME, accessToken, (int) ACCESS_TOKEN_COOKIE_EXPIRE.toSeconds());
+		addCookie(response, ACCESS_TOKEN_NAME, accessToken, (int)ACCESS_TOKEN_COOKIE_EXPIRE.toSeconds());
 	}
 
 	public void addRefreshTokenCookie(HttpServletRequest request, HttpServletResponse response, String refreshToken) {
 		removeCookie(request, response, REFRESH_TOKEN_NAME);
-		addCookie(response, REFRESH_TOKEN_NAME, refreshToken, (int) REFRESH_TOKEN_COOKIE_EXPIRE.toSeconds());
+		addCookie(response, REFRESH_TOKEN_NAME, refreshToken, (int)REFRESH_TOKEN_COOKIE_EXPIRE.toSeconds());
 	}
 
 	public void removeAccessTokenCookie(HttpServletRequest request, HttpServletResponse response) {
@@ -37,16 +42,6 @@ public class CookieUtil {
 	public void removeRefreshTokenCookie(HttpServletRequest request, HttpServletResponse response) {
 		removeCookie(request, response, REFRESH_TOKEN_NAME);
 	}
-
-	public static boolean verifyAccessTokenCookie(Cookie[] cookies) {
-		for(Cookie cookie : cookies) {
-			if(cookie.getName().equals("access_token")) {
-				return true;
-			}
-		}
-		return false;
-	}
-
 
 	// Internal Methods=================================================================================================
 	// TODO: https 연결하고 검토 필요
@@ -69,23 +64,23 @@ public class CookieUtil {
 		}
 	}
 
-// TODO: 추후에도 필요가 없어지면 삭제
-//	public String serialize(Object obj) {
-//		return Base64.getUrlEncoder()
-//			.encodeToString(SerializationUtils.serialize(obj));
-//	}
-//
-//	public <T> T deserialize(Cookie cookie, Class<T> cls) {
-//		byte[] decodedBytes = Base64.getUrlDecoder().decode(cookie.getValue());
-//
-//		try (
-//			 ObjectInputStream objectInputStream = new ObjectInputStream(new ByteArrayInputStream(decodedBytes))
-//		) {
-//			return cls.cast(objectInputStream.readObject());
-//		} catch (IOException | ClassNotFoundException e) {
-//			throw new IllegalArgumentException("Failed to deserialize object", e);
-//		}
-//	}
+	// TODO: 추후에도 필요가 없어지면 삭제
+	//	public String serialize(Object obj) {
+	//		return Base64.getUrlEncoder()
+	//			.encodeToString(SerializationUtils.serialize(obj));
+	//	}
+	//
+	//	public <T> T deserialize(Cookie cookie, Class<T> cls) {
+	//		byte[] decodedBytes = Base64.getUrlDecoder().decode(cookie.getValue());
+	//
+	//		try (
+	//			 ObjectInputStream objectInputStream = new ObjectInputStream(new ByteArrayInputStream(decodedBytes))
+	//		) {
+	//			return cls.cast(objectInputStream.readObject());
+	//		} catch (IOException | ClassNotFoundException e) {
+	//			throw new IllegalArgumentException("Failed to deserialize object", e);
+	//		}
+	//	}
 
 	private String createCookieValue(String name, String value, int maxAge) {
 		ResponseCookie.ResponseCookieBuilder cookieBuilder = ResponseCookie.from(name, value)
