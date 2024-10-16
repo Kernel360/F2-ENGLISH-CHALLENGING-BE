@@ -3,6 +3,7 @@ package com.echall.platform.crawling.service;
 import static com.echall.platform.message.error.code.CrawlingErrorCode.*;
 
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
@@ -74,12 +75,23 @@ public class TranslateService {
 		replacements.put('\n', "\\n");
 		replacements.put('\r', "\\r");
 		replacements.put('\t', "\\t");
+		// OS 확인
+		boolean isLinux = System.getProperty("os.name").toLowerCase().contains("linux");
+		boolean isWindows = System.getProperty("os.name").toLowerCase().contains("win");
 
 		StringBuilder escapedText = new StringBuilder();
 
-		for (char c : text.toCharArray()) {
+		String encodedText = new String(text.getBytes(StandardCharsets.UTF_8), StandardCharsets.UTF_8);
+
+		for (char c : encodedText.toCharArray()) {
 			if (replacements.containsKey(c)) {
-				escapedText.append(replacements.get(c));
+				if (isLinux && c == '\n') {
+					escapedText.append("\\n");
+				} else if (isWindows && c == '\r') {
+					escapedText.append("\\r");
+				} else {
+					escapedText.append(replacements.get(c));
+				}
 			} else {
 				escapedText.append(c);
 			}
