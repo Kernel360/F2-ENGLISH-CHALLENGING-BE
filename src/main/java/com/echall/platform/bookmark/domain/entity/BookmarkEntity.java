@@ -42,15 +42,20 @@ public class BookmarkEntity extends BaseEntity {
 	@Column(columnDefinition = "varchar(255)")
 	private String description;
 
+	@Column(nullable = true, columnDefinition = "double")
+	private Double startTimeInSecond;
+
 	@Builder
 	public BookmarkEntity(
-		@NotNull Long scriptIndex, Long sentenceIndex, Long wordIndex, String detail, String description
+		@NotNull Long scriptIndex, Long sentenceIndex, Long wordIndex,
+		String detail, String description, Double startTimeInSecond
 	) {
 		this.scriptIndex = scriptIndex;
 		this.sentenceIndex = sentenceIndex;
 		this.wordIndex = wordIndex;
 		this.detail = detail;
 		this.description = description;
+		this.startTimeInSecond = startTimeInSecond;
 	}
 
 	public void updateDescription(BookmarkRequestDto.BookmarkUpdateRequest bookmarkRequestDto) {

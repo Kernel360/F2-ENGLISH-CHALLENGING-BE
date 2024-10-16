@@ -16,9 +16,11 @@ import com.echall.platform.bookmark.domain.dto.BookmarkResponseDto;
 import com.echall.platform.bookmark.domain.entity.BookmarkEntity;
 import com.echall.platform.bookmark.repository.BookmarkRepository;
 import com.echall.platform.content.domain.entity.ContentDocument;
+import com.echall.platform.content.domain.enums.ContentType;
 import com.echall.platform.content.repository.ContentRepository;
 import com.echall.platform.content.repository.ContentScriptRepository;
 import com.echall.platform.message.error.exception.CommonException;
+import com.echall.platform.script.domain.entity.YoutubeScript;
 import com.echall.platform.user.domain.entity.UserEntity;
 import com.echall.platform.user.repository.UserRepository;
 
@@ -86,6 +88,9 @@ public class BookmarkServiceImpl implements BookmarkService {
 			.wordIndex(bookmarkRequestDto.wordIndex())
 			.description(bookmarkRequestDto.description())
 			.detail(extractDetail(bookmarkRequestDto, content))
+			.startTimeInSecond(extractStartTime(
+				bookmarkRequestDto, contentRepository.findContentTypeById(contentId), content)
+			)
 			.build();
 
 		bookmarkRepository.save(bookmark);
@@ -115,6 +120,7 @@ public class BookmarkServiceImpl implements BookmarkService {
 	}
 
 	// Internal Methods ------------------------------------------------------------------------------------------------
+
 	private String extractDetail(
 		BookmarkRequestDto.BookmarkCreateRequest bookmarkRequestDto, ContentDocument content
 	) {
@@ -123,6 +129,19 @@ public class BookmarkServiceImpl implements BookmarkService {
 				content.getScripts().get(Math.toIntExact(bookmarkRequestDto.sentenceIndex())).getEnScript()
 					.split(" ")[Math.toIntExact(bookmarkRequestDto.wordIndex())],
 			255);
+	}
+
+	private Double extractStartTime(
+		BookmarkRequestDto.BookmarkCreateRequest bookmarkRequestDto,
+		ContentType contentTypeById, ContentDocument content
+	) {
+		if (contentTypeById.equals(ContentType.READING)) {
+			return null;
+		}
+
+		return ((YoutubeScript)content.getScripts()
+			.get(Math.toIntExact(bookmarkRequestDto.sentenceIndex())))
+			.getStartTimeInSecond();
 	}
 
 	private String truncate(String content, int maxLength) {
