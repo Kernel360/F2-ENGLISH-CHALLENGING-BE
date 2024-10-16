@@ -17,8 +17,8 @@ public class RandomNicknameGenerator {
 	private static final Random random = new Random();
 
 	public static String setRandomNickname() {
-		return prefixNicknames.get((int)(Math.random() % 5)) +
-			" " + suffixNicknames.get((int)(Math.random() % 5)) +
+		return prefixNicknames.get((int)(Math.random() * 5)) +
+			" " + suffixNicknames.get((int)(Math.random() * 5)) +
 			" " + String.format("%04d", random.nextInt(10000));
 	}
 
