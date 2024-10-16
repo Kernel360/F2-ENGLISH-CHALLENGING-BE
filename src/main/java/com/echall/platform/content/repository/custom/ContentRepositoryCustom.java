@@ -31,4 +31,6 @@ public interface ContentRepositoryCustom {
 	List<ContentResponseDto.ContentByScrapCountDto> contentByScrapCount(int num);
 
 	ContentType findContentTypeById(Long scriptIndex);
+
+	boolean existsByUrl(String url);
 }

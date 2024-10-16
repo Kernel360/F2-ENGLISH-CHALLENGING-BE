@@ -123,7 +123,7 @@ public class ContentRepositoryImpl extends QuerydslRepositorySupport implements 
 			.select(contentEntity)
 			.where(contentEntity.contentStatus.eq(ContentStatus.ACTIVATED)
 				.and(contentEntity.contentType.eq(contentType)
-				.and(categoryId != null ? contentEntity.category.id.eq(categoryId) : null))
+					.and(categoryId != null ? contentEntity.category.id.eq(categoryId) : null))
 			);
 
 		List<ContentEntity> contents = getQuerydsl()
@@ -195,6 +195,13 @@ public class ContentRepositoryImpl extends QuerydslRepositorySupport implements 
 			.where(contentEntity.id.eq(contentId))
 			.fetchFirst();
 
+	}
+
+	@Override
+	public boolean existsByUrl(String url) {
+		return from(contentEntity)
+			.where(contentEntity.url.eq(url))
+			.fetchFirst() != null;
 	}
 
 	private List<String> splitIntoWords(String words) {

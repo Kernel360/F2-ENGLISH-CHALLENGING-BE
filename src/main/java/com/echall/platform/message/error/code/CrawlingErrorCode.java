@@ -20,9 +20,10 @@ public enum CrawlingErrorCode implements ErrorCode {
 	),
 	CRAWLING_JSOUP_FAILURE(
 		HttpStatus.NOT_ACCEPTABLE, CrawlingServiceStatus.CRAWLING_JSOUP_FAILURE, "JSOUP 런타임 에러"
-	)
-
-	;
+	),
+	CRAWLING_ALREADY_DONE(
+		HttpStatus.BAD_REQUEST, CrawlingServiceStatus.CRAWLING_ALREADY_DONE, "이미 DB에 저장된 크롤링 데이터"
+	);
 
 	private final HttpStatus httpStatus;
 	private final ServiceStatus serviceStatus;
