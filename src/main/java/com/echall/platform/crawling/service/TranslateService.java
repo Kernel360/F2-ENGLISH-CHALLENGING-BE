@@ -3,6 +3,9 @@ package com.echall.platform.crawling.service;
 import static com.echall.platform.message.error.code.CrawlingErrorCode.*;
 
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Objects;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -47,7 +50,8 @@ public class TranslateService {
 	// This function performs a POST request.
 	private String Post(String text, String from, String to) {
 		MediaType mediaType = MediaType.parse("application/json");
-		RequestBody body = RequestBody.create(mediaType, "[{\"Text\": \"" + text + "\"}]");
+		RequestBody body
+			= RequestBody.create(mediaType, "[{\"Text\": \"" + escapeProblematicCharacters(text) + "\"}]");
 		Request request = new Request.Builder()
 			.url(endpoint + "&from=" + from + "&to=" + to)
 			.post(body)
@@ -57,10 +61,27 @@ public class TranslateService {
 			.build();
 		try {
 			Response response = client.newCall(request).execute();
-			return response.body().string();
-		} catch (IOException e) {
+			return Objects.requireNonNull(response.body()).string();
+		} catch (IOException | IllegalStateException e) {
 			throw new CommonException(CRAWLING_TRANSLATE_FAILURE);
 		}
+	}
+
+	private String escapeProblematicCharacters(String text) {
+		Map<Character, String> replacements = new HashMap<>();
+		replacements.put('\\', "\\\\");
+		replacements.put('"', "\\\"");
+		replacements.put('\n', "\\n");
+		replacements.put('\r', "\\r");
+		replacements.put('\t', "\\t");
+
+		StringBuilder escapedText = new StringBuilder();
+
+		for (char c : text.toCharArray()) {
+			escapedText.append(replacements.getOrDefault(c, String.valueOf(c)));
+		}
+
+		return escapedText.toString();
 	}
 
 }
