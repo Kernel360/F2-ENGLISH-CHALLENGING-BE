@@ -2,6 +2,8 @@ package com.echall.platform.oauth2;
 
 import java.io.IOException;
 
+import com.echall.platform.oauth2.repository.OAuth2AuthorizationRequestBasedOnCookieRepository;
+import jakarta.servlet.http.Cookie;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
@@ -20,6 +22,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.web.util.WebUtils;
 
 @Slf4j
 @Component
@@ -29,9 +32,10 @@ public class OAuth2SuccessHandler implements AuthenticationSuccessHandler {
 	private final RefreshTokenService refreshTokenService;
 	private final UserService userService;
 	private final CookieUtil cookieUtil;
+	private final OAuth2AuthorizationRequestBasedOnCookieRepository oAuth2AuthorizationRequestBasedOnCookieRepository;
 
 	@Value("${spring.security.oauth2.success.redirect-uri}")
-	public String oAuth2SuccessRedirectUri;
+	public String oAuth2SuccessRedirectBaseUri;
 
 	@Override
 	@LoginLogging
@@ -50,6 +54,16 @@ public class OAuth2SuccessHandler implements AuthenticationSuccessHandler {
 			cookieUtil.addAccessTokenCookie(request, response, accessToken);
 
 			refreshTokenService.saveRefreshToken(user, refreshToken);
+
+			oAuth2AuthorizationRequestBasedOnCookieRepository.removeCookies(request, response);
+
+			Cookie cookie = WebUtils.getCookie(request, CookieUtil.RETURN_URL_NAME);
+			if (cookie != null) {
+				response.sendRedirect(oAuth2SuccessRedirectBaseUri + cookie.getValue());
+			} else {
+				response.sendRedirect(oAuth2SuccessRedirectBaseUri);
+			}
+
 
 		} catch (CommonException e) {
 			log.error(e.getErrorCode().getCode() + " : " + e.getErrorCode().getMessage());
