@@ -2,6 +2,7 @@ package com.echall.platform.question.domain.entity;
 
 import org.springframework.data.mongodb.core.mapping.Document;
 
+import com.echall.platform.question.domain.enums.QuestionType;
 import com.echall.platform.util.MongoBaseDocument;
 
 import lombok.AccessLevel;
@@ -15,18 +16,24 @@ import lombok.NoArgsConstructor;
 public class QuestionDocument extends MongoBaseDocument {
 
 	private String question;
+	private String questionKo;
 	private String answer;
+	private QuestionType type;
 
 	@Builder
-	public QuestionDocument(String question, String answer) {
+	public QuestionDocument(String question, String questionKo, String answer, QuestionType type) {
 		this.question = question;
+		this.questionKo = questionKo;
 		this.answer = answer;
+		this.type = type;
 	}
 
-	public static QuestionDocument of(String question, String answer) {
+	public static QuestionDocument of(String question, String questionKo, String answer, QuestionType type) {
 		return QuestionDocument.builder()
 			.question(question)
+			.questionKo(questionKo)
 			.answer(answer)
+			.type(type)
 			.build();
 	}
 }

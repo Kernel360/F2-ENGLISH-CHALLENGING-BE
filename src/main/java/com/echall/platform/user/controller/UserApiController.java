@@ -2,9 +2,9 @@ package com.echall.platform.user.controller;
 
 import static com.echall.platform.message.response.UserResponseCode.*;
 
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
@@ -16,15 +16,24 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.echall.platform.message.ApiCustomResponse;
 import com.echall.platform.message.ResponseEntityFactory;
+import com.echall.platform.oauth2.domain.info.OAuth2UserPrincipal;
+import com.echall.platform.swagger.SwaggerBooleanReturn;
+import com.echall.platform.swagger.SwaggerVoidReturn;
+import com.echall.platform.swagger.user.SwaggerUserMyPage;
+import com.echall.platform.swagger.user.SwaggerUserMyTime;
+import com.echall.platform.swagger.user.SwaggerUserUpdate;
 import com.echall.platform.user.domain.dto.UserRequestDto;
 import com.echall.platform.user.domain.dto.UserResponseDto;
 import com.echall.platform.user.service.UserService;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 
 @RestController
@@ -39,7 +48,9 @@ public class UserApiController {
 	@PostMapping("/input-info")
 	@Operation(summary = "소셜 회원가입 후 정보 입력", description = "회원 가입 시 정보 입력 할 때 사용하는 API")
 	@ApiResponses(value = {
-		@ApiResponse(responseCode = "200", description = "요청에 성공하였습니다.", content = @Content(mediaType = "application/json")),
+		@ApiResponse(responseCode = "200", description = "요청에 성공하였습니다.", content = {
+			@Content(mediaType = "application/json", schema = @Schema(implementation = SwaggerUserUpdate.class))}
+		),
 		@ApiResponse(responseCode = "202", description = "이미 가입된 계정입니다.", content = @Content(mediaType = "application/json")),
 		@ApiResponse(responseCode = "404", description = "데이터베이스 연결에 실패하였습니다.", content = @Content(mediaType = "application/json")),
 	})
@@ -55,7 +66,9 @@ public class UserApiController {
 	@GetMapping("/me")
 	@Operation(summary = "회원 정보 조회", description = "유저가 본인의 정보를 조회합니다.")
 	@ApiResponses(value = {
-		@ApiResponse(responseCode = "200", description = "요청에 성공하였습니다.", content = @Content(mediaType = "application/json")),
+		@ApiResponse(responseCode = "200", description = "요청에 성공하였습니다.", content = {
+			@Content(mediaType = "application/json", schema = @Schema(implementation = SwaggerUserMyPage.class))}
+		),
 		@ApiResponse(responseCode = "404", description = "데이터베이스 연결에 실패하였습니다.", content = @Content(mediaType = "application/json"))
 	})
 	public ResponseEntity<ApiCustomResponse<UserResponseDto.UserMyPageResponse>> getMyPage(
@@ -68,7 +81,9 @@ public class UserApiController {
 	@PatchMapping("/me")
 	@Operation(summary = "회원 정보 수정", description = "유저가 본인의 정보를 수정합니다.")
 	@ApiResponses(value = {
-		@ApiResponse(responseCode = "200", description = "요청에 성공하였습니다.", content = @Content(mediaType = "application/json")),
+		@ApiResponse(responseCode = "200", description = "요청에 성공하였습니다.", content = {
+			@Content(mediaType = "application/json", schema = @Schema(implementation = SwaggerUserUpdate.class))}
+		),
 		@ApiResponse(responseCode = "404", description = "데이터베이스 연결에 실패하였습니다.", content = @Content(mediaType = "application/json"))
 	})
 	public ResponseEntity<ApiCustomResponse<UserResponseDto.UserUpdateResponse>> updateExistedUserInfo(
@@ -82,10 +97,63 @@ public class UserApiController {
 			);
 	}
 
+	@GetMapping("/time")
+	@Operation(summary = "회원 가입 날짜 조회", description = "유저가 회원 가입 날짜를 조회합니다.")
+	@ApiResponses(value = {
+		@ApiResponse(responseCode = "200", description = "요청에 성공하였습니다.", content = {
+			@Content(mediaType = "application/json", schema = @Schema(implementation = SwaggerUserMyTime.class))}
+		),
+		@ApiResponse(responseCode = "404", description = "데이터베이스 연결에 실패하였습니다.", content = @Content(mediaType = "application/json"))
+	})
+	public ResponseEntity<ApiCustomResponse<UserResponseDto.UserMyTimeResponse>> getMySignUpTime(
+		@AuthenticationPrincipal OAuth2UserPrincipal oAuth2UserPrincipal) {
+
+		return ResponseEntityFactory
+			.toResponseEntity(USER_GET_INFO, userService.getMySignUpTime(oAuth2UserPrincipal.getId()));
+	}
+
+	@PostMapping("/logout")
+	@Operation(summary = "회원 로그아웃", description = "유저가 로그아웃합니다.")
+	@ApiResponses(value = {
+		@ApiResponse(responseCode = "200", description = "로그아웃에 성공하였습니다.", content = {
+			@Content(mediaType = "application/json", schema = @Schema(implementation = SwaggerVoidReturn.class))
+		}),
+		@ApiResponse(responseCode = "404", description = "데이터베이스 연결에 실패하였습니다.", content = @Content(mediaType = "application/json"))
+	})
+	public ResponseEntity<ApiCustomResponse<Void>> logout(
+		HttpServletRequest request,
+		HttpServletResponse response,
+		@AuthenticationPrincipal OAuth2UserPrincipal oAuth2UserPrincipal
+	) {
+		userService.logout(request, response, oAuth2UserPrincipal.getId());
+
+		return ResponseEntityFactory.toResponseEntity(USER_LOGOUT_SUCCESS);
+	}
+
+	@GetMapping("/status")
+	@Operation(summary = "회원 로그인 상태 조회", description = "회원 로그인 상태를 조회합니다.")
+	@ApiResponses(value = {
+		@ApiResponse(responseCode = "200", description = "요청에 성공하였습니다.", content = {
+			@Content(mediaType = "application/json", schema = @Schema(implementation = SwaggerBooleanReturn.class))}
+		),
+		@ApiResponse(responseCode = "404", description = "데이터베이스 연결에 실패하였습니다.", content = @Content(mediaType = "application/json"))
+	})
+	public ResponseEntity<ApiCustomResponse<Boolean>> getUserStatus(
+		HttpServletRequest request
+	) {
+
+		return ResponseEntityFactory
+			.toResponseEntity(USER_STATUS_INFO, userService.getUserStatus(request));
+	}
+
+/*
+	// TODO: 챌린지 추가 하면 주석 해제 및 스웨거 추가, 이후에도 챌린지 추가되지 않으면 USER_GET_CHALLENGE 삭제 필요
 	@GetMapping("/me/challenge")
 	@Operation(summary = "회원 챌린지 조회", description = "유저가 본인의 챌린지를 조회합니다.")
 	@ApiResponses(value = {
-		@ApiResponse(responseCode = "200", description = "요청에 성공하였습니다.", content = @Content(mediaType = "application/json")),
+		@ApiResponse(responseCode = "200", description = "요청에 성공하였습니다.", content = {
+			@Content(mediaType = "application/json", schema = @Schema(implementation = .class))}
+		),
 		@ApiResponse(responseCode = "404", description = "데이터베이스 연결에 실패하였습니다.", content = @Content(mediaType = "application/json"))
 	})
 	public ResponseEntity<ApiCustomResponse<UserResponseDto.UserChallengeResponse>> userChallenge(
@@ -94,5 +162,6 @@ public class UserApiController {
 		return ResponseEntityFactory
 			.toResponseEntity(USER_GET_CHALLENGE, userService.getMyChallenge(authentication.getName()));
 	}
+*/
 
 }

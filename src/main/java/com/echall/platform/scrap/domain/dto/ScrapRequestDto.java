@@ -1,5 +1,6 @@
 package com.echall.platform.scrap.domain.dto;
 
+import com.echall.platform.content.domain.entity.ContentEntity;
 import com.echall.platform.scrap.domain.entity.ScrapEntity;
 
 public class ScrapRequestDto {
@@ -7,9 +8,9 @@ public class ScrapRequestDto {
 	public record ScrapCreateRequestDto(
 		Long contentId
 	) {
-		public ScrapEntity toEntity() {
+		public ScrapEntity toEntity(ContentEntity content) {
 			return ScrapEntity.builder()
-				.contentId(contentId)
+				.content(content)
 				.build();
 		}
 	}
@@ -18,10 +19,5 @@ public class ScrapRequestDto {
 		Long contentId
 	) {
 
-	}
-
-	public record ScrapCheckRequestDto(
-		Long contentId
-	) {
 	}
 }

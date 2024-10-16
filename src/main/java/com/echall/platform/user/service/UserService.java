@@ -2,21 +2,30 @@ package com.echall.platform.user.service;
 
 import com.echall.platform.message.error.exception.CommonException;
 import com.echall.platform.oauth2.domain.info.OAuth2UserPrincipal;
+import com.echall.platform.oauth2.repository.RefreshTokenRepository;
 import com.echall.platform.user.domain.dto.UserRequestDto;
 import com.echall.platform.user.domain.dto.UserResponseDto;
 import com.echall.platform.user.domain.entity.UserEntity;
 import com.echall.platform.user.domain.enums.UserStatus;
 import com.echall.platform.user.repository.UserRepository;
+import com.echall.platform.util.CookieUtil;
+
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import static com.echall.platform.message.error.code.UserErrorCode.*;
+import static com.echall.platform.util.CookieUtil.*;
 
 @RequiredArgsConstructor
 @Service
 public class UserService {
+	private final CookieUtil cookieUtil;
 	private final UserRepository userRepository;
+	private final RefreshTokenRepository refreshTokenRepository;
 
 	@Transactional
 	public UserResponseDto.UserUpdateResponse updateUserInfo(
@@ -33,7 +42,7 @@ public class UserService {
 		// update user info
 		user.updateUserInfo(userUpdateRequest);
 
-		return UserResponseDto.UserUpdateResponse.toDto(user);
+		return UserResponseDto.UserUpdateResponse.of(user);
 	}
 
 	@Transactional(readOnly = true)
@@ -41,7 +50,14 @@ public class UserService {
 		UserEntity user = this.getUserByEmail(email);
 		AssertThat_UserAccountIsAppropriate(user);
 
-		return UserResponseDto.UserMyPageResponse.toDto(user);
+		return UserResponseDto.UserMyPageResponse.of(user);
+	}
+
+	@Transactional(readOnly = true)
+	public UserResponseDto.UserMyTimeResponse getMySignUpTime(Long id) {
+		UserEntity user = this.getUserById(id);
+
+		return UserResponseDto.UserMyTimeResponse.of(user);
 	}
 
 	@Transactional(readOnly = true)
@@ -75,7 +91,21 @@ public class UserService {
 		return user;
 	}
 
+	@Transactional
+	public void logout(HttpServletRequest request, HttpServletResponse response, Long userId) {
+		cookieUtil.removeAccessTokenCookie(request, response);
+
+		cookieUtil.removeRefreshTokenCookie(request, response);
+
+		refreshTokenRepository.deleteByUserId(userId);
+	}
+
+	public Boolean getUserStatus(HttpServletRequest request) {
+		return verifyAccessTokenCookie(request.getCookies());
+	}
+
 	// Internal Methods=================================================================================================
+
 	public UserEntity getUserByEmail(String email) {
 		return userRepository.findByEmail(email)
 			.orElseThrow(() -> new CommonException(USER_NOT_FOUND));
@@ -89,5 +119,4 @@ public class UserService {
 			throw new CommonException(USER_FAIL_SUSPEND);
 		}
 	}
-
 }

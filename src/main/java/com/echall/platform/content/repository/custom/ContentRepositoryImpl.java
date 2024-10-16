@@ -2,30 +2,24 @@ package com.echall.platform.content.repository.custom;
 
 import static com.echall.platform.content.domain.entity.QContentEntity.*;
 import static com.echall.platform.message.error.code.ContentErrorCode.*;
-import static com.echall.platform.message.error.code.UserErrorCode.*;
+import static com.echall.platform.scrap.domain.entity.QScrapEntity.*;
 
 import java.lang.reflect.Field;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
+import java.util.Objects;
 
-import org.bson.types.ObjectId;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.support.QuerydslRepositorySupport;
 import org.springframework.data.support.PageableExecutionUtils;
-import org.springframework.transaction.annotation.Transactional;
 
 import com.echall.platform.content.domain.dto.ContentResponseDto;
-import com.echall.platform.content.domain.entity.ContentDocument;
 import com.echall.platform.content.domain.entity.ContentEntity;
-import com.echall.platform.content.domain.entity.Script;
 import com.echall.platform.content.domain.enums.ContentType;
-import com.echall.platform.content.domain.enums.SearchCondition;
-import com.echall.platform.content.repository.ContentScriptRepository;
 import com.echall.platform.message.error.exception.CommonException;
+import com.querydsl.core.Tuple;
 import com.querydsl.core.types.Order;
 import com.querydsl.core.types.OrderSpecifier;
 import com.querydsl.core.types.Path;
@@ -34,78 +28,12 @@ import com.querydsl.jpa.JPQLQuery;
 
 public class ContentRepositoryImpl extends QuerydslRepositorySupport implements ContentRepositoryCustom {
 
-	private final ContentScriptRepository contentScriptRepository;
-
-	public ContentRepositoryImpl(ContentScriptRepository contentScriptRepository) {
+	public ContentRepositoryImpl() {
 		super(ContentEntity.class);
-		this.contentScriptRepository = contentScriptRepository;
 	}
 
 	@Override
-	@Transactional(readOnly = true)
-	public Page<ContentResponseDto.ContentViewResponseDto> search(Pageable pageable, SearchCondition searchCondition) {
-
-		// Step 1: Fetch relevant MongoDB data
-		List<String> mongoIds = contentScriptRepository.findByScripts(searchCondition.getScript())
-			.stream()
-			.map(ContentDocument::getStringId)
-			.toList();
-
-		// Step 2: Fetch JPA data using Querydsl
-		JPQLQuery<ContentEntity> jpaQuery = from(contentEntity)
-			.select(contentEntity);
-		if (searchCondition.getTitle() != null && !searchCondition.getTitle().isBlank()) {
-			jpaQuery.where(contentEntity.title.containsIgnoreCase(searchCondition.getTitle()));
-		}
-		if (searchCondition.getScript() != null && !searchCondition.getScript().isEmpty()) {
-			jpaQuery.where(contentEntity.mongoContentId.in(mongoIds));
-		}
-
-		List<ContentEntity> contentEntities = Optional.ofNullable(getQuerydsl())
-			.orElseThrow(() -> new CommonException(USER_NOT_FOUND))
-			.applyPagination(pageable, jpaQuery)
-			.fetch();
-
-		// Step 3: Fetch MongoDB data separately for DTO creation
-		List<ContentResponseDto.ContentViewResponseDto> responseDtos = contentEntities.stream()
-			.map(entity -> {
-				// Fetch Mysql Entity
-				String scriptSentences = entity.getPreScripts();
-				if (searchCondition.getScript() != null || searchCondition.getTitle() != null) {
-					// Fetch MongoDB document
-					scriptSentences
-						= contentScriptRepository.findContentDocumentById(new ObjectId(entity.getMongoContentId()))
-						.orElseThrow(() -> new CommonException(CONTENT_NOT_FOUND))
-						.getScripts().subList(0, 5)
-						.stream()
-						.map(Script::getEnScript)
-						.toList().toString();
-					if (scriptSentences.length() > 255) {
-						scriptSentences = scriptSentences.substring(0, 255);
-					}
-				}
-
-				// Create DTO with both JPA and MongoDB data
-				return new ContentResponseDto.ContentViewResponseDto(
-					entity.getId(),
-					entity.getMongoContentId(),
-					entity.getTitle(),
-					scriptSentences,
-					scriptSentences,    // TODO: 번역 해야 하면 변경
-					entity.getContentType(),
-					entity.getCreatedAt(),
-					entity.getUpdatedAt()
-				);
-			})
-			.collect(Collectors.toList());
-
-		// Step 4: Return paginated result
-		return new PageImpl<>(responseDtos, pageable, jpaQuery.fetchCount());
-	}
-
-	@Override
-	@Transactional(readOnly = true)
-	public List<ContentResponseDto.ContentPreviewResponseDto> getPreviewContents(
+	public List<ContentResponseDto.ContentPreviewResponseDto> findPreviewContents(
 		ContentType contentType, String sortBy, int num
 	) {
 		Field field;
@@ -140,7 +68,6 @@ public class ContentRepositoryImpl extends QuerydslRepositorySupport implements 
 	}
 
 	@Override
-	@Transactional
 	public int updateHit(Long contentId) {
 		return Math.toIntExact(
 			update(contentEntity)
@@ -185,6 +112,39 @@ public class ContentRepositoryImpl extends QuerydslRepositorySupport implements 
 			.select(contentEntity.mongoContentId)
 			.where(contentEntity.id.eq(contentId))
 			.fetchOne();
+	}
+
+	@Override
+	public List<ContentResponseDto.ContentByScrapCountDto> contentByScrapCount(int num) {
+		List<Tuple> tuples = from(scrapEntity)
+			.select(scrapEntity.content.id, scrapEntity.count())
+			.groupBy(scrapEntity.content.id)
+			.orderBy(scrapEntity.count().desc())
+			.limit(num)
+			.fetch();
+
+		List<Long> contentIds = tuples.stream()
+			.map(
+				tuple -> tuple.get(scrapEntity.content.id)
+			).toList();
+
+		List<ContentEntity> contents = from(contentEntity)
+			.select(contentEntity)
+			.where(contentEntity.id.in(contentIds))
+			.fetch();
+
+		return contents.stream()
+			.map(content -> {
+				Long count = tuples.stream()
+					.filter(tuple -> Objects.equals(tuple.get(scrapEntity.content.id), content.getId()))
+					.findFirst()
+					.map(tuple -> tuple.get(scrapEntity.count()))
+					.orElse(0L);
+				return ContentResponseDto.ContentByScrapCountDto.of(content, count);
+			}).sorted(Comparator.comparing(ContentResponseDto.ContentByScrapCountDto::countScrap).reversed())
+			.toList();
+
+
 	}
 
 }

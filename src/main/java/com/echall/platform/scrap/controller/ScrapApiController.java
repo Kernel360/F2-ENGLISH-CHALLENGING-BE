@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.echall.platform.message.ApiCustomResponse;
@@ -21,9 +22,14 @@ import com.echall.platform.oauth2.domain.info.OAuth2UserPrincipal;
 import com.echall.platform.scrap.domain.dto.ScrapRequestDto;
 import com.echall.platform.scrap.domain.dto.ScrapResponseDto;
 import com.echall.platform.scrap.service.ScrapService;
+import com.echall.platform.swagger.SwaggerBooleanReturn;
+import com.echall.platform.swagger.SwaggerVoidReturn;
+import com.echall.platform.swagger.scrap.SwaggerScrapCreate;
+import com.echall.platform.swagger.scrap.SwaggerScrapView;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -31,15 +37,18 @@ import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
 @RestController
-@RequestMapping("/api/admin/scrap")
-@Tag(name = "Scrap - private API", description = "스크랩 회원전용 API")
+@RequestMapping("/api/scrap")
+@Tag(name = "Scrap - public API", description = "스크랩 회원전용 API")
 public class ScrapApiController {
 	private final ScrapService scrapService;
 
 	@GetMapping("/view")
 	@Operation(summary = "스크랩 조회", description = "전체 스크랩 목록을 조회합니다.")
 	@ApiResponses(value = {
-		@ApiResponse(responseCode = "200", description = "요청에 성공하였습니다.", content = @Content),
+		@ApiResponse(responseCode = "200", description = "요청에 성공하였습니다.",
+			content = {
+				@Content(mediaType = "application/json", schema = @Schema(implementation = SwaggerScrapView.class))}
+		),
 		@ApiResponse(responseCode = "204", description = "요청한 스크랩이 없습니다.", content = @Content),
 		@ApiResponse(responseCode = "500", description = "서버 에러가 발생하였습니다.", content = @Content)
 	})
@@ -55,24 +64,28 @@ public class ScrapApiController {
 	@GetMapping("/check")
 	@Operation(summary = "스크랩 확인", description = "스크랩 했는지 확인합니다.")
 	@ApiResponses(value = {
-		@ApiResponse(responseCode = "200", description = "요청에 성공하였습니다.", content = @Content),
-		@ApiResponse(responseCode = "204", description = "요청한 스크랩이 없습니다.", content = @Content),
+		@ApiResponse(responseCode = "200", description = "요청에 성공하였습니다.",
+			content = {
+				@Content(mediaType = "application/json", schema = @Schema(implementation = SwaggerBooleanReturn.class))}
+		), @ApiResponse(responseCode = "204", description = "요청한 스크랩이 없습니다.", content = @Content),
 		@ApiResponse(responseCode = "500", description = "서버 에러가 발생하였습니다.", content = @Content)
 	})
 	public ResponseEntity<ApiCustomResponse<Boolean>> existsScrap(
 		@AuthenticationPrincipal OAuth2UserPrincipal oAuth2UserPrincipal,
-		@RequestBody ScrapRequestDto.ScrapCheckRequestDto requestDto
-	){
+		@RequestParam Long contentId
+	) {
 		return ResponseEntityFactory.toResponseEntity(
-			SCRAP_CHECK_SUCCESS, scrapService.existsScrap(oAuth2UserPrincipal.getId(), requestDto)
+			SCRAP_CHECK_SUCCESS, scrapService.existsScrap(oAuth2UserPrincipal.getId(), contentId)
 		);
 	}
 
 	@PostMapping("/create")
 	@Operation(summary = "스크랩 생성", description = "새로운 스크랩을 생성합니다.")
 	@ApiResponses(value = {
-		@ApiResponse(responseCode = "200", description = "요청에 성공하였습니다.", content = @Content),
-		@ApiResponse(responseCode = "204", description = "요청한 스크랩이 없습니다.", content = @Content),
+		@ApiResponse(responseCode = "200", description = "요청에 성공하였습니다.",
+			content = {
+				@Content(mediaType = "application/json", schema = @Schema(implementation = SwaggerScrapCreate.class))}
+		), @ApiResponse(responseCode = "204", description = "요청한 스크랩이 없습니다.", content = @Content),
 		@ApiResponse(responseCode = "500", description = "서버 에러가 발생하였습니다.", content = @Content)
 	})
 	public ResponseEntity<ApiCustomResponse<ScrapResponseDto.ScrapCreateResponseDto>> createScrap(
@@ -87,11 +100,13 @@ public class ScrapApiController {
 	@DeleteMapping("/delete")
 	@Operation(summary = "스크랩 삭제", description = "스크랩을 삭제합니다.")
 	@ApiResponses(value = {
-		@ApiResponse(responseCode = "200", description = "요청에 성공하였습니다.", content = @Content),
-		@ApiResponse(responseCode = "204", description = "요청한 스크랩이 없습니다.", content = @Content),
+		@ApiResponse(responseCode = "200", description = "요청에 성공하였습니다.",
+			content = {
+				@Content(mediaType = "application/json", schema = @Schema(implementation = SwaggerVoidReturn.class))}
+		), @ApiResponse(responseCode = "204", description = "요청한 스크랩이 없습니다.", content = @Content),
 		@ApiResponse(responseCode = "500", description = "서버 에러가 발생하였습니다.", content = @Content)
 	})
-	public ResponseEntity<ApiCustomResponse> deleteScrap(
+	public ResponseEntity<ApiCustomResponse<Void>> deleteScrap(
 		@AuthenticationPrincipal OAuth2UserPrincipal oAuth2UserPrincipal,
 		@RequestBody ScrapRequestDto.ScrapDeleteRequestDto requestDto
 	) {

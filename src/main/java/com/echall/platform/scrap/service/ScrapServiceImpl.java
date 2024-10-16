@@ -1,5 +1,6 @@
 package com.echall.platform.scrap.service;
 
+import static com.echall.platform.message.error.code.ContentErrorCode.*;
 import static com.echall.platform.message.error.code.ScrapErrorCode.*;
 import static com.echall.platform.message.error.code.UserErrorCode.*;
 
@@ -8,6 +9,7 @@ import java.util.List;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.echall.platform.content.repository.ContentRepository;
 import com.echall.platform.message.error.exception.CommonException;
 import com.echall.platform.scrap.domain.dto.ScrapRequestDto;
 import com.echall.platform.scrap.domain.dto.ScrapResponseDto;
@@ -22,17 +24,15 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class ScrapServiceImpl implements ScrapService {
 	private final ScrapRepository scrapRepository;
+	private final ContentRepository contentRepository;
 	private final UserRepository userRepository;
 
 	@Override
 	@Transactional(readOnly = true)
 	public List<ScrapResponseDto.ScrapViewResponseDto> getAllScraps(Long userId) {
-		List<ScrapEntity> scrap = scrapRepository.findAllByUserId(userId);
-		if (scrap.isEmpty()) {
-			throw new CommonException(SCRAP_NOT_FOUND);
-		}
+		List<ScrapEntity> scraps = scrapRepository.findAllByUserId(userId);
 
-		return scrap
+		return scraps
 			.stream()
 			.map(ScrapResponseDto.ScrapViewResponseDto::from)
 			.toList();
@@ -50,12 +50,15 @@ public class ScrapServiceImpl implements ScrapService {
 			throw new CommonException(SCRAP_ALREADY_EXISTS);
 		}
 
-		ScrapEntity scrap = requestDto.toEntity();
+		ScrapEntity scrap = requestDto.toEntity(
+			contentRepository.findById(requestDto.contentId())
+				.orElseThrow(() -> new CommonException(CONTENT_NOT_FOUND))
+		);
 
 		scrapRepository.save(scrap);
 		user.getScraps().add(scrap);
 
-		return ScrapResponseDto.ScrapCreateResponseDto.from(scrap.getContentId());
+		return ScrapResponseDto.ScrapCreateResponseDto.from(scrap.getContent());
 	}
 
 	@Override
@@ -67,7 +70,7 @@ public class ScrapServiceImpl implements ScrapService {
 	}
 
 	@Override
-	public boolean existsScrap(Long userId, ScrapRequestDto.ScrapCheckRequestDto requestDto) {
-		return scrapRepository.existsScrap(userId, requestDto.contentId());
+	public boolean existsScrap(Long userId, Long contentId) {
+		return scrapRepository.existsScrap(userId, contentId);
 	}
 }

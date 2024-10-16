@@ -12,6 +12,8 @@ spring:
     group:
       logging: log
     active: local
+  jackson:
+    time-zone: Asia/Seoul
   jpa:
     hibernate:
       ddl-auto: update

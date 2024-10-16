@@ -1,27 +1,19 @@
 package com.echall.platform.content.domain.dto;
 
-import com.echall.platform.content.domain.entity.ContentEntity;
-import com.echall.platform.content.domain.entity.Script;
-import com.echall.platform.content.domain.enums.ContentType;
+import static com.echall.platform.message.error.code.CategoryErrorCode.*;
 
-import java.time.LocalDateTime;
 import java.util.List;
 
+import com.echall.platform.content.domain.entity.ContentDocument;
+import com.echall.platform.content.domain.entity.ContentEntity;
+import com.echall.platform.content.domain.enums.ContentType;
+import com.echall.platform.message.error.exception.CommonException;
+import com.echall.platform.script.domain.entity.Script;
+import com.fasterxml.jackson.annotation.JsonInclude;
+
+import lombok.Builder;
+
 public class ContentResponseDto {
-
-	// ContentRepositoryImpl의 search 메서드에서 사용하는 Dto
-	public record ContentViewResponseDto(
-		Long contentId,
-		String scriptId,
-		String title,
-		String enScripts,
-		String koScripts,
-		ContentType contentType,
-		LocalDateTime createdAt,
-		LocalDateTime updatedAt
-	) {
-
-	}
 
 	public record ContentCreateResponseDto(
 		String scriptId,
@@ -36,15 +28,42 @@ public class ContentResponseDto {
 
 	}
 
+	@Builder
 	public record ContentDetailResponseDto(
 		Long contentId,
 		ContentType contentType,
 		String category,
 		String title,
 		String thumbnailUrl,
+		@JsonInclude(JsonInclude.Include.NON_NULL)
+		String videoUrl,
+		Integer hits,
 		List<Script> scriptList
 	) {
+		public static ContentDetailResponseDto of(ContentEntity content, ContentDocument contentDocument) {
+			return ContentDetailResponseDto.builder()
+				.contentId(content.getId())
+				.contentType(content.getContentType())
+				.category(content.getCategory().getName())
+				.title(content.getTitle())
+				.thumbnailUrl(content.getThumbnailUrl())
+				.videoUrl(toListeningUrl(content))
+				.hits(content.getHits())
+				.scriptList(contentDocument.getScripts())
+				.build();
+		}
 
+		private static String toListeningUrl(ContentEntity content) {
+			switch (content.getContentType()) {
+				case LISTENING -> {
+					return content.getUrl();
+				}
+				case READING -> {
+					return null;
+				}
+				default -> throw new CommonException(CATEGORY_NOT_FOUND);
+			}
+		}
 	}
 
 	public record ContentPreviewResponseDto(
@@ -56,7 +75,7 @@ public class ContentResponseDto {
 		String category,
 		int hits
 	) {
-		public static ContentPreviewResponseDto from(ContentEntity content) {
+		public static ContentPreviewResponseDto of(ContentEntity content) {
 			return new ContentPreviewResponseDto(
 				content.getId(),
 				content.getTitle(),
@@ -68,4 +87,27 @@ public class ContentResponseDto {
 			);
 		}
 	}
+
+	public record ContentByScrapCountDto(
+		Long contentId,
+		String title,
+		String thumbnailUrl,
+		ContentType contentType,
+		String preScripts,
+		String category,
+		Long countScrap
+	) {
+		public static ContentByScrapCountDto of(ContentEntity content, Long count){
+			return new ContentByScrapCountDto(
+				content.getId(),
+				content.getTitle(),
+				content.getThumbnailUrl(),
+				content.getContentType(),
+				content.getPreScripts(),
+				content.getCategory().getName(),
+				count
+			);
+		}
+	}
+
 }

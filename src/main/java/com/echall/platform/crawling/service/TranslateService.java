@@ -3,6 +3,10 @@ package com.echall.platform.crawling.service;
 import static com.echall.platform.message.error.code.CrawlingErrorCode.*;
 
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Objects;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -47,7 +51,8 @@ public class TranslateService {
 	// This function performs a POST request.
 	private String Post(String text, String from, String to) {
 		MediaType mediaType = MediaType.parse("application/json");
-		RequestBody body = RequestBody.create(mediaType, "[{\"Text\": \"" + text + "\"}]");
+		RequestBody body
+			= RequestBody.create(mediaType, "[{\"Text\": \"" + escapeProblematicCharacters(text) + "\"}]");
 		Request request = new Request.Builder()
 			.url(endpoint + "&from=" + from + "&to=" + to)
 			.post(body)
@@ -57,10 +62,42 @@ public class TranslateService {
 			.build();
 		try {
 			Response response = client.newCall(request).execute();
-			return response.body().string();
-		} catch (IOException e) {
+			return Objects.requireNonNull(response.body()).string();
+		} catch (IOException | IllegalStateException e) {
 			throw new CommonException(CRAWLING_TRANSLATE_FAILURE);
 		}
+	}
+
+	private String escapeProblematicCharacters(String text) {
+		Map<Character, String> replacements = new HashMap<>();
+		replacements.put('\\', "\\\\");
+		replacements.put('"', "\\\"");
+		replacements.put('\n', "\\n");
+		replacements.put('\r', "\\r");
+		replacements.put('\t', "\\t");
+		// OS 확인
+		boolean isLinux = System.getProperty("os.name").toLowerCase().contains("linux");
+		boolean isWindows = System.getProperty("os.name").toLowerCase().contains("win");
+
+		StringBuilder escapedText = new StringBuilder();
+
+		String encodedText = new String(text.getBytes(StandardCharsets.UTF_8), StandardCharsets.UTF_8);
+
+		for (char c : encodedText.toCharArray()) {
+			if (replacements.containsKey(c)) {
+				if (isLinux && c == '\n') {
+					escapedText.append("\\n");
+				} else if (isWindows && c == '\r') {
+					escapedText.append("\\r");
+				} else {
+					escapedText.append(replacements.get(c));
+				}
+			} else {
+				escapedText.append(c);
+			}
+		}
+
+		return escapedText.toString();
 	}
 
 }

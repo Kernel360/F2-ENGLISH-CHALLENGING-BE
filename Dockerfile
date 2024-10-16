@@ -36,4 +36,4 @@ COPY ./src/main/resources/.env biengual/.env
 EXPOSE 8080
 
 WORKDIR /biengual
-ENTRYPOINT ["java", "-Dspring.profiles.active=${PROFILES}", "-jar", "app.jar"]
+ENTRYPOINT ["java", "-Dfile.encoding=UTF-8", "-Dspring.profiles.active=${PROFILES}", "-jar", "app.jar"]

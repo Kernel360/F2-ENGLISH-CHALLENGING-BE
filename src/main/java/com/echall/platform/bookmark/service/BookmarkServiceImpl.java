@@ -4,6 +4,7 @@ import static com.echall.platform.message.error.code.BookmarkErrorCode.*;
 import static com.echall.platform.message.error.code.ContentErrorCode.*;
 import static com.echall.platform.message.error.code.UserErrorCode.*;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.bson.types.ObjectId;
@@ -36,13 +37,12 @@ public class BookmarkServiceImpl implements BookmarkService {
 	public List<BookmarkResponseDto.BookmarkListResponseDto> getBookmarks(String email, Long contentId) {
 		UserEntity user = userRepository.findByEmail(email)
 			.orElseThrow(() -> new CommonException(USER_NOT_FOUND));
+
 		List<BookmarkEntity> bookmarks = user.getBookmarks()
 			.stream()
 			.filter(bookmarkEntity -> bookmarkEntity.getScriptIndex().equals(contentId))
 			.toList();
-		if (bookmarks.isEmpty()) {
-			throw new CommonException(BOOKMARK_NOT_FOUND);
-		}
+
 
 		return bookmarks.stream()
 			.map(BookmarkResponseDto.BookmarkListResponseDto::of)

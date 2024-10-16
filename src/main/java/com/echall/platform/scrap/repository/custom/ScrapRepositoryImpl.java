@@ -22,21 +22,23 @@ public class ScrapRepositoryImpl extends QuerydslRepositorySupport implements Sc
 		return from(userEntity)
 			.join(userEntity.scraps, scrapEntity)
 			.select(scrapEntity)
+			.orderBy(scrapEntity.createdAt.desc())
 			.where(userEntity.id.eq(userId))
 			.fetch();
 	}
 
+	
 	@Override
 	public void deleteScrap(Long userId, Long contentId) {
 		Optional.ofNullable(from(userEntity)
 				.join(userEntity.scraps, scrapEntity)
 				.select(scrapEntity)
 				.where(userEntity.id.eq(userId))
-				.where(scrapEntity.contentId.eq(contentId))
+				.where(scrapEntity.content.id.eq(contentId))
 				.fetchOne())
 			.orElseThrow(() -> new CommonException(SCRAP_NOT_FOUND));
 		delete(scrapEntity)
-			.where(scrapEntity.contentId.eq(contentId))
+			.where(scrapEntity.content.id.eq(contentId))
 			.execute();
 
 	}
@@ -46,7 +48,7 @@ public class ScrapRepositoryImpl extends QuerydslRepositorySupport implements Sc
 		return from(userEntity)
 			.join(userEntity.scraps, scrapEntity)
 			.select(scrapEntity)
-			.where(scrapEntity.contentId.eq(contentId))
+			.where(scrapEntity.content.id.eq(contentId))
 			.fetchFirst() != null;
 	}
 }

@@ -1,14 +1,11 @@
 package com.echall.platform.crawling.service;
 
-import java.io.IOException;
-import java.util.List;
-
+import com.echall.platform.crawling.domain.dto.CrawlingResponseDto;
+import com.echall.platform.script.domain.entity.Script;
 import org.openqa.selenium.WebDriver;
 
-import com.echall.platform.content.domain.entity.Script;
-import com.echall.platform.crawling.domain.dto.CrawlingResponseDto;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.JsonNode;
+import java.io.IOException;
+import java.util.List;
 
 public interface CrawlingService {
 	// YouTube

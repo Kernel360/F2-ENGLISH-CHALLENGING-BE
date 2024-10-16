@@ -4,6 +4,7 @@ import com.echall.platform.category.domain.entity.CategoryEntity;
 import com.echall.platform.content.domain.dto.ContentRequestDto;
 import com.echall.platform.content.domain.enums.ContentStatus;
 import com.echall.platform.content.domain.enums.ContentType;
+import com.echall.platform.script.domain.entity.Script;
 import com.echall.platform.user.domain.entity.BaseEntity;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Size;
@@ -14,7 +15,6 @@ import java.util.List;
 @Entity
 @Table(name = "content")
 @Getter
-@ToString
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class ContentEntity extends BaseEntity {
 	@Id
@@ -64,7 +64,7 @@ public class ContentEntity extends BaseEntity {
 		this.contentType = contentType;
 		this.mongoContentId = mongoContentId;
 		this.preScripts = truncate(
-			preScripts.subList(0, 5)
+			preScripts.subList(0, Math.min(preScripts.size(), 5))
 				.stream()
 				.map(Script::getEnScript)
 				.toList().toString()
@@ -78,7 +78,7 @@ public class ContentEntity extends BaseEntity {
 		this.title = dto.title();
 		this.contentStatus = dto.contentStatus() == null ? ContentStatus.ACTIVATED : dto.contentStatus();
 		this.preScripts = truncate(
-			dto.script().subList(0, 5)
+			dto.script().subList(0, Math.min(dto.script().size(), 5))
 				.stream()
 				.map(Script::getEnScript)
 				.toList().toString()
@@ -90,6 +90,12 @@ public class ContentEntity extends BaseEntity {
 	}
 
 	private String truncate(String content, int maxLength) {
-		return content.length() > maxLength ? content.substring(0, maxLength) : content;
+		if(content.startsWith("[")){
+			content = content.substring(1);
+		}
+		if(content.endsWith("]")){
+			content = content.substring(0, content.length()-1);
+		}
+		return (content.length() > maxLength) ? content.substring(0, maxLength) : content;
 	}
 }

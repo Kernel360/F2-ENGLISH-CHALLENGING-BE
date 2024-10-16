@@ -2,20 +2,17 @@ package com.echall.platform.content.repository.custom;
 
 import java.util.List;
 
-import com.echall.platform.content.domain.entity.ContentEntity;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
 import com.echall.platform.content.domain.dto.ContentResponseDto;
+import com.echall.platform.content.domain.entity.ContentEntity;
 import com.echall.platform.content.domain.enums.ContentType;
-import com.echall.platform.content.domain.enums.SearchCondition;
+import com.querydsl.core.Tuple;
 
 public interface ContentRepositoryCustom {
-	Page<ContentResponseDto.ContentViewResponseDto> search(
-		Pageable pageable, SearchCondition searchCondition
-	);
 
-	List<ContentResponseDto.ContentPreviewResponseDto> getPreviewContents(
+	List<ContentResponseDto.ContentPreviewResponseDto> findPreviewContents(
 		ContentType contentType, String sortBy, int num
 	);
 
@@ -26,4 +23,6 @@ public interface ContentRepositoryCustom {
 	String findTitleById(Long contentId);
 
 	String findMongoIdByContentId(Long contentId);
+
+	List<ContentResponseDto.ContentByScrapCountDto> contentByScrapCount(int num);
 }

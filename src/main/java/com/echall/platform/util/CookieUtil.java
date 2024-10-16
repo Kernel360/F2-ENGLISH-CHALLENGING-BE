@@ -25,19 +25,38 @@ public class CookieUtil {
 		addCookie(response, ACCESS_TOKEN_NAME, accessToken, (int) ACCESS_TOKEN_COOKIE_EXPIRE.toSeconds());
 	}
 
-	public void addRefreshTokenCookie(HttpServletRequest request, HttpServletResponse response, String accessToken) {
+	public void addRefreshTokenCookie(HttpServletRequest request, HttpServletResponse response, String refreshToken) {
 		removeCookie(request, response, REFRESH_TOKEN_NAME);
-		addCookie(response, REFRESH_TOKEN_NAME, accessToken, (int) REFRESH_TOKEN_COOKIE_EXPIRE.toSeconds());
+		addCookie(response, REFRESH_TOKEN_NAME, refreshToken, (int) REFRESH_TOKEN_COOKIE_EXPIRE.toSeconds());
 	}
 
-	// TODO: https 연결하고 검토 필요, private화 생각해볼 것
-	public void addCookie(HttpServletResponse response, String name, String value, int maxAge) {
+	public void removeAccessTokenCookie(HttpServletRequest request, HttpServletResponse response) {
+		removeCookie(request, response, ACCESS_TOKEN_NAME);
+	}
+
+	public void removeRefreshTokenCookie(HttpServletRequest request, HttpServletResponse response) {
+		removeCookie(request, response, REFRESH_TOKEN_NAME);
+	}
+
+	public static boolean verifyAccessTokenCookie(Cookie[] cookies) {
+		for(Cookie cookie : cookies) {
+			if(cookie.getName().equals("access_token")) {
+				return true;
+			}
+		}
+		return false;
+	}
+
+
+	// Internal Methods=================================================================================================
+	// TODO: https 연결하고 검토 필요
+	private void addCookie(HttpServletResponse response, String name, String value, int maxAge) {
 		String cookieValue = createCookieValue(name, value, maxAge);
 
 		response.addHeader("Set-Cookie", cookieValue);
 	}
 
-	public void removeCookie(HttpServletRequest request, HttpServletResponse response, String name) {
+	private void removeCookie(HttpServletRequest request, HttpServletResponse response, String name) {
 		Cookie[] cookies = request.getCookies();
 		if (cookies != null) {
 			for (Cookie cookie : cookies) {

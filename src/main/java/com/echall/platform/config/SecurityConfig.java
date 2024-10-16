@@ -8,6 +8,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -62,12 +63,21 @@ public class SecurityConfig {
 				UsernamePasswordAuthenticationFilter.class)
 			.authorizeHttpRequests(authorize -> {
 				authorize
+					// Can access form ANONYMOUS
+					.requestMatchers(HttpMethod.GET, "/api/contents/view/**").permitAll()
+					.requestMatchers(HttpMethod.GET, "/api/contents/search/**").permitAll()
+					.requestMatchers(HttpMethod.GET, "/api/contents/preview/**").permitAll()
+					.requestMatchers(HttpMethod.GET, "/api/categories/all").permitAll()
+					.requestMatchers(HttpMethod.GET, "/api/contents/details/**").permitAll()
+					.requestMatchers(HttpMethod.GET, "/api/user/status").permitAll()
+
 					// Can access from USER
 					.requestMatchers("/api/bookmark/**").hasAnyRole("USER", "DEVELOPER")
 					.requestMatchers("/api/user/**").hasAnyRole("USER", "DEVELOPER")
 					.requestMatchers("/api/contents/**").hasAnyRole("USER", "DEVELOPER")
 					.requestMatchers("/api/questions/**").hasAnyRole("USER", "DEVELOPER")
 					.requestMatchers("/api/categories/**").hasAnyRole("USER", "DEVELOPER")
+					.requestMatchers("/api/scrap/**").hasAnyRole("USER", "DEVELOPER")
 
 					// Can access from ADMIN
 					.requestMatchers("/api/admin/**").hasAnyRole("ADMIN", "DEVELOPER")
@@ -79,6 +89,9 @@ public class SecurityConfig {
 					.requestMatchers("/api/token").hasRole("DEVELOPER")
 					.requestMatchers("/swagger-ui/**").hasRole("DEVELOPER")
 					.requestMatchers("/api-info/**").hasRole("DEVELOPER")
+
+					// Can access form Authenticated
+					.requestMatchers(HttpMethod.POST, "/api/user/logout").authenticated()
 
 
 					.requestMatchers(CorsUtils::isPreFlightRequest).permitAll()

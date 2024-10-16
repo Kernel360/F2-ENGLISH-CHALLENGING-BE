@@ -14,9 +14,12 @@ import com.echall.platform.message.ResponseEntityFactory;
 import com.echall.platform.question.domain.dto.QuestionRequestDto;
 import com.echall.platform.question.domain.dto.QuestionResponseDto;
 import com.echall.platform.question.service.QuestionServiceImpl;
+import com.echall.platform.swagger.content.SwaggerContentUpdate;
+import com.echall.platform.swagger.question.SwaggerQuestionCreate;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -32,7 +35,10 @@ public class QuestionApiController {
 	@PostMapping("/create/{contentId}")
 	@Operation(summary = "어드민 - 문제 생성", description = "어드민 회원이 컨텐츠에 대한 문제를 새로 등록합니다.")
 	@ApiResponses(value = {
-		@ApiResponse(responseCode = "201", description = "컨텐츠가 성공적으로 생성되었습니다.", content = @Content(mediaType = "application/json")),
+		@ApiResponse(responseCode = "201", description = "컨텐츠가 성공적으로 생성되었습니다.",
+			content = {
+				@Content(mediaType = "application/json", schema = @Schema(implementation = SwaggerQuestionCreate.class))}
+		),
 		@ApiResponse(responseCode = "400", description = "잘못된 요청입니다.", content = @Content(mediaType = "application/json")),
 		@ApiResponse(responseCode = "401", description = "인증되지 않은 사용자입니다.", content = @Content(mediaType = "application/json")),
 		@ApiResponse(responseCode = "403", description = "접근 권한이 없습니다.", content = @Content(mediaType = "application/json")),
