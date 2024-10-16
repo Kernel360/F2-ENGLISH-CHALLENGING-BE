@@ -11,6 +11,10 @@ import com.echall.platform.content.domain.enums.ContentType;
 import com.echall.platform.util.PaginationDto;
 
 public interface ContentService {
+	PaginationDto<ContentResponseDto.ContentPreviewResponseDto> search(
+		ContentRequestDto.ContentSearchDto searchDto, Pageable pageable
+	);
+
 	PaginationDto<ContentResponseDto.ContentPreviewResponseDto> getAllContents(
 		ContentType contentType, Pageable pageable, Long categoryId
 	);
