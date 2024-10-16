@@ -5,12 +5,16 @@ import java.util.List;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
+import com.echall.platform.content.domain.dto.ContentRequestDto;
 import com.echall.platform.content.domain.dto.ContentResponseDto;
 import com.echall.platform.content.domain.entity.ContentEntity;
 import com.echall.platform.content.domain.enums.ContentType;
-import com.querydsl.core.Tuple;
 
 public interface ContentRepositoryCustom {
+
+	Page<ContentEntity> findAllBySearchCondition(
+		ContentRequestDto.ContentSearchDto searchDto, Pageable pageable
+	);
 
 	List<ContentResponseDto.ContentPreviewResponseDto> findPreviewContents(
 		ContentType contentType, String sortBy, int num
@@ -25,4 +29,6 @@ public interface ContentRepositoryCustom {
 	String findMongoIdByContentId(Long contentId);
 
 	List<ContentResponseDto.ContentByScrapCountDto> contentByScrapCount(int num);
+
+	ContentType findContentTypeById(Long scriptIndex);
 }

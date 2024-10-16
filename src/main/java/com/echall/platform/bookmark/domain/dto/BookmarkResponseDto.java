@@ -4,6 +4,7 @@ import java.time.LocalDateTime;
 
 import com.echall.platform.bookmark.domain.entity.BookmarkEntity;
 import com.echall.platform.content.domain.entity.ContentEntity;
+import com.echall.platform.content.domain.enums.ContentType;
 
 public class BookmarkResponseDto {
 	public record BookmarkListResponseDto(
@@ -24,6 +25,7 @@ public class BookmarkResponseDto {
 
 	public record BookmarkMyListResponseDto(
 		Long bookmarkId,
+		ContentType contentType,
 		String bookmarkDetail,
 		String description,
 		Long contentId,
@@ -32,10 +34,11 @@ public class BookmarkResponseDto {
 		LocalDateTime updatedAt
 	) {
 		public static BookmarkMyListResponseDto of(
-			BookmarkEntity bookmark, String title
+			BookmarkEntity bookmark, ContentType contentType, String title
 		) {
 			return new BookmarkMyListResponseDto(
 				bookmark.getId(),
+				contentType,
 				bookmark.getDetail(),
 				bookmark.getDescription(),
 				bookmark.getScriptIndex(),
