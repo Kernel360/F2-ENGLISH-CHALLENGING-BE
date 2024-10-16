@@ -78,7 +78,11 @@ public class TranslateService {
 		StringBuilder escapedText = new StringBuilder();
 
 		for (char c : text.toCharArray()) {
-			escapedText.append(replacements.getOrDefault(c, String.valueOf(c)));
+			if (replacements.containsKey(c)) {
+				escapedText.append(replacements.get(c));
+			} else {
+				escapedText.append(c);
+			}
 		}
 
 		return escapedText.toString();
