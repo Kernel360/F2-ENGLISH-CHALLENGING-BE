@@ -1,4 +1,4 @@
-# F2-BIENGUAL-FE
+# F2-BIENGUAL-BE
 영어 학습 플랫폼 Biengual [웹사이트](https://biengual.store)
 
 ## 프로젝트 개요
