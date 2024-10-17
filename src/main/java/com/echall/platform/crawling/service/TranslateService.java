@@ -16,12 +16,14 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonParser;
 
+import lombok.extern.slf4j.Slf4j;
 import okhttp3.MediaType;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.Response;
 
+@Slf4j
 @Service
 public class TranslateService {
 	// Instantiates the OkHttpClient.
@@ -62,6 +64,10 @@ public class TranslateService {
 			.build();
 		try {
 			Response response = client.newCall(request).execute();
+			if (response.code() == 400) { // Bad Request
+				log.error("AZURE JSON TYPE ERROR : {}", text);
+				return "";
+			}
 			return Objects.requireNonNull(response.body()).string();
 		} catch (IOException | IllegalStateException e) {
 			throw new CommonException(CRAWLING_TRANSLATE_FAILURE);
