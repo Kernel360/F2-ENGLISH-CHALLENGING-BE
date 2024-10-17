@@ -16,12 +16,14 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonParser;
 
+import lombok.extern.slf4j.Slf4j;
 import okhttp3.MediaType;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.Response;
 
+@Slf4j
 @Service
 public class TranslateService {
 	// Instantiates the OkHttpClient.
@@ -35,6 +37,9 @@ public class TranslateService {
 
 	@Value("${microsoft.location}")
 	private String location;
+
+	@Value("${spring.profiles.active}")
+	private String activeProfile;
 
 	public String translate(String text, String from, String to) {
 		return extractText(Post(text, from, to));
@@ -62,6 +67,10 @@ public class TranslateService {
 			.build();
 		try {
 			Response response = client.newCall(request).execute();
+			if (response.code() != 200) { // Bad Request
+				log.error("AZURE JSON TYPE ERROR : {}", text);
+				return text;
+			}
 			return Objects.requireNonNull(response.body()).string();
 		} catch (IOException | IllegalStateException e) {
 			throw new CommonException(CRAWLING_TRANSLATE_FAILURE);
@@ -75,13 +84,17 @@ public class TranslateService {
 		replacements.put('\n', "\\n");
 		replacements.put('\r', "\\r");
 		replacements.put('\t', "\\t");
+
 		// OS 확인
 		boolean isLinux = System.getProperty("os.name").toLowerCase().contains("linux");
 		boolean isWindows = System.getProperty("os.name").toLowerCase().contains("win");
 
 		StringBuilder escapedText = new StringBuilder();
 
-		String encodedText = new String(text.getBytes(StandardCharsets.UTF_8), StandardCharsets.UTF_8);
+		String encodedText = text;
+		if ("local".equals(activeProfile)) {
+			encodedText = new String(text.getBytes(StandardCharsets.UTF_8), StandardCharsets.UTF_8);
+		}
 
 		for (char c : encodedText.toCharArray()) {
 			if (replacements.containsKey(c)) {
