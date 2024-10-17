@@ -121,8 +121,7 @@ public class UserEntity extends BaseEntity {
 		this.phoneNumber = userUpdateRequest.phoneNumber();
 		this.birth = userUpdateRequest.birth();
 		this.gender = userUpdateRequest.gender();
-		this.role = Role.ROLE_USER;
-		this.userStatus = UserStatus.USER_STATUS_CREATED;
+		this.userStatus = UserStatus.USER_STATUS_ACTIVATE;
 	}
 
 	public void updateUserInfo(UserRequestDto.UserUpdateRequest userUpdateRequest) {
