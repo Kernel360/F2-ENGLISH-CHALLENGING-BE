@@ -48,6 +48,7 @@ public class ScrapRepositoryImpl extends QuerydslRepositorySupport implements Sc
 		return from(userEntity)
 			.join(userEntity.scraps, scrapEntity)
 			.select(scrapEntity)
+			.where(userEntity.id.eq(userId))
 			.where(scrapEntity.content.id.eq(contentId))
 			.fetchFirst() != null;
 	}
