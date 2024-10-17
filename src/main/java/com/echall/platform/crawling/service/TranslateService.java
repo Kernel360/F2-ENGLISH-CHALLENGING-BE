@@ -67,9 +67,9 @@ public class TranslateService {
 			.build();
 		try {
 			Response response = client.newCall(request).execute();
-			if (response.code() == 400) { // Bad Request
+			if (response.code() != 200) { // Bad Request
 				log.error("AZURE JSON TYPE ERROR : {}", text);
-				return "";
+				return text;
 			}
 			return Objects.requireNonNull(response.body()).string();
 		} catch (IOException | IllegalStateException e) {
