@@ -96,7 +96,7 @@ public class TranslateService {
 			encodedText = new String(text.getBytes(StandardCharsets.UTF_8), StandardCharsets.UTF_8);
 		}
 
-		for (char c : text.toCharArray()) {
+		for (char c : encodedText.toCharArray()) {
 			if (replacements.containsKey(c)) {
 				if (isLinux && c == '\n') {
 					escapedText.append("\\n");
