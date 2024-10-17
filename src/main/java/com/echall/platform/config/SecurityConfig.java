@@ -3,6 +3,7 @@ package com.echall.platform.config;
 import com.echall.platform.oauth2.OAuth2FailureHandler;
 import com.echall.platform.oauth2.OAuth2SuccessHandler;
 import com.echall.platform.oauth2.TokenProvider;
+import com.echall.platform.oauth2.repository.OAuth2AuthorizationRequestBasedOnCookieRepository;
 import com.echall.platform.oauth2.service.OAuth2UserCustomService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
@@ -38,6 +39,7 @@ public class SecurityConfig {
 	private final OAuth2SuccessHandler oAuth2SuccessHandler;
 	private final OAuth2FailureHandler oAuth2FailureHandler;
 	private final AccessDeniedHandler accessDeniedHandler;
+	private final OAuth2AuthorizationRequestBasedOnCookieRepository oAuth2AuthorizationRequestBasedOnCookieRepository;
 
 	@Value("${spring.profiles.active}")
 	private String activeProfile;
@@ -101,6 +103,9 @@ public class SecurityConfig {
 		http
 			.oauth2Login(oauth2 -> oauth2
 				.loginPage("/login")
+				.authorizationEndpoint(authorizationEndpoint -> authorizationEndpoint
+					.authorizationRequestRepository(oAuth2AuthorizationRequestBasedOnCookieRepository)
+				)
 				.userInfoEndpoint(userInfoEndpoint -> userInfoEndpoint
 					.userService(oAuth2UserCustomService)
 				)
