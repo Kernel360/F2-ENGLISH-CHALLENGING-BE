@@ -35,8 +35,8 @@ spring:
             scope:
               - email
               - profile
-              - https://www.googleapis.com/auth/youtube.force-ssl
-              - https://www.googleapis.com/auth/youtube.readonly
+#              - https://www.googleapis.com/auth/youtube.force-ssl
+#              - https://www.googleapis.com/auth/youtube.readonly
           kakao:
             client-id: ${MY_KAKAO_CLIENT_ID}
             client-secret: ${MY_KAKAO_CLIENT_SECRET}
