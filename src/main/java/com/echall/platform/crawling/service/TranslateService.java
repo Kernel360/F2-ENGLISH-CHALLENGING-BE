@@ -71,7 +71,7 @@ public class TranslateService {
 				log.error("AZURE JSON TYPE ERROR : {}", text);
 				return text;
 			}
-			return Objects.requireNonNull(response.body()).toString();
+			return Objects.requireNonNull(response.body()).string();
 		} catch (IOException | IllegalStateException e) {
 			throw new CommonException(CRAWLING_TRANSLATE_FAILURE);
 		}
