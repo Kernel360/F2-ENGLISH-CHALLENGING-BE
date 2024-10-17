@@ -1,4 +1,4 @@
-# F2-ENGLISH-CHALLENGING-FE
+# F2-BIENGUAL-FE
 영어 학습 플랫폼 Biengual [웹사이트](https://biengual.store)
 
 ## 프로젝트 개요
