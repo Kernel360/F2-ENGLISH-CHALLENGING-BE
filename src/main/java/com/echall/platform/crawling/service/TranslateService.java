@@ -81,7 +81,6 @@ public class TranslateService {
 		Map<Character, String> replacements = new HashMap<>();
 		replacements.put('\\', "\\\\");
 		replacements.put('"', "\\\"");
-		replacements.put('\'', "\\'");
 		replacements.put('\n', "\\n");
 		replacements.put('\r', "\\r");
 		replacements.put('\t', "\\t");
