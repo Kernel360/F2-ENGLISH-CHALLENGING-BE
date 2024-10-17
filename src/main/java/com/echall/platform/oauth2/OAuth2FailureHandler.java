@@ -26,7 +26,10 @@ public class OAuth2FailureHandler implements AuthenticationFailureHandler {
             errorCode = error.getErrorCode();
             errorMessage = error.getDescription();
 
-            log.info("OAuth2 로그인에 실패했습니다. 에러 코드: {}, 에러 메시지: {}", errorCode, errorMessage);
+            log.error("OAuth2 로그인에 실패했습니다. code: {}, message: {}", errorCode, errorMessage);
+
+        } else {
+            log.error("OAuth2 로그인 과정에 알 수 없는 에러가 발생했습니다. message: {}", exception.getMessage());
         }
     }
 }
