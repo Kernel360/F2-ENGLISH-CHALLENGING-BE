@@ -1,7 +1,6 @@
 package com.echall.platform.user.service;
 
 import static com.echall.platform.message.error.code.UserErrorCode.*;
-import static com.echall.platform.util.CookieUtil.*;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -29,8 +28,7 @@ public class UserService {
 
 	@Transactional
 	public UserResponseDto.UserUpdateResponse updateUserInfo(
-		UserRequestDto.UserUpdateRequest userUpdateRequest,
-		String email
+		UserRequestDto.UserUpdateRequest userUpdateRequest, String email
 	) {
 		UserEntity user = this.getUserByEmail(email);
 		AssertThat_UserAccountIsAppropriate(user);
