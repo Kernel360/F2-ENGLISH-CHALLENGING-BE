@@ -38,6 +38,9 @@ public class TranslateService {
 	@Value("${microsoft.location}")
 	private String location;
 
+	@Value("${spring.profiles.active}")
+	private String activeProfile;
+
 	public String translate(String text, String from, String to) {
 		return extractText(Post(text, from, to));
 	}
@@ -81,13 +84,17 @@ public class TranslateService {
 		replacements.put('\n', "\\n");
 		replacements.put('\r', "\\r");
 		replacements.put('\t', "\\t");
+
 		// OS 확인
 		boolean isLinux = System.getProperty("os.name").toLowerCase().contains("linux");
 		boolean isWindows = System.getProperty("os.name").toLowerCase().contains("win");
 
 		StringBuilder escapedText = new StringBuilder();
 
-		String encodedText = new String(text.getBytes(StandardCharsets.UTF_8), StandardCharsets.UTF_8);
+		String encodedText = text;
+		if ("local".equals(activeProfile)) {
+			encodedText = new String(text.getBytes(StandardCharsets.UTF_8), StandardCharsets.UTF_8);
+		}
 
 		for (char c : encodedText.toCharArray()) {
 			if (replacements.containsKey(c)) {
