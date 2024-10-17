@@ -76,7 +76,7 @@ public class BookmarkServiceImpl implements BookmarkService {
 			new ObjectId(contentRepository.findMongoIdByContentId(contentId))
 		).orElseThrow(() -> new CommonException(CONTENT_NOT_FOUND));
 
-		if (bookmarkRepository.existsByScriptIndexAndScriptIndexAndWordIndex(
+		if (bookmarkRepository.existsByScriptIndexAndSentenceIndexAndWordIndex(
 			contentId, bookmarkRequestDto.sentenceIndex(), bookmarkRequestDto.wordIndex()
 		)) {
 			throw new CommonException(BOOKMARK_ALREADY_EXISTS);
