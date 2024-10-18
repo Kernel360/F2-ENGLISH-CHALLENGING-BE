@@ -16,12 +16,10 @@ public class OAuth2AuthorizationRequestBasedOnCookieRepository
 	implements AuthorizationRequestRepository<OAuth2AuthorizationRequest> {
 	private final CookieUtil cookieUtil;
 
-	private static final String OAUTH2_AUTHORIZATION_REQUEST_COOKIE = "oauth2_authorization_request";
-
 	@Override
 	public OAuth2AuthorizationRequest loadAuthorizationRequest(HttpServletRequest request) {
 
-		Cookie cookie = WebUtils.getCookie(request, OAUTH2_AUTHORIZATION_REQUEST_COOKIE);
+		Cookie cookie = WebUtils.getCookie(request, CookieUtil.OAUTH2_AUTHORIZATION_REQUEST_NAME);
 		if(cookie == null) {
 			return null;
 		}
@@ -34,7 +32,7 @@ public class OAuth2AuthorizationRequestBasedOnCookieRepository
 		HttpServletResponse response) {
 
 		if(authorizationRequest == null) {
-			removeCookies(request,response);
+			removeCookies(request, response);
 			return;
 		}
 
