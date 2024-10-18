@@ -26,8 +26,8 @@ public class CookieUtil {
 	public static final String RETURN_URL_REQUEST_PARAMETER = "returnUrl";
 	public static final Duration ACCESS_TOKEN_COOKIE_EXPIRE = Duration.ofDays(1);
 	public static final Duration REFRESH_TOKEN_COOKIE_EXPIRE = Duration.ofDays(7);
-	public static final Duration OAUTH2_AUTHORIZATION_REQUEST_COOKIE_EXPIRE = Duration.ofSeconds(10);
-	public static final Duration RETURN_URL_NAME_COOKIE_EXPIRE = Duration.ofSeconds(10);
+	public static final Duration OAUTH2_AUTHORIZATION_REQUEST_COOKIE_EXPIRE = Duration.ofMinutes(3);
+	public static final Duration RETURN_URL_NAME_COOKIE_EXPIRE = Duration.ofMinutes(3);
 
 	@Value("${spring.profiles.active}")
 	private String activeProfile;
