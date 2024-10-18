@@ -101,7 +101,7 @@ public class BookmarkServiceImpl implements BookmarkService {
 		그런데, user_id를 인증 객체(OAuth2UserPrincipal) 받아올 수 있기에, UserEntity 대신 user_id를 넣어서 저장할 수 있지
 		않을까라는 생각이 들었습니다.
 		그래서 이를 위한 방법으로 2가지가 떠올랐는데, 어떤 걸 사용하면 좋은지, 더 좋은 방법이 있는지 궁금합니다.
-		(방법 2.는 제출 시간상 정상적으로 동작하는지 확인하지 못했습니다. ㅠㅠ)
+		(방법 2.는 제출 시간상 정상적으로 동작하는지 확인하지 못했습니다. ㅠㅠ) -> 이 후 따로 확인 해보니 정상적으로 동작했습니다.
 		방법 1. BookmarkEntity에서 연관관계 @ManyToOne UserEntity를 삭제하고 Long userId 로 변경
 		방법 2. BookmarkEntity에서 연관관계 @ManyToOne UserEntity를 유지하고 userId만 넣은 User 객체를 만들어 넣은 다음 save
 		 */
